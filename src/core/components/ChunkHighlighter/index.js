@@ -27,7 +27,7 @@ const renderNodes = (parentNode, props) => {
   return createElement(parentNode ?? 'span', props);
 };
 
-const processChunks = (text, chunks = []) => {
+export const processChunks = (text, chunks = []) => {
   const textLength = text.length;
   const allChunks = [];
 
