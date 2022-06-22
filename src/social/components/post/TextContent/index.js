@@ -7,8 +7,7 @@ import styled from 'styled-components';
 import customizableComponent from '~/core/hocs/customization';
 import Button from '~/core/components/Button';
 import MentionHighlightTag from '~/core/components/MentionHighlightTag';
-import { processChunks } from '~/core/components/ChunkHighlighter';
-import { findChunks } from '~/helpers/utils';
+import { formatMentionChunks } from '~/core/components/ChunkHighlighter';
 
 export const PostContent = styled.div`
   overflow-wrap: break-word;
@@ -23,28 +22,9 @@ export const ReadMoreButton = styled(Button).attrs({ variant: 'secondary' })`
   display: inline-block;
 `;
 
-function formatMentions(text, mentionees, tag = 'mention') {
-  const chunks = processChunks(text, findChunks(mentionees));
-  let highlightIndex = 0;
-  let formattedText = '';
-
-  chunks.forEach((chunk) => {
-    const chunkText = text.substring(chunk.start, chunk.end);
-
-    if (chunk.highlight) {
-      formattedText += `<${tag} highlightIndex="${highlightIndex}">${chunkText}</${tag}>`;
-      highlightIndex += 1;
-    } else {
-      formattedText += chunkText;
-    }
-  });
-
-  return formattedText;
-}
-
 const TextContent = ({ text, postMaxLines, mentionees }) => {
   const textWithMentions = useMemo(
-    () => formatMentions(text, mentionees, 'mention'),
+    () => formatMentionChunks(text, mentionees, 'mention'),
     [text, mentionees],
   );
 
@@ -73,7 +53,7 @@ const TextContent = ({ text, postMaxLines, mentionees }) => {
   if (textContent && isExpanded) return textContent;
 
   return (
-    <Truncate.Atom
+    <Truncate
       lines={postMaxLines}
       ellipsis={
         <ReadMoreButton onClick={onExpand}>
@@ -82,7 +62,7 @@ const TextContent = ({ text, postMaxLines, mentionees }) => {
       }
     >
       {textContent}
-    </Truncate.Atom>
+    </Truncate>
   );
 };
 

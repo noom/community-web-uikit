@@ -48,12 +48,18 @@ export const UIPostMentionsContent = (props) => (
 UIPostMentionsContent.storyName = 'Mentions content';
 
 UIPostMentionsContent.args = {
-  text: 'Hello there @Alexander Ahapde !!',
+  text: 'Hello there @Bristina and @Mike!!',
   postMaxLines: 2,
   mentionees: [
     {
       index: 12,
-      length: 17,
+      length: 8,
+      type: 'user',
+      userId: 'J0FWLUST',
+    },
+    {
+      index: 26,
+      length: 4,
       type: 'user',
       userId: 'J0FWLUST',
     },
