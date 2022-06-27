@@ -1,15 +1,31 @@
+/* eslint-disable no-param-reassign */
 import React, { useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate } from 'slate-react';
 import { Editor, Transforms, createEditor, Element as SlateElement } from 'slate';
 import { withHistory } from 'slate-history';
+import {
+  MdFormatBold,
+  MdFormatItalic,
+  MdFormatUnderlined,
+  MdFormatListBulleted,
+  MdFormatListNumbered,
+  MdFormatQuote,
+  MdFormatAlignLeft,
+  MdFormatAlignCenter,
+  MdFormatAlignRight,
+  MdFormatAlignJustify,
+  MdCode,
+  MdAddLink,
+} from 'react-icons/md';
 
-// import {} from '@noom/wax-component-library';
+import { IconButton, ButtonGroup } from '@noom/wax-component-library';
 
-const Box = ({ children }) => <div>{children}</div>;
-const Button = (props) => <button {...props} type="button" />;
-const Icon = (props) => <span {...props} />;
-const Toolbar = ({ children }) => <Box>{children}</Box>;
+const Toolbar = ({ children }) => (
+  <ButtonGroup size="md" spacing={1} paddingY={1}>
+    {children}
+  </ButtonGroup>
+);
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -52,6 +68,7 @@ const isBlockActive = (editor, format, blockType = 'type') => {
 
 const Element = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
+
   switch (element.type) {
     case 'block-quote':
       return (
@@ -67,13 +84,13 @@ const Element = ({ attributes, children, element }) => {
       );
     case 'heading-one':
       return (
-        <h1 style={style} {...attributes}>
+        <h1 style={{ ...style, fontSize: '2em' }} {...attributes}>
           {children}
         </h1>
       );
     case 'heading-two':
       return (
-        <h2 style={style} {...attributes}>
+        <h2 style={{ ...style, fontSize: '1.5em' }} {...attributes}>
           {children}
         </h2>
       );
@@ -85,7 +102,7 @@ const Element = ({ attributes, children, element }) => {
       );
     case 'numbered-list':
       return (
-        <ol style={style} {...attributes}>
+        <ol isOrdered style={style} {...attributes}>
           {children}
         </ol>
       );
@@ -99,25 +116,23 @@ const Element = ({ attributes, children, element }) => {
 };
 
 const Leaf = ({ attributes, children, leaf }) => {
-  let formattedChildren;
-
   if (leaf.bold) {
-    formattedChildren = <strong>{children}</strong>;
+    children = <strong>{children}</strong>;
   }
 
   if (leaf.code) {
-    formattedChildren = <code>{children}</code>;
+    children = <code>{children}</code>;
   }
 
   if (leaf.italic) {
-    formattedChildren = <em>{children}</em>;
+    children = <em>{children}</em>;
   }
 
   if (leaf.underline) {
-    formattedChildren = <u>{children}</u>;
+    children = <u>{children}</u>;
   }
 
-  return <span {...attributes}>{formattedChildren ?? children}</span>;
+  return <span {...attributes}>{children}</span>;
 };
 
 const RichTextEditor = ({ value, onChange }) => {
@@ -128,19 +143,20 @@ const RichTextEditor = ({ value, onChange }) => {
   return (
     <Slate editor={editor} value={value} onChange={onChange}>
       <Toolbar>
-        <MarkButton format="bold" icon="format_bold" />
-        <MarkButton format="italic" icon="format_italic" />
-        <MarkButton format="underline" icon="format_underlined" />
-        <MarkButton format="code" icon="code" />
-        <BlockButton format="heading-one" icon="looks_one" />
-        <BlockButton format="heading-two" icon="looks_two" />
-        <BlockButton format="block-quote" icon="format_quote" />
-        <BlockButton format="numbered-list" icon="format_list_numbered" />
-        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-        <BlockButton format="left" icon="format_align_left" />
-        <BlockButton format="center" icon="format_align_center" />
-        <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" />
+        <MarkButton format="bold" icon={<MdFormatBold />} />
+        <MarkButton format="italic" icon={<MdFormatItalic />} />
+        <MarkButton format="underline" icon={<MdFormatUnderlined />} />
+        <MarkButton format="code" icon={<MdCode />} />
+        <MarkButton format="link" icon={<MdAddLink />} />
+        <BlockButton format="heading-one" icon={<span>H1</span>} />
+        <BlockButton format="heading-two" icon={<span>H2</span>} />
+        <BlockButton format="block-quote" icon={<MdFormatQuote />} />
+        <BlockButton format="numbered-list" icon={<MdFormatListNumbered />} />
+        <BlockButton format="bulleted-list" icon={<MdFormatListBulleted />} />
+        <BlockButton format="left" icon={<MdFormatAlignLeft />} />
+        <BlockButton format="center" icon={<MdFormatAlignCenter />} />
+        <BlockButton format="right" icon={<MdFormatAlignRight />} />
+        <BlockButton format="justify" icon={<MdFormatAlignJustify />} />
       </Toolbar>
       <Editable
         renderElement={renderElement}
@@ -189,7 +205,7 @@ const toggleBlock = (editor, format) => {
       type: isActive ? 'paragraph' : isList ? 'list-item' : format,
     };
   }
-  Transforms.setNodes < SlateElement > (editor, newProperties);
+  Transforms.setNodes(editor, newProperties);
 
   if (!isActive && isList) {
     const block = { type: format, children: [] };
@@ -197,33 +213,47 @@ const toggleBlock = (editor, format) => {
   }
 };
 
-const BlockButton = ({ format, icon }) => {
+const BlockButton = ({ format, icon, ...rest }) => {
   const editor = useSlate();
+
+  const isActive = isBlockActive(
+    editor,
+    format,
+    TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
+  );
+
   return (
-    <Button
-      active={isBlockActive(editor, format, TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type')}
+    <IconButton
+      {...rest}
+      title={format}
+      border="none"
+      colorScheme={isActive ? 'primary' : 'gray'}
       onMouseDown={(event) => {
         event.preventDefault();
         toggleBlock(editor, format);
       }}
     >
-      <Icon>{icon}</Icon>
-    </Button>
+      {icon}
+    </IconButton>
   );
 };
 
-const MarkButton = ({ format, icon }) => {
+const MarkButton = ({ format, icon, ...rest }) => {
   const editor = useSlate();
+  const isActive = isMarkActive(editor, format);
   return (
-    <Button
-      active={isMarkActive(editor, format)}
+    <IconButton
+      {...rest}
+      title={format}
+      border="none"
+      colorScheme={isActive ? 'primary' : 'gray'}
       onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, format);
       }}
     >
-      <Icon>{icon}</Icon>
-    </Button>
+      {icon}
+    </IconButton>
   );
 };
 
