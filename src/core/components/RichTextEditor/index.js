@@ -7,7 +7,6 @@ import { withHistory } from 'slate-history';
 import {
   MdFormatBold,
   MdFormatItalic,
-  MdFormatUnderlined,
   MdFormatListBulleted,
   MdFormatListNumbered,
   MdFormatQuote,
@@ -15,6 +14,7 @@ import {
   MdFormatAlignCenter,
   MdFormatAlignRight,
   MdFormatAlignJustify,
+  MdFormatStrikethrough,
   MdCode,
   MdAddLink,
 } from 'react-icons/md';
@@ -128,35 +128,43 @@ const Leaf = ({ attributes, children, leaf }) => {
     children = <em>{children}</em>;
   }
 
-  if (leaf.underline) {
-    children = <u>{children}</u>;
+  if (leaf.strike) {
+    children = <strike>{children}</strike>;
   }
 
   return <span {...attributes}>{children}</span>;
 };
 
-const RichTextEditor = ({ value, onChange }) => {
+const RichTextEditor = ({ value, onChange, isReadOnly }) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
-    <Slate editor={editor} value={value} onChange={onChange}>
+    <Slate editor={editor} value={value} isReadOnly={isReadOnly} onChange={onChange}>
       <Toolbar>
-        <MarkButton format="bold" icon={<MdFormatBold />} />
-        <MarkButton format="italic" icon={<MdFormatItalic />} />
-        <MarkButton format="underline" icon={<MdFormatUnderlined />} />
-        <MarkButton format="code" icon={<MdCode />} />
-        <MarkButton format="link" icon={<MdAddLink />} />
-        <BlockButton format="heading-one" icon={<span>H1</span>} />
-        <BlockButton format="heading-two" icon={<span>H2</span>} />
-        <BlockButton format="block-quote" icon={<MdFormatQuote />} />
-        <BlockButton format="numbered-list" icon={<MdFormatListNumbered />} />
-        <BlockButton format="bulleted-list" icon={<MdFormatListBulleted />} />
-        <BlockButton format="left" icon={<MdFormatAlignLeft />} />
-        <BlockButton format="center" icon={<MdFormatAlignCenter />} />
-        <BlockButton format="right" icon={<MdFormatAlignRight />} />
-        <BlockButton format="justify" icon={<MdFormatAlignJustify />} />
+        <MarkButton format="bold" icon={<MdFormatBold />} isReadOnly={isReadOnly} />
+        <MarkButton format="italic" icon={<MdFormatItalic />} isReadOnly={isReadOnly} />
+        <MarkButton format="strike" icon={<MdFormatStrikethrough />} isReadOnly={isReadOnly} />
+        <MarkButton format="code" icon={<MdCode />} isReadOnly={isReadOnly} />
+        <MarkButton format="link" icon={<MdAddLink />} isReadOnly={isReadOnly} />
+        <BlockButton format="heading-one" icon={<span>H1</span>} isReadOnly={isReadOnly} />
+        <BlockButton format="heading-two" icon={<span>H2</span>} isReadOnly={isReadOnly} />
+        <BlockButton format="block-quote" icon={<MdFormatQuote />} isReadOnly={isReadOnly} />
+        <BlockButton
+          format="numbered-list"
+          icon={<MdFormatListNumbered />}
+          isReadOnly={isReadOnly}
+        />
+        <BlockButton
+          format="bulleted-list"
+          icon={<MdFormatListBulleted />}
+          isReadOnly={isReadOnly}
+        />
+        <BlockButton format="left" icon={<MdFormatAlignLeft />} isReadOnly={isReadOnly} />
+        <BlockButton format="center" icon={<MdFormatAlignCenter />} isReadOnly={isReadOnly} />
+        <BlockButton format="right" icon={<MdFormatAlignRight />} isReadOnly={isReadOnly} />
+        <BlockButton format="justify" icon={<MdFormatAlignJustify />} isReadOnly={isReadOnly} />
       </Toolbar>
       <Editable
         renderElement={renderElement}
