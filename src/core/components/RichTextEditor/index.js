@@ -34,7 +34,7 @@ const HOTKEYS = {
   'mod+`': 'code',
 };
 
-const LIST_TYPES = ['numbered-list', 'bulleted-list'];
+const LIST_TYPES = ['ol_list', 'ul_list'];
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
 const isMarkActive = (editor, format) => {
@@ -70,39 +70,45 @@ const Element = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
 
   switch (element.type) {
-    case 'block-quote':
+    case 'block_quote':
       return (
         <blockquote style={style} {...attributes}>
           {children}
         </blockquote>
       );
-    case 'bulleted-list':
+    case 'ul_list':
       return (
         <ul style={style} {...attributes}>
           {children}
         </ul>
       );
-    case 'heading-one':
+    case 'heading_one':
       return (
         <h1 style={{ ...style, fontSize: '2em' }} {...attributes}>
           {children}
         </h1>
       );
-    case 'heading-two':
+    case 'heading_two':
       return (
         <h2 style={{ ...style, fontSize: '1.5em' }} {...attributes}>
           {children}
         </h2>
       );
-    case 'list-item':
+    case 'heading_three':
+      return (
+        <h3 style={{ ...style, fontSize: '1.5em' }} {...attributes}>
+          {children}
+        </h3>
+      );
+    case 'list_item':
       return (
         <li style={style} {...attributes}>
           {children}
         </li>
       );
-    case 'numbered-list':
+    case 'ol_list':
       return (
-        <ol isOrdered style={style} {...attributes}>
+        <ol style={style} {...attributes}>
           {children}
         </ol>
       );
@@ -128,14 +134,14 @@ const Leaf = ({ attributes, children, leaf }) => {
     children = <em>{children}</em>;
   }
 
-  if (leaf.strike) {
+  if (leaf.strikeThrough) {
     children = <strike>{children}</strike>;
   }
 
   return <span {...attributes}>{children}</span>;
 };
 
-const RichTextEditor = ({ value, onChange, isReadOnly }) => {
+const RichTextEditor = ({ value, onChange, isReadOnly, isAlignmentEnabled = false }) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
@@ -143,28 +149,29 @@ const RichTextEditor = ({ value, onChange, isReadOnly }) => {
   return (
     <Slate editor={editor} value={value} isReadOnly={isReadOnly} onChange={onChange}>
       <Toolbar>
-        <MarkButton format="bold" icon={<MdFormatBold />} isReadOnly={isReadOnly} />
-        <MarkButton format="italic" icon={<MdFormatItalic />} isReadOnly={isReadOnly} />
-        <MarkButton format="strike" icon={<MdFormatStrikethrough />} isReadOnly={isReadOnly} />
-        <MarkButton format="code" icon={<MdCode />} isReadOnly={isReadOnly} />
-        <MarkButton format="link" icon={<MdAddLink />} isReadOnly={isReadOnly} />
-        <BlockButton format="heading-one" icon={<span>H1</span>} isReadOnly={isReadOnly} />
-        <BlockButton format="heading-two" icon={<span>H2</span>} isReadOnly={isReadOnly} />
-        <BlockButton format="block-quote" icon={<MdFormatQuote />} isReadOnly={isReadOnly} />
-        <BlockButton
-          format="numbered-list"
-          icon={<MdFormatListNumbered />}
-          isReadOnly={isReadOnly}
+        <MarkButton format="bold" icon={<MdFormatBold />} isDisabled={isReadOnly} />
+        <MarkButton format="italic" icon={<MdFormatItalic />} isDisabled={isReadOnly} />
+        <MarkButton
+          format="strikeThrough"
+          icon={<MdFormatStrikethrough />}
+          isDisabled={isReadOnly}
         />
-        <BlockButton
-          format="bulleted-list"
-          icon={<MdFormatListBulleted />}
-          isReadOnly={isReadOnly}
-        />
-        <BlockButton format="left" icon={<MdFormatAlignLeft />} isReadOnly={isReadOnly} />
-        <BlockButton format="center" icon={<MdFormatAlignCenter />} isReadOnly={isReadOnly} />
-        <BlockButton format="right" icon={<MdFormatAlignRight />} isReadOnly={isReadOnly} />
-        <BlockButton format="justify" icon={<MdFormatAlignJustify />} isReadOnly={isReadOnly} />
+        <MarkButton format="code" icon={<MdCode />} isDisabled={isReadOnly} />
+        <MarkButton format="link" icon={<MdAddLink />} isDisabled={isReadOnly} />
+        <BlockButton format="heading_one" icon={<span>H1</span>} isDisabled={isReadOnly} />
+        <BlockButton format="heading_two" icon={<span>H2</span>} isDisabled={isReadOnly} />
+        <BlockButton format="heading_three" icon={<span>H3</span>} isDisabled={isReadOnly} />
+        <BlockButton format="block_quote" icon={<MdFormatQuote />} isDisabled={isReadOnly} />
+        <BlockButton format="ol_list" icon={<MdFormatListNumbered />} isDisabled={isReadOnly} />
+        <BlockButton format="ul_list" icon={<MdFormatListBulleted />} isDisabled={isReadOnly} />
+        {isAlignmentEnabled ? (
+          <>
+            <BlockButton format="left" icon={<MdFormatAlignLeft />} isDisabled={isReadOnly} />
+            <BlockButton format="center" icon={<MdFormatAlignCenter />} isDisabled={isReadOnly} />
+            <BlockButton format="right" icon={<MdFormatAlignRight />} isDisabled={isReadOnly} />
+            <BlockButton format="justify" icon={<MdFormatAlignJustify />} isDisabled={isReadOnly} />
+          </>
+        ) : null}
       </Toolbar>
       <Editable
         renderElement={renderElement}
@@ -210,7 +217,7 @@ const toggleBlock = (editor, format) => {
   } else {
     newProperties = {
       // eslint-disable-next-line no-nested-ternary
-      type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+      type: isActive ? 'paragraph' : isList ? 'list_item' : format,
     };
   }
   Transforms.setNodes(editor, newProperties);
