@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate } from 'slate-react';
-import { Editor, Transforms, createEditor, Element as SlateElement } from 'slate';
+import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
   MdFormatBold,
@@ -17,53 +17,21 @@ import {
   MdFormatStrikethrough,
   MdCode,
   MdAddLink,
+  MdLinkOff,
 } from 'react-icons/md';
 
-import { IconButton, ButtonGroup } from '@noom/wax-component-library';
+import { IconButton } from '@noom/wax-component-library';
 
-const Toolbar = ({ children }) => (
-  <ButtonGroup size="md" spacing={1} paddingY={1}>
-    {children}
-  </ButtonGroup>
-);
+import { isMarkActive, toggleMark, isBlockActive, toggleBlock } from './utils.ts';
+import { TEXT_ALIGN_TYPES } from './constants.ts';
+import { withInlines } from './enhancers.ts';
+import { Toolbar, LinkButton } from './components/index.ts';
 
 const HOTKEYS = {
   'mod+b': 'bold',
   'mod+i': 'italic',
   'mod+u': 'underline',
   'mod+`': 'code',
-};
-
-const LIST_TYPES = ['ol_list', 'ul_list'];
-const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
-
-const isMarkActive = (editor, format) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
-
-const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
-
-const isBlockActive = (editor, format, blockType = 'type') => {
-  const { selection } = editor;
-  if (!selection) return false;
-
-  const [match] = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.unhangRange(editor, selection),
-      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n[blockType] === format,
-    }),
-  );
-
-  return !!match;
 };
 
 const Element = ({ attributes, children, element }) => {
@@ -112,6 +80,12 @@ const Element = ({ attributes, children, element }) => {
           {children}
         </ol>
       );
+    case 'link':
+      return (
+        <a {...attributes} rel="noreferrer" href={element.link}>
+          {children}
+        </a>
+      );
     default:
       return (
         <p style={style} {...attributes}>
@@ -144,7 +118,7 @@ const Leaf = ({ attributes, children, leaf }) => {
 const RichTextEditor = ({ value, onChange, isReadOnly, isAlignmentEnabled = false }) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(() => withInlines(withHistory(withReact(createEditor()))), []);
 
   return (
     <Slate editor={editor} value={value} isReadOnly={isReadOnly} onChange={onChange}>
@@ -157,7 +131,12 @@ const RichTextEditor = ({ value, onChange, isReadOnly, isAlignmentEnabled = fals
           isDisabled={isReadOnly}
         />
         <MarkButton format="code" icon={<MdCode />} isDisabled={isReadOnly} />
-        <MarkButton format="link" icon={<MdAddLink />} isDisabled={isReadOnly} />
+        <LinkButton
+          format="link"
+          icon={<MdAddLink />}
+          activeIcon={<MdLinkOff />}
+          isDisabled={isReadOnly}
+        />
         <BlockButton format="heading_one" icon={<span>H1</span>} isDisabled={isReadOnly} />
         <BlockButton format="heading_two" icon={<span>H2</span>} isDisabled={isReadOnly} />
         <BlockButton format="heading_three" icon={<span>H3</span>} isDisabled={isReadOnly} />
@@ -191,41 +170,6 @@ const RichTextEditor = ({ value, onChange, isReadOnly, isAlignmentEnabled = fals
       />
     </Slate>
   );
-};
-
-const toggleBlock = (editor, format) => {
-  const isActive = isBlockActive(
-    editor,
-    format,
-    TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
-  );
-  const isList = LIST_TYPES.includes(format);
-
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      LIST_TYPES.includes(n.type) &&
-      !TEXT_ALIGN_TYPES.includes(format),
-    split: true,
-  });
-  let newProperties;
-  if (TEXT_ALIGN_TYPES.includes(format)) {
-    newProperties = {
-      align: isActive ? undefined : format,
-    };
-  } else {
-    newProperties = {
-      // eslint-disable-next-line no-nested-ternary
-      type: isActive ? 'paragraph' : isList ? 'list_item' : format,
-    };
-  }
-  Transforms.setNodes(editor, newProperties);
-
-  if (!isActive && isList) {
-    const block = { type: format, children: [] };
-    Transforms.wrapNodes(editor, block);
-  }
 };
 
 const BlockButton = ({ format, icon, ...rest }) => {

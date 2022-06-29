@@ -18,7 +18,8 @@
     // Mainly to allow dependencies used in some files to remain as devDependencies.
     "import/no-extraneous-dependencies": "off",
     // Prefer showing through default arguments.
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }]
   },
   "env": {
     "jest": true

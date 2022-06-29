@@ -13,6 +13,8 @@ const initialValue = markdownToSlate('This is **bold** and _italic_ and ~~strike
 export const RichText = ({ onChange, ...rest }) => {
   const [value, setValue] = useState(initialValue);
 
+  console.log(value);
+
   const handleChange = (newVal) => {
     onChange(slateToMarkdown(newVal));
     setValue(newVal);
