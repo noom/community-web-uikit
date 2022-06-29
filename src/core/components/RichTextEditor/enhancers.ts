@@ -1,9 +1,30 @@
-import { Editor } from 'slate';
+/* eslint-disable no-param-reassign */
+import { ReactEditor } from 'slate-react';
 
-export function withInlines(editor: Editor) {
-  const { isInline } = editor;
+import { wrapLink, isUrl } from './utils.ts';
 
-  editor.isInline = (element) => ['link'].includes(element.type) || isInline(element);
+export function withInlines(editor: ReactEditor) {
+  const { insertData, insertText, isInline } = editor;
+
+  editor.isInline = (element) => ['link', 'button'].includes(element.type) || isInline(element);
+
+  editor.insertText = (text) => {
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData('text/plain');
+
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
 
   return editor;
 }

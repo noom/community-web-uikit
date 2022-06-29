@@ -1,19 +1,27 @@
 import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
+import { ReactEditor } from 'slate-react';
+
 import { LinkElement } from './models.ts';
 import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants.ts';
 
-export function getSelectedText(editor: Editor) {
+export function getSelectedText(editor: ReactEditor) {
   if (editor.selection) {
     return Editor.string(editor, editor.selection);
   }
 }
 
-export function isMarkActive(editor: Editor, format) {
+export function isUrl(url: string) {
+  return /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(
+    url,
+  );
+}
+
+export function isMarkActive(editor: ReactEditor, format) {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
 }
 
-export function toggleMark(editor: Editor, format) {
+export function toggleMark(editor: ReactEditor, format) {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
@@ -23,7 +31,7 @@ export function toggleMark(editor: Editor, format) {
   }
 }
 
-export function isBlockActive(editor: Editor, format, blockType = 'type') {
+export function isBlockActive(editor: ReactEditor, format, blockType = 'type') {
   const { selection } = editor;
   if (!selection) return false;
 
@@ -37,7 +45,7 @@ export function isBlockActive(editor: Editor, format, blockType = 'type') {
   return !!match;
 }
 
-export function toggleBlock(editor: Editor, format) {
+export function toggleBlock(editor: ReactEditor, format) {
   const isActive = isBlockActive(
     editor,
     format,
@@ -72,20 +80,20 @@ export function toggleBlock(editor: Editor, format) {
   }
 }
 
-export function isLinkActive(editor: Editor) {
+export function isLinkActive(editor: ReactEditor) {
   const [link] = Editor.nodes(editor, {
     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
   });
   return !!link;
 }
 
-export function unwrapLink(editor: Editor) {
+export function unwrapLink(editor: ReactEditor) {
   Transforms.unwrapNodes(editor, {
     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
   });
 }
 
-export function wrapLink(editor: Editor, url: string, text?: string) {
+export function wrapLink(editor: ReactEditor, url: string, text?: string) {
   if (isLinkActive(editor)) {
     unwrapLink(editor);
   }
