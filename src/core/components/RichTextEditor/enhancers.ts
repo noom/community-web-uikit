@@ -1,16 +1,20 @@
 /* eslint-disable no-param-reassign */
 import { ReactEditor } from 'slate-react';
 
-import { wrapLink, isUrl } from './utils.ts';
+import { insertLink, isUrl } from './utils.ts';
 
 export function withInlines(editor: ReactEditor) {
-  const { insertData, insertText, isInline } = editor;
+  const { insertData, insertText, isInline, isVoid } = editor;
 
-  editor.isInline = (element) => ['link', 'button'].includes(element.type) || isInline(element);
+  editor.isInline = (element) => ['link', 'mention'].includes(element.type) || isInline(element);
+
+  editor.isVoid = (element) => {
+    return element.type === 'mention' ? true : isVoid(element);
+  };
 
   editor.insertText = (text) => {
     if (text && isUrl(text)) {
-      wrapLink(editor, text);
+      insertLink(editor, text);
     } else {
       insertText(text);
     }
@@ -20,7 +24,7 @@ export function withInlines(editor: ReactEditor) {
     const text = data.getData('text/plain');
 
     if (text && isUrl(text)) {
-      wrapLink(editor, text);
+      insertLink(editor, text);
     } else {
       insertData(data);
     }

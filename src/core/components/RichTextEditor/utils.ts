@@ -1,7 +1,7 @@
 import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-import { LinkElement } from './models.ts';
+import { LinkElement, MentionElement } from './models.ts';
 import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants.ts';
 
 export function getSelectedText(editor: ReactEditor) {
@@ -87,15 +87,15 @@ export function isLinkActive(editor: ReactEditor) {
   return !!link;
 }
 
-export function unwrapLink(editor: ReactEditor) {
+export function removeLink(editor: ReactEditor) {
   Transforms.unwrapNodes(editor, {
     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
   });
 }
 
-export function wrapLink(editor: ReactEditor, url: string, text?: string) {
+export function insertLink(editor: ReactEditor, url: string, text?: string) {
   if (isLinkActive(editor)) {
-    unwrapLink(editor);
+    removeLink(editor);
   }
 
   const { selection } = editor;
@@ -113,4 +113,14 @@ export function wrapLink(editor: ReactEditor, url: string, text?: string) {
     Transforms.wrapNodes(editor, link, { split: true });
     Transforms.collapse(editor, { edge: 'end' });
   }
+}
+
+export function insertMention(editor: ReactEditor, character: string) {
+  const mention: MentionElement = {
+    type: 'mention',
+    character,
+    children: [{ text: '' }],
+  };
+  Transforms.insertNodes(editor, mention);
+  Transforms.move(editor);
 }

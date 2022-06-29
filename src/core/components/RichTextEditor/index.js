@@ -25,7 +25,7 @@ import { IconButton } from '@noom/wax-component-library';
 import { isMarkActive, toggleMark, isBlockActive, toggleBlock } from './utils.ts';
 import { TEXT_ALIGN_TYPES } from './constants.ts';
 import { withInlines } from './enhancers.ts';
-import { Toolbar, LinkButton } from './components/index.ts';
+import { Toolbar, LinkButton, Mention } from './components/index.ts';
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -86,6 +86,8 @@ const Element = ({ attributes, children, element }) => {
           {children}
         </a>
       );
+    case 'mentions':
+      return <Mention attributes={attributes}>{children}</Mention>;
     default:
       return (
         <p style={style} {...attributes}>

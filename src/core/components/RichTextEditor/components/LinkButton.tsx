@@ -18,7 +18,7 @@ import {
   useDisclosure,
 } from '@noom/wax-component-library';
 import { useSlate } from 'slate-react';
-import { isLinkActive, wrapLink, unwrapLink, getSelectedText } from '../utils.ts';
+import { isLinkActive, removeLink, insertLink, getSelectedText } from '../utils.ts';
 
 type LinkModalProps = {
   isOpen: boolean;
@@ -68,13 +68,14 @@ const LinkModal = ({
           <Text colorScheme={colorScheme}>{titleText}</Text>
         </ModalHeader>
         <ModalBody>
-          <Stack>
-            <form onSubmit={(event) => submit(event)}>
+          <form onSubmit={(event) => submit(event)}>
+            <Stack spacing={2}>
               <Box>
                 <Input
                   label="URL"
                   name="url"
                   value={url}
+                  size="md"
                   boxSizing="border-box"
                   onChange={(event) => setUrl(event.currentTarget.value)}
                 />
@@ -84,14 +85,15 @@ const LinkModal = ({
                   label="Text"
                   name="text"
                   value={text}
+                  size="md"
                   boxSizing="border-box"
                   isDisabled={!!defaultText}
                   onChange={(event) => setText(event.currentTarget.value)}
                 />
               </Box>
-              <Button type="submit" display="none" />
-            </form>
-          </Stack>
+            </Stack>
+            <Button type="submit" display="none" />
+          </form>
         </ModalBody>
 
         <ModalFooter>
@@ -101,6 +103,7 @@ const LinkModal = ({
             </Button>
 
             <Button
+              border="none"
               variant="solid"
               size="md"
               colorScheme={colorScheme}
@@ -122,14 +125,14 @@ export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const selectedText = getSelectedText(editor);
 
-  function insertLink(url: string, text?: string) {
+  function insert(url: string, text?: string) {
     if (url && editor.selection) {
-      wrapLink(editor, url, text);
+      insertLink(editor, url, text);
     }
   }
 
-  function removeLink() {
-    unwrapLink(editor);
+  function remove() {
+    removeLink(editor);
   }
 
   return (
@@ -141,7 +144,7 @@ export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
         colorScheme={isActive ? 'primary' : 'gray'}
         onClick={() => {
           if (isActive) {
-            removeLink();
+            remove();
           } else {
             onOpen();
           }
@@ -154,7 +157,7 @@ export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
         size="md"
         defaultText={selectedText}
         onClose={onClose}
-        onSubmit={(url, text) => insertLink(url, text)}
+        onSubmit={(url, text) => insert(url, text)}
       />
     </>
   );
