@@ -41,8 +41,11 @@ export type CustomText = {
   text: string;
 };
 
+export type MentionTarget = 'user' | 'tag';
+
 export type MentionElement = {
   type: 'mention';
+  target: MentionTarget;
   character: string;
   children: CustomText[];
 };

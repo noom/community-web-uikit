@@ -1,13 +1,26 @@
 import React from 'react';
+import { Link } from '@noom/wax-component-library';
 
-export const Mention = ({ attributes, children, element }) => {
+import { MentionTarget } from '../models.ts';
+import { MentionSymbol } from '../constants.ts';
+
+export type MentionProps = {
+  children?: React.ReactNode;
+  character?: string;
+  target: MentionTarget;
+  attributes?: any;
+};
+
+export const Mention = ({ attributes, character, target = 'user', children }) => {
   return (
-    <span
+    <Link
       {...attributes}
       contentEditable={false}
-      data-cy={`mention-${element.character.replace(' ', '-')}`}
+      data-cy={`mention-${character.replace(' ', '-')}`}
     >
-      {children}@{element.character}
-    </span>
+      {children}
+      {MentionSymbol[target]}
+      {character}
+    </Link>
   );
 };

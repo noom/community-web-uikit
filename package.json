@@ -80,7 +80,7 @@
   "dependencies": {
     "@amityco/js-sdk": "^5.13.0",
     "@hookform/error-message": "0.0.4",
-    "@noom/wax-component-library": "^4.6.0",
+    "@noom/wax-component-library": "^4.6.2",
     "classnames": "^2.2.6",
     "filesize": "^6.1.0",
     "hls.js": "^1.0.10",

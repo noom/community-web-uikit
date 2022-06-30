@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import RichTextEditor from '.';
+import RichTextEditor from './index.tsx';
 
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
 
@@ -13,14 +13,19 @@ const initialValue = markdownToSlate('This is **bold** and _italic_ and ~~strike
 export const RichText = ({ onChange, ...rest }) => {
   const [value, setValue] = useState(initialValue);
 
-  console.log(value);
-
   const handleChange = (newVal) => {
     onChange(slateToMarkdown(newVal));
     setValue(newVal);
   };
 
-  return <RichTextEditor {...rest} value={value} onChange={handleChange} />;
+  return (
+    <RichTextEditor
+      {...rest}
+      placeholder="What is on your mind?"
+      value={value}
+      onChange={handleChange}
+    />
+  );
 };
 
 RichText.storyName = 'Simple Input text';

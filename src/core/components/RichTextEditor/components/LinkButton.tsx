@@ -36,7 +36,7 @@ const LinkModal = ({
   onSubmit,
   titleText = 'Add link',
   colorScheme = 'primary',
-  defaultUrl = '',
+  defaultUrl = 'https://',
   defaultText = '',
   ...modalProps
 }: LinkModalProps) => {

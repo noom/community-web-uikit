@@ -2,7 +2,8 @@ import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 import { LinkElement, MentionElement } from './models.ts';
-import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants.ts';
+import { LIST_TYPES, TEXT_ALIGN_TYPES, MentionSymbol } from './constants.ts';
+import { MentionTarget } from './models';
 
 export function getSelectedText(editor: ReactEditor) {
   if (editor.selection) {
@@ -115,10 +116,15 @@ export function insertLink(editor: ReactEditor, url: string, text?: string) {
   }
 }
 
-export function insertMention(editor: ReactEditor, character: string) {
+export function insertMention(
+  editor: ReactEditor,
+  character: string,
+  target: MentionTarget = 'user',
+) {
   const mention: MentionElement = {
     type: 'mention',
     character,
+    target,
     children: [{ text: '' }],
   };
   Transforms.insertNodes(editor, mention);
