@@ -10,21 +10,25 @@ import {
   MdFormatListBulleted,
   MdFormatListNumbered,
   MdFormatQuote,
-  MdFormatAlignLeft,
-  MdFormatAlignCenter,
-  MdFormatAlignRight,
-  MdFormatAlignJustify,
   MdFormatStrikethrough,
   MdCode,
   MdAddLink,
   MdLinkOff,
 } from 'react-icons/md';
 
-import { IconButton, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
+import { Box, IconButton, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
 
 import { MentionTarget } from './models.ts';
-import { isMarkActive, toggleMark, isBlockActive, toggleBlock, insertMention } from './utils.ts';
-import { TEXT_ALIGN_TYPES, MentionSymbol } from './constants.ts';
+import {
+  isMarkActive,
+  toggleMark,
+  isBlockActive,
+  toggleBlock,
+  insertMention,
+  insertFocusSaver,
+  removeFocusSaver,
+} from './utils.ts';
+import { MentionSymbol, Marks, Nodes } from './constants.ts';
 import { withInlines } from './enhancers.ts';
 import {
   Toolbar,
@@ -83,55 +87,55 @@ const Element = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
 
   switch (element.type) {
-    case 'block_quote':
+    case Nodes.BlockQuote:
       return (
         <blockquote style={style} {...attributes}>
           {children}
         </blockquote>
       );
-    case 'ul_list':
+    case Nodes.UnorderedList:
       return (
         <List style={style} {...attributes}>
           {children}
         </List>
       );
-    case 'heading_one':
+    case Nodes.HeadingOne:
       return (
         <H1 style={{ ...style, fontSize: '2em' }} {...attributes}>
           {children}
         </H1>
       );
-    case 'heading_two':
+    case Nodes.HeadingTwo:
       return (
         <H2 style={{ ...style, fontSize: '1.5em' }} {...attributes}>
           {children}
         </H2>
       );
-    case 'heading_three':
+    case Nodes.HeadingThree:
       return (
         <H3 style={{ ...style, fontSize: '1.5em' }} {...attributes}>
           {children}
         </H3>
       );
-    case 'list_item':
+    case Nodes.ListItem:
       return (
         <ListItem style={style} {...attributes}>
           {children}
         </ListItem>
       );
-    case 'ol_list':
+    case Nodes.OrderedList:
       return (
         <List isOrdered style={style} {...attributes}>
           {children}
         </List>
       );
-    case 'link':
+    case Nodes.Link:
       return (
         <Link {...attributes} rel="noreferrer" href={element.link}>
           {children}
         </Link>
       );
-    case 'mention':
+    case Nodes.Mention:
       return (
         <Mention attributes={attributes} character={element.character} target={element.target}>
           {children}
@@ -147,20 +151,28 @@ const Element = ({ attributes, children, element }) => {
 };
 
 const Leaf = ({ attributes, children, leaf }) => {
-  if (leaf.bold) {
+  if (leaf[Marks.Bold]) {
     children = <strong>{children}</strong>;
   }
 
-  if (leaf.code) {
+  if (leaf[Marks.Code]) {
     children = <code>{children}</code>;
   }
 
-  if (leaf.italic) {
+  if (leaf[Marks.Italic]) {
     children = <em>{children}</em>;
   }
 
-  if (leaf.strikeThrough) {
+  if (leaf[Marks.Strike]) {
     children = <s>{children}</s>;
+  }
+
+  if (leaf[Marks.FocusSaver]) {
+    children = (
+      <Box as="span" bg="primary.500">
+        {children}
+      </Box>
+    );
   }
 
   return <span {...attributes}>{children}</span>;
@@ -301,27 +313,23 @@ function defaultOnKeyDown(editor: ReactEditor, event: React.KeyboardEvent) {
     }
   });
 
-  if (selection && Range.isCollapsed(selection)) {
+  if (selection) {
     const { nativeEvent } = event;
     if (isKeyHotkey('left', nativeEvent)) {
       event.preventDefault();
+      Transforms.collapse(editor, { edge: 'character' });
       Transforms.move(editor, { unit: 'offset', reverse: true });
       return;
     }
     if (isKeyHotkey('right', nativeEvent)) {
       event.preventDefault();
-      Transforms.move(editor, { unit: 'offset' });
+      Transforms.collapse(editor, { edge: 'end' });
+      Transforms.move(editor, { unit: 'character' });
     }
   }
 }
 
-const RichTextEditor = ({
-  value,
-  onChange,
-  isReadOnly,
-  placeholder,
-  isAlignmentEnabled = false,
-}: RichTextEditorProps) => {
+const RichTextEditor = ({ value, onChange, isReadOnly, placeholder }: RichTextEditorProps) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor: ReactEditor = useMemo(
@@ -346,46 +354,45 @@ const RichTextEditor = ({
     onChange(val);
   }
 
-  // const savedSelection = React.useRef(editor.selection);
-  // const onFocus = React.useCallback(() => {
-  //   Transforms.select(editor, savedSelection.current ?? Editor.end(editor, []));
-  // }, [editor]);
+  const onFocus = React.useCallback(() => {
+    removeFocusSaver(editor);
+  }, [editor]);
 
-  // const onBlur = React.useCallback(() => {
-  //   savedSelection.current = editor.selection;
-  // }, [editor]);
+  const onBlur = React.useCallback(() => {
+    insertFocusSaver(editor);
+  }, [editor]);
 
   return (
     <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
       <Toolbar>
-        <MarkButton format="bold" icon={<MdFormatBold />} isDisabled={isReadOnly} />
-        <MarkButton format="italic" icon={<MdFormatItalic />} isDisabled={isReadOnly} />
+        <MarkButton format={Marks.Bold} icon={<MdFormatBold />} isDisabled={isReadOnly} />
+        <MarkButton format={Marks.Italic} icon={<MdFormatItalic />} isDisabled={isReadOnly} />
         <MarkButton
-          format="strikeThrough"
+          format={Marks.Strike}
           icon={<MdFormatStrikethrough />}
           isDisabled={isReadOnly}
         />
-        <MarkButton format="code" icon={<MdCode />} isDisabled={isReadOnly} />
+        <MarkButton format={Marks.Code} icon={<MdCode />} isDisabled={isReadOnly} />
         <LinkButton
-          format="link"
+          format={Nodes.Link}
           icon={<MdAddLink />}
           activeIcon={<MdLinkOff />}
           isDisabled={isReadOnly}
         />
-        <BlockButton format="heading_one" icon={<span>H1</span>} isDisabled={isReadOnly} />
-        <BlockButton format="heading_two" icon={<span>H2</span>} isDisabled={isReadOnly} />
-        <BlockButton format="heading_three" icon={<span>H3</span>} isDisabled={isReadOnly} />
-        <BlockButton format="block_quote" icon={<MdFormatQuote />} isDisabled={isReadOnly} />
-        <BlockButton format="ol_list" icon={<MdFormatListNumbered />} isDisabled={isReadOnly} />
-        <BlockButton format="ul_list" icon={<MdFormatListBulleted />} isDisabled={isReadOnly} />
-        {isAlignmentEnabled ? (
-          <>
-            <BlockButton format="left" icon={<MdFormatAlignLeft />} isDisabled={isReadOnly} />
-            <BlockButton format="center" icon={<MdFormatAlignCenter />} isDisabled={isReadOnly} />
-            <BlockButton format="right" icon={<MdFormatAlignRight />} isDisabled={isReadOnly} />
-            <BlockButton format="justify" icon={<MdFormatAlignJustify />} isDisabled={isReadOnly} />
-          </>
-        ) : null}
+        <BlockButton format={Nodes.HeadingOne} icon={<span>H1</span>} isDisabled={isReadOnly} />
+        <BlockButton format={Nodes.HeadingTwo} icon={<span>H2</span>} isDisabled={isReadOnly} />
+        <BlockButton format={Nodes.HeadingThree} icon={<span>H3</span>} isDisabled={isReadOnly} />
+        <BlockButton format={Nodes.BlockQuote} icon={<MdFormatQuote />} isDisabled={isReadOnly} />
+        <BlockButton
+          format={Nodes.OrderedList}
+          icon={<MdFormatListNumbered />}
+          isDisabled={isReadOnly}
+        />
+        <BlockButton
+          format={Nodes.UnorderedList}
+          icon={<MdFormatListBulleted />}
+          isDisabled={isReadOnly}
+        />
       </Toolbar>
       <Editable
         renderElement={renderElement}
@@ -393,8 +400,8 @@ const RichTextEditor = ({
         placeholder={placeholder}
         spellCheck
         autoFocus
-        // onFocus={onFocus}
-        // onBlur={onBlur}
+        onFocus={onFocus}
+        onBlur={onBlur}
         onKeyDown={(event) => {
           defaultOnKeyDown(editor, event);
           onKeyDownMentions(event);
@@ -418,11 +425,7 @@ const RichTextEditor = ({
 const BlockButton = ({ format, icon, ...rest }) => {
   const editor = useSlate();
 
-  const isActive = isBlockActive(
-    editor,
-    format,
-    TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
-  );
+  const isActive = isBlockActive(editor, format, 'type');
 
   return (
     <IconButton

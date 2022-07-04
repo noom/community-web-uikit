@@ -1,4 +1,4 @@
-import { Descendant } from 'slate';
+import { Descendant, Editor, BaseSelection } from 'slate';
 
 export type BlockQuoteElement = {
   type: 'block_quote';
@@ -49,3 +49,5 @@ export type MentionElement = {
   character: string;
   children: CustomText[];
 };
+
+export type WithFocusSaver<TEditor extends Editor> = TEditor & { prevSelection?: BaseSelection };
