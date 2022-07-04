@@ -25,6 +25,8 @@ module.exports = (_, argv = {}) => ({
   resolve: {
     alias: {
       '~': path.resolve(__dirname, 'src'),
+      react: path.resolve('./node_modules/react'),
+      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
     },
     extensions: ['.js', '.jsx', '.css', '.svg'],
   },

@@ -2,7 +2,7 @@ import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 import { LinkElement, MentionElement } from './models.ts';
-import { LIST_TYPES, TEXT_ALIGN_TYPES, MentionSymbol } from './constants.ts';
+import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants.ts';
 import { MentionTarget } from './models';
 
 export function getSelectedText(editor: ReactEditor) {
@@ -15,6 +15,10 @@ export function isUrl(url: string) {
   return /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test(
     url,
   );
+}
+
+export function insertText(editor: ReactEditor, text: string) {
+  Transforms.insertText(editor, text);
 }
 
 export function isMarkActive(editor: ReactEditor, format) {
@@ -114,6 +118,7 @@ export function insertLink(editor: ReactEditor, url: string, text?: string) {
     Transforms.wrapNodes(editor, link, { split: true });
     Transforms.collapse(editor, { edge: 'end' });
   }
+  Transforms.move(editor);
 }
 
 export function insertMention(

@@ -98,7 +98,7 @@ const LinkModal = ({
 
         <ModalFooter>
           <ButtonGroup spacing={2}>
-            <Button variant="outline" size="md" colorScheme={colorScheme} onClick={onClose}>
+            <Button variant="outline" size="md" colorScheme={colorScheme} onMouseDown={onClose}>
               Cancel
             </Button>
 
@@ -108,7 +108,7 @@ const LinkModal = ({
               size="md"
               colorScheme={colorScheme}
               isDisabled={!url.length}
-              onClick={() => submit()}
+              onMouseDown={() => submit()}
             >
               Add
             </Button>
@@ -135,6 +135,15 @@ export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
     removeLink(editor);
   }
 
+  function onClick(event: React.MouseEvent) {
+    event.preventDefault();
+    if (isActive) {
+      remove();
+    } else {
+      onOpen();
+    }
+  }
+
   return (
     <>
       <IconButton
@@ -142,12 +151,8 @@ export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
         title={format}
         border="none"
         colorScheme={isActive ? 'primary' : 'gray'}
-        onClick={() => {
-          if (isActive) {
-            remove();
-          } else {
-            onOpen();
-          }
+        onMouseDown={(event) => {
+          onClick(event);
         }}
       >
         {activeIcon && isActive ? activeIcon : icon}

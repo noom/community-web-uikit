@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import React, { useCallback, useMemo, useState, useRef, useEffect } from 'react';
-import isHotkey from 'is-hotkey';
+import React, { useCallback, useMemo, useState, useLayoutEffect } from 'react';
+import isHotkey, { isKeyHotkey } from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate, ReactEditor } from 'slate-react';
 import { createEditor, Transforms, Range, Editor, Descendant } from 'slate';
 import { withHistory } from 'slate-history';
@@ -20,23 +20,20 @@ import {
   MdLinkOff,
 } from 'react-icons/md';
 
-import {
-  IconButton,
-  Portal,
-  Link,
-  H1,
-  H2,
-  H3,
-  List,
-  ListItem,
-  Box,
-} from '@noom/wax-component-library';
+import { IconButton, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
 
 import { MentionTarget } from './models.ts';
 import { isMarkActive, toggleMark, isBlockActive, toggleBlock, insertMention } from './utils.ts';
 import { TEXT_ALIGN_TYPES, MentionSymbol } from './constants.ts';
 import { withInlines } from './enhancers.ts';
-import { Toolbar, LinkButton, Mention } from './components/index.ts';
+import {
+  Toolbar,
+  LinkButton,
+  Mention,
+  MentionDropdownItem,
+  MentionDropdown,
+  MentionDropdownItemProps,
+} from './components/index.ts';
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -49,6 +46,12 @@ const HOTKEYS = {
 const CHARACTERS = [
   'Admiral Ozzel',
   'Admiral Raddus',
+  'Admiral Terrinald Screed',
+  'Admiral Trench',
+  'Admiral U.O. Statura',
+  'Agen Kolar',
+  'Agent Kallus',
+  'Aiolin and Morit Astarte',
   'Admiral Terrinald Screed',
   'Admiral Trench',
   'Admiral U.O. Statura',
@@ -174,6 +177,25 @@ type RichTextEditorProps = {
   isAlignmentEnabled?: boolean;
 };
 
+function useMentionDropdownPosition(editor: ReactEditor, target?: Range) {
+  const [position, setPosition] = useState({ top: '-9999px', left: '-9999px' });
+
+  // Calculate dropdown position
+  useLayoutEffect(() => {
+    if (target) {
+      const domRange = ReactEditor.toDOMRange(editor, target);
+      const rect = domRange.getBoundingClientRect();
+
+      setPosition({
+        top: `${rect.top + window.pageYOffset + 24}px`,
+        left: `${rect.left + window.pageXOffset}px`,
+      });
+    }
+  }, [editor, target]);
+
+  return position;
+}
+
 function useMentions(editor: ReactEditor, onSubmit: (editor: ReactEditor, data: any) => void) {
   const [target, setTarget] = useState<Range | undefined>();
   const [targetType, setTargetType] = useState<MentionTarget | undefined>();
@@ -268,6 +290,31 @@ function useMentions(editor: ReactEditor, onSubmit: (editor: ReactEditor, data: 
   };
 }
 
+function defaultOnKeyDown(editor: ReactEditor, event: React.KeyboardEvent) {
+  const { selection } = editor;
+
+  Object.keys(HOTKEYS).forEach((hotkey) => {
+    if (isHotkey(hotkey, event)) {
+      event.preventDefault();
+      const mark = HOTKEYS[hotkey];
+      toggleMark(editor, mark);
+    }
+  });
+
+  if (selection && Range.isCollapsed(selection)) {
+    const { nativeEvent } = event;
+    if (isKeyHotkey('left', nativeEvent)) {
+      event.preventDefault();
+      Transforms.move(editor, { unit: 'offset', reverse: true });
+      return;
+    }
+    if (isKeyHotkey('right', nativeEvent)) {
+      event.preventDefault();
+      Transforms.move(editor, { unit: 'offset' });
+    }
+  }
+}
+
 const RichTextEditor = ({
   value,
   onChange,
@@ -282,37 +329,31 @@ const RichTextEditor = ({
     [],
   );
 
-  const ref = useRef<HTMLDivElement | null>();
-
   const {
     data,
     index,
-    search,
     target,
+    setIndex,
     onEditorChange,
     onKeyDown: onKeyDownMentions,
-    setIndex,
     onSelectIndex,
   } = useMentions(editor, () => {});
 
-  console.log(search, target, index);
-
-  useEffect(() => {
-    if (target /* && chars.length > 0 */) {
-      const el = ref.current;
-      const domRange = ReactEditor.toDOMRange(editor, target);
-      const rect = domRange.getBoundingClientRect();
-      if (el) {
-        el.style.top = `${rect.top + window.pageYOffset + 24}px`;
-        el.style.left = `${rect.left + window.pageXOffset}px`;
-      }
-    }
-  }, [editor, search, target]);
+  const mentionDropdownPosition = useMentionDropdownPosition(editor, target);
 
   function handleChange(val: Descendant[]) {
     onEditorChange();
     onChange(val);
   }
+
+  // const savedSelection = React.useRef(editor.selection);
+  // const onFocus = React.useCallback(() => {
+  //   Transforms.select(editor, savedSelection.current ?? Editor.end(editor, []));
+  // }, [editor]);
+
+  // const onBlur = React.useCallback(() => {
+  //   savedSelection.current = editor.selection;
+  // }, [editor]);
 
   return (
     <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
@@ -352,53 +393,24 @@ const RichTextEditor = ({
         placeholder={placeholder}
         spellCheck
         autoFocus
+        // onFocus={onFocus}
+        // onBlur={onBlur}
         onKeyDown={(event) => {
-          Object.keys(HOTKEYS).forEach((hotkey) => {
-            if (isHotkey(hotkey, event)) {
-              event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
-            }
-          });
+          defaultOnKeyDown(editor, event);
           onKeyDownMentions(event);
         }}
       />
-      {target && data.length > 0 && (
-        <Portal>
-          <Box
-            ref={ref}
-            top={-9999}
-            left={-9999}
-            position="absolute"
-            zIndex={1}
-            padding={1}
-            bg="white"
-            shadow="md"
-            data-cy="mentions-portal"
-          >
-            {data.map((char, i) => {
-              const isSelected = i === index;
-              return (
-                <Box
-                  key={char}
-                  p={2}
-                  bg={isSelected ? 'primary.500' : 'transparent'}
-                  color={isSelected ? 'white' : undefined}
-                  cursor="pointer"
-                  onMouseOver={() => {
-                    if (!isSelected) {
-                      setIndex(i);
-                    }
-                  }}
-                  onClick={() => onSelectIndex(i)}
-                >
-                  {char}
-                </Box>
-              );
-            })}
-          </Box>
-        </Portal>
-      )}
+      <MentionDropdown
+        selectedIndex={index}
+        setIndex={setIndex}
+        position={mentionDropdownPosition}
+        isOpen={target && data.length > 0}
+        data={data}
+        renderItem={(props: MentionDropdownItemProps<string>) => (
+          <MentionDropdownItem {...props} key={props.index} />
+        )}
+        onSelect={(i) => onSelectIndex(i)}
+      />
     </Slate>
   );
 };
@@ -418,7 +430,7 @@ const BlockButton = ({ format, icon, ...rest }) => {
       title={format}
       border="none"
       colorScheme={isActive ? 'primary' : 'gray'}
-      onClick={(event) => {
+      onMouseDown={(event) => {
         event.preventDefault();
         toggleBlock(editor, format);
       }}
@@ -437,7 +449,7 @@ const MarkButton = ({ format, icon, ...rest }) => {
       title={format}
       border="none"
       colorScheme={isActive ? 'primary' : 'gray'}
-      onClick={(event) => {
+      onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, format);
       }}

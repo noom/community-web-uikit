@@ -18,6 +18,8 @@ export const RichText = ({ onChange, ...rest }) => {
     setValue(newVal);
   };
 
+  console.log(value);
+
   return (
     <RichTextEditor
       {...rest}
