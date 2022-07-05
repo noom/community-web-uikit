@@ -18,7 +18,7 @@ import {
 
 import { Box, IconButton, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
 
-import { MentionTarget } from './models.ts';
+import { MentionTarget } from './models';
 import {
   isMarkActive,
   toggleMark,
@@ -27,9 +27,9 @@ import {
   insertMention,
   insertFocusSaver,
   removeFocusSaver,
-} from './utils.ts';
-import { MentionSymbol, Marks, Nodes } from './constants.ts';
-import { withInlines } from './enhancers.ts';
+} from './utils';
+import { MentionSymbol, Marks, Nodes } from './constants';
+import { withInlines } from './enhancers';
 import {
   Toolbar,
   LinkButton,
@@ -37,7 +37,7 @@ import {
   MentionDropdownItem,
   MentionDropdown,
   MentionDropdownItemProps,
-} from './components/index.ts';
+} from './components/index';
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -83,7 +83,7 @@ function getData(search: string, targetType: MentionTarget) {
     .slice(0, 10);
 }
 
-const Element = ({ attributes, children, element }) => {
+function Element({ attributes, children, element }) {
   const style = { textAlign: element.align };
 
   switch (element.type) {
@@ -148,9 +148,9 @@ const Element = ({ attributes, children, element }) => {
         </p>
       );
   }
-};
+}
 
-const Leaf = ({ attributes, children, leaf }) => {
+function Leaf({ attributes, children, leaf }) {
   if (leaf[Marks.Bold]) {
     children = <strong>{children}</strong>;
   }
@@ -176,7 +176,47 @@ const Leaf = ({ attributes, children, leaf }) => {
   }
 
   return <span {...attributes}>{children}</span>;
-};
+}
+
+function BlockButton({ format, icon, ...rest }) {
+  const editor = useSlate() as ReactEditor;
+
+  const isActive = isBlockActive(editor, format, 'type');
+
+  return (
+    <IconButton
+      {...rest}
+      title={format}
+      border="none"
+      colorScheme={isActive ? 'primary' : 'gray'}
+      onMouseDown={(event) => {
+        event.preventDefault();
+        toggleBlock(editor, format);
+      }}
+    >
+      {icon}
+    </IconButton>
+  );
+}
+
+function MarkButton({ format, icon, ...rest }) {
+  const editor = useSlate() as ReactEditor;
+  const isActive = isMarkActive(editor, format);
+  return (
+    <IconButton
+      {...rest}
+      title={format}
+      border="none"
+      colorScheme={isActive ? 'primary' : 'gray'}
+      onMouseDown={(event) => {
+        event.preventDefault();
+        toggleMark(editor, format);
+      }}
+    >
+      {icon}
+    </IconButton>
+  );
+}
 
 type RichTextEditorProps = {
   value: any;
@@ -208,7 +248,7 @@ function useMentionDropdownPosition(editor: ReactEditor, target?: Range) {
   return position;
 }
 
-function useMentions(editor: ReactEditor, onSubmit: (editor: ReactEditor, data: any) => void) {
+function useMentions(editor: ReactEditor, onSubmit: (data: any) => void) {
   const [target, setTarget] = useState<Range | undefined>();
   const [targetType, setTargetType] = useState<MentionTarget | undefined>();
   const [index, setIndex] = useState(0);
@@ -238,7 +278,7 @@ function useMentions(editor: ReactEditor, onSubmit: (editor: ReactEditor, data: 
       if (beforeMatch && afterMatch) {
         setTarget(beforeRange);
         setSearch(beforeMatch[2]);
-        setTargetType(mentionTargetType);
+        setTargetType(mentionTargetType as MentionTarget);
         setIndex(0);
         return;
       }
@@ -247,13 +287,13 @@ function useMentions(editor: ReactEditor, onSubmit: (editor: ReactEditor, data: 
     setTarget(undefined);
   }
 
-  const data = getData(search, targetType);
+  const data = targetType ? getData(search, targetType) : [];
 
   function onSelectIndex(selectedIndex: number) {
     if (target) {
       Transforms.select(editor, target);
       insertMention(editor, data[selectedIndex], targetType); // TODO insert real mention
-      onSubmit(editor, data[selectedIndex]);
+      onSubmit(data[selectedIndex]);
       setTarget(undefined);
     }
   }
@@ -317,7 +357,7 @@ function defaultOnKeyDown(editor: ReactEditor, event: React.KeyboardEvent) {
     const { nativeEvent } = event;
     if (isKeyHotkey('left', nativeEvent)) {
       event.preventDefault();
-      Transforms.collapse(editor, { edge: 'character' });
+      Transforms.collapse(editor, { edge: 'start' });
       Transforms.move(editor, { unit: 'offset', reverse: true });
       return;
     }
@@ -329,7 +369,7 @@ function defaultOnKeyDown(editor: ReactEditor, event: React.KeyboardEvent) {
   }
 }
 
-const RichTextEditor = ({ value, onChange, isReadOnly, placeholder }: RichTextEditorProps) => {
+function RichTextEditor({ value, onChange, isReadOnly, placeholder }: RichTextEditorProps) {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor: ReactEditor = useMemo(
@@ -345,7 +385,9 @@ const RichTextEditor = ({ value, onChange, isReadOnly, placeholder }: RichTextEd
     onEditorChange,
     onKeyDown: onKeyDownMentions,
     onSelectIndex,
-  } = useMentions(editor, () => {});
+  } = useMentions(editor, (mentionData) => {
+    console.log(mentionData);
+  });
 
   const mentionDropdownPosition = useMentionDropdownPosition(editor, target);
 
@@ -420,46 +462,6 @@ const RichTextEditor = ({ value, onChange, isReadOnly, placeholder }: RichTextEd
       />
     </Slate>
   );
-};
-
-const BlockButton = ({ format, icon, ...rest }) => {
-  const editor = useSlate();
-
-  const isActive = isBlockActive(editor, format, 'type');
-
-  return (
-    <IconButton
-      {...rest}
-      title={format}
-      border="none"
-      colorScheme={isActive ? 'primary' : 'gray'}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        toggleBlock(editor, format);
-      }}
-    >
-      {icon}
-    </IconButton>
-  );
-};
-
-const MarkButton = ({ format, icon, ...rest }) => {
-  const editor = useSlate();
-  const isActive = isMarkActive(editor, format);
-  return (
-    <IconButton
-      {...rest}
-      title={format}
-      border="none"
-      colorScheme={isActive ? 'primary' : 'gray'}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        toggleMark(editor, format);
-      }}
-    >
-      {icon}
-    </IconButton>
-  );
-};
+}
 
 export default RichTextEditor;

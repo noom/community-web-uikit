@@ -2,9 +2,14 @@
 import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-import { GenericElement, LinkElement, MentionElement } from './models.ts';
-import { LIST_TYPES, Nodes, Marks } from './constants.ts';
-import { MentionTarget, WithFocusSaver } from './models';
+import {
+  GenericElement,
+  LinkElement,
+  MentionElement,
+  MentionTarget,
+  WithFocusSaver,
+} from './models';
+import { LIST_TYPES, Nodes, Marks } from './constants';
 
 export function isElement(item: unknown): item is GenericElement {
   return SlateElement.isElement(item);
@@ -14,6 +19,8 @@ export function getSelectedText(editor: ReactEditor) {
   if (editor.selection) {
     return Editor.string(editor, editor.selection);
   }
+
+  return '';
 }
 
 export function isUrl(url: string) {
@@ -55,13 +62,13 @@ export function isBlockActive(editor: ReactEditor, format: string, blockType = '
   return !!match;
 }
 
-export function toggleBlock(editor: ReactEditor, format: string) {
+export function toggleBlock(editor: ReactEditor, format: 'ol_list' | 'ul_list') {
   const isActive = isBlockActive(editor, format, 'type');
   const isList = LIST_TYPES.includes(format);
 
   Transforms.unwrapNodes(editor, {
     match: (n: GenericElement) =>
-      !Editor.isEditor(n) && isElement(n) && LIST_TYPES.includes(n.type),
+      !Editor.isEditor(n) && isElement(n) && LIST_TYPES.includes(n.type as typeof format),
     split: true,
   });
   const newProperties = {

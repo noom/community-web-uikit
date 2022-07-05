@@ -1,4 +1,4 @@
-import { MentionTarget } from './models.ts';
+import { MentionTarget } from './models';
 
 export const MentionSymbol: Record<MentionTarget, string> = {
   user: '@',

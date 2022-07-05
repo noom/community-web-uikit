@@ -1,14 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { ReactEditor } from 'slate-react';
 
-import { insertLink, isUrl } from './utils.ts';
+import { insertLink, isUrl } from './utils';
+import { GenericElement } from './models';
 
 export function withInlines(editor: ReactEditor) {
   const { insertData, insertText, isInline, isVoid } = editor;
 
-  editor.isInline = (element) => ['link', 'mention'].includes(element.type) || isInline(element);
+  editor.isInline = (element: GenericElement) =>
+    ['link', 'mention'].includes(element.type) || isInline(element);
 
-  editor.isVoid = (element) => {
+  editor.isVoid = (element: GenericElement) => {
     return element.type === 'mention' ? true : isVoid(element);
   };
 

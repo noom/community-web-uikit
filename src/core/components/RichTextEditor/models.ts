@@ -34,7 +34,7 @@ export type HeadingThreeElement = {
   children: Descendant[];
 };
 
-export type LinkElement = { type: 'link'; url: string; children: Descendant[] };
+export type LinkElement = { type: 'link'; link: string; children: Descendant[] };
 
 export type ListItemElement = { type: 'list_item'; children: Descendant[] };
 

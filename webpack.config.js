@@ -28,7 +28,7 @@ module.exports = (_, argv = {}) => ({
       react: path.resolve('./node_modules/react'),
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),
     },
-    extensions: ['.js', '.jsx', '.css', '.svg'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.svg'],
   },
   module: {
     rules: [
