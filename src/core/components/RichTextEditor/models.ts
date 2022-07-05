@@ -1,4 +1,8 @@
-import { Descendant, Editor, BaseSelection } from 'slate';
+import { Descendant, Editor, BaseSelection, BaseElement } from 'slate';
+
+export type GenericElement = BaseElement & {
+  type: string;
+};
 
 export type BlockQuoteElement = {
   type: 'block_quote';

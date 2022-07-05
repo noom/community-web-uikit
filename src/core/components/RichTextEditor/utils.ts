@@ -2,9 +2,13 @@
 import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-import { LinkElement, MentionElement } from './models.ts';
+import { GenericElement, LinkElement, MentionElement } from './models.ts';
 import { LIST_TYPES, Nodes, Marks } from './constants.ts';
 import { MentionTarget, WithFocusSaver } from './models';
+
+export function isElement(item: unknown): item is GenericElement {
+  return SlateElement.isElement(item);
+}
 
 export function getSelectedText(editor: ReactEditor) {
   if (editor.selection) {
@@ -44,7 +48,7 @@ export function isBlockActive(editor: ReactEditor, format: string, blockType = '
   const [match] = Array.from(
     Editor.nodes(editor, {
       at: Editor.unhangRange(editor, selection),
-      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n[blockType] === format,
+      match: (n) => !Editor.isEditor(n) && isElement(n) && n[blockType] === format,
     }),
   );
 
@@ -56,7 +60,8 @@ export function toggleBlock(editor: ReactEditor, format: string) {
   const isList = LIST_TYPES.includes(format);
 
   Transforms.unwrapNodes(editor, {
-    match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && LIST_TYPES.includes(n.type),
+    match: (n: GenericElement) =>
+      !Editor.isEditor(n) && isElement(n) && LIST_TYPES.includes(n.type),
     split: true,
   });
   const newProperties = {
@@ -74,14 +79,14 @@ export function toggleBlock(editor: ReactEditor, format: string) {
 
 export function isLinkActive(editor: ReactEditor) {
   const [link] = Editor.nodes(editor, {
-    match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === Nodes.Link,
+    match: (n: GenericElement) => !Editor.isEditor(n) && isElement(n) && n.type === Nodes.Link,
   });
   return !!link;
 }
 
 export function removeLink(editor: ReactEditor) {
   Transforms.unwrapNodes(editor, {
-    match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === Nodes.Link,
+    match: (n: GenericElement) => !Editor.isEditor(n) && isElement(n) && n.type === Nodes.Link,
   });
 }
 
