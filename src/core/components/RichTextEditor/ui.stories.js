@@ -2,19 +2,17 @@ import React, { useState } from 'react';
 
 import RichTextEditor from './index.tsx';
 
-import { markdownToSlate, slateToMarkdown } from './markdownParser';
-
 export default {
   title: 'Ui Only/RichTextEditor',
 };
 
-const initialValue = markdownToSlate('This is **bold** and _italic_ and ~~strike through~~ text');
+const initialValue = 'This is **bold** and _italic_ and ~~strike through~~ text';
 
 export const RichText = ({ onChange, ...rest }) => {
   const [value, setValue] = useState(initialValue);
 
   const handleChange = (newVal) => {
-    onChange(slateToMarkdown(newVal));
+    onChange(newVal);
     setValue(newVal);
   };
 
@@ -31,17 +29,17 @@ export const RichText = ({ onChange, ...rest }) => {
 RichText.storyName = 'Simple Input text';
 
 RichText.args = {
-  isMultiline: false,
-  isInvalid: false,
-  isDisabled: false,
+  multiline: false,
+  invalid: false,
+  disabled: false,
   rows: 3,
   maxRows: 5,
 };
 
 RichText.argTypes = {
-  isMultiline: { control: { type: 'boolean' } },
-  isInvalid: { control: { type: 'boolean' } },
-  isDisabled: { control: { type: 'boolean' } },
+  multiline: { control: { type: 'boolean' } },
+  invalid: { control: { type: 'boolean' } },
+  disabled: { control: { type: 'boolean' } },
   rows: { control: { type: 'number' } },
   maxRows: { control: { type: 'number' } },
   onClear: { action: 'onClear()' },

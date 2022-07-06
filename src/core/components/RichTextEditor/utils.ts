@@ -12,16 +12,21 @@ import { ReactEditor } from 'slate-react';
 import isEqual from 'lodash.isequal';
 
 import {
-  GenericElement,
+  Block,
   LinkElement,
   MentionElement,
   MentionTarget,
   WithFocusSaver,
+  GenericElement,
 } from './models';
 import { LIST_TYPES, EMPTY_VALUE, Nodes, Marks, HEADING_TYPES } from './constants';
 
 export function isElement(item: unknown): item is GenericElement {
   return SlateElement.isElement(item);
+}
+
+export function isBlock(item: unknown): item is Block {
+  return isElement(item) && 'type' in item;
 }
 
 export function getSelectedText(editor: ReactEditor) {
@@ -84,7 +89,7 @@ export function toggleBlock(editor: ReactEditor, format: string) {
   const isList = (LIST_TYPES as string[]).includes(format);
 
   Transforms.unwrapNodes(editor, {
-    match: (n: GenericElement) =>
+    match: (n: Block) =>
       !Editor.isEditor(n) && isElement(n) && (LIST_TYPES as string[]).includes(n.type),
     split: true,
   });
@@ -103,14 +108,14 @@ export function toggleBlock(editor: ReactEditor, format: string) {
 
 export function isLinkActive(editor: ReactEditor) {
   const [link] = Editor.nodes(editor, {
-    match: (n: GenericElement) => !Editor.isEditor(n) && isElement(n) && n.type === Nodes.Link,
+    match: (n: Block) => !Editor.isEditor(n) && isElement(n) && n.type === Nodes.Link,
   });
   return !!link;
 }
 
 export function removeLink(editor: ReactEditor) {
   Transforms.unwrapNodes(editor, {
-    match: (n: GenericElement) => !Editor.isEditor(n) && isElement(n) && n.type === Nodes.Link,
+    match: (n: Block) => !Editor.isEditor(n) && isElement(n) && n.type === Nodes.Link,
   });
 }
 
@@ -197,10 +202,7 @@ export function breakoutBlock(editor: ReactEditor, onBreakout?: () => void) {
     return;
   }
 
-  const selectedElement = Node.descendant(
-    editor,
-    selection.anchor.path.slice(0, -1),
-  ) as GenericElement;
+  const selectedElement = Node.descendant(editor, selection.anchor.path.slice(0, -1)) as Block;
 
   const selectedLeaf = Node.descendant(editor, selection.anchor.path) as BaseText;
 
@@ -211,7 +213,7 @@ export function breakoutBlock(editor: ReactEditor, onBreakout?: () => void) {
     }
   } else if (selectedElement.type === Nodes.ListItem) {
     if (selectedLeaf.text.length === 0 && selectedElement.children.length === 1) {
-      const parentNode = Node.parent(editor, selection.anchor.path.slice(0, -1)) as GenericElement;
+      const parentNode = Node.parent(editor, selection.anchor.path.slice(0, -1)) as Block;
       onBreakout?.();
       toggleBlock(editor, parentNode.type);
     }

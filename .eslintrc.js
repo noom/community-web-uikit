@@ -1,7 +1,8 @@
 module.exports = {
-  globals: {
-    ENV: 'readonly',
+  env: {
+    'jest/globals': true,
   },
+  plugins: ['jest'],
   extends: 'airbnb-typescript-prettier',
   rules: {
     'import/prefer-default-export': 'off',

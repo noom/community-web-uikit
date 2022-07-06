@@ -2,17 +2,17 @@
 import { Transforms, Node } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-import { insertLink, isUrl, isElement } from './utils';
-import { GenericElement } from './models';
+import { insertLink, isUrl, isBlock } from './utils';
+import { Block } from './models';
 import { Nodes } from './constants';
 
 export function withInlined(editor: ReactEditor) {
   const { insertData, insertText, isInline, isVoid, normalizeNode } = editor;
 
-  editor.isInline = (element: GenericElement) =>
+  editor.isInline = (element: Block) =>
     ['link', 'mention'].includes(element.type) || isInline(element);
 
-  editor.isVoid = (element: GenericElement) => {
+  editor.isVoid = (element: Block) => {
     return element.type === 'mention' ? true : isVoid(element);
   };
 
@@ -38,9 +38,9 @@ export function withInlined(editor: ReactEditor) {
     const [node, path] = entry;
 
     // If the element is a paragraph, ensure its children are valid.
-    if (isElement(node) && node.type === Nodes.Paragraph) {
+    if (isBlock(node) && node.type === Nodes.Paragraph) {
       Array.of(Node.children(editor, path)).forEach(([child, childPath]) => {
-        if (isElement(child) && !editor.isInline(child)) {
+        if (isBlock(child) && !editor.isInline(child)) {
           Transforms.unwrapNodes(editor, { at: childPath[1] });
         }
       });

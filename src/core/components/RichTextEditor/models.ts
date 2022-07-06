@@ -1,8 +1,9 @@
-import { Descendant, Editor, BaseSelection, BaseElement } from 'slate';
+import { Descendant, Editor, BaseSelection } from 'slate';
+import { BlockType, LeafType } from 'remark-slate';
 
-export type GenericElement = BaseElement & {
-  type: string;
-};
+export type Block = BlockType;
+export type Leaf = LeafType;
+export type GenericElement = BlockType | LeafType;
 
 export type BlockQuoteElement = {
   type: 'block_quote';
