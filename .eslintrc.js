@@ -18,5 +18,15 @@ module.exports = {
     'react/require-default-props': [0],
     'react/jsx-props-no-spreading': [0],
     'import/extensions': [0],
+    'react/jsx-filename-extension': [0],
+    'react/function-component-definition': [0],
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        paths: ['src'],
+      },
+    },
+    extensions: ['.js', '.ts', '.tsx', '.jsx'],
   },
 };

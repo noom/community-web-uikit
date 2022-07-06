@@ -31,15 +31,21 @@ export const RichText = ({ onChange, ...rest }) => {
 RichText.storyName = 'Simple Input text';
 
 RichText.args = {
-  multiline: false,
-  invalid: false,
-  disabled: false,
+  isMultiline: false,
+  isInvalid: false,
+  isDisabled: false,
+  rows: 3,
+  maxRows: 5,
 };
 
 RichText.argTypes = {
-  multiline: { control: { type: 'boolean' } },
-  invalid: { control: { type: 'boolean' } },
-  disabled: { control: { type: 'boolean' } },
+  isMultiline: { control: { type: 'boolean' } },
+  isInvalid: { control: { type: 'boolean' } },
+  isDisabled: { control: { type: 'boolean' } },
+  rows: { control: { type: 'number' } },
+  maxRows: { control: { type: 'number' } },
   onClear: { action: 'onClear()' },
   onChange: { action: 'onChange()' },
+  onClick: { action: 'onClick()' },
+  onKeyPress: { action: 'onKeyPress()' },
 };

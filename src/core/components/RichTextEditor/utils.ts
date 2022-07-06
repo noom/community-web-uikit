@@ -1,6 +1,15 @@
 /* eslint-disable no-param-reassign */
-import { Editor, Transforms, Element as SlateElement, Range } from 'slate';
+import {
+  Editor,
+  Transforms,
+  Element as SlateElement,
+  Range,
+  Descendant,
+  Node,
+  BaseText,
+} from 'slate';
 import { ReactEditor } from 'slate-react';
+import isEqual from 'lodash.isequal';
 
 import {
   GenericElement,
@@ -9,7 +18,7 @@ import {
   MentionTarget,
   WithFocusSaver,
 } from './models';
-import { LIST_TYPES, Nodes, Marks } from './constants';
+import { LIST_TYPES, EMPTY_VALUE, Nodes, Marks, HEADING_TYPES } from './constants';
 
 export function isElement(item: unknown): item is GenericElement {
   return SlateElement.isElement(item);
@@ -21,6 +30,14 @@ export function getSelectedText(editor: ReactEditor) {
   }
 
   return '';
+}
+
+export function isEmptyValue(value?: Descendant[]) {
+  if (!value || value.length === 0) {
+    return true;
+  }
+
+  return value.length === 1 && isEqual(EMPTY_VALUE, value[0]);
 }
 
 export function isUrl(url: string) {
@@ -62,13 +79,13 @@ export function isBlockActive(editor: ReactEditor, format: string, blockType = '
   return !!match;
 }
 
-export function toggleBlock(editor: ReactEditor, format: 'ol_list' | 'ul_list') {
+export function toggleBlock(editor: ReactEditor, format: string) {
   const isActive = isBlockActive(editor, format, 'type');
-  const isList = LIST_TYPES.includes(format);
+  const isList = (LIST_TYPES as string[]).includes(format);
 
   Transforms.unwrapNodes(editor, {
     match: (n: GenericElement) =>
-      !Editor.isEditor(n) && isElement(n) && LIST_TYPES.includes(n.type as typeof format),
+      !Editor.isEditor(n) && isElement(n) && (LIST_TYPES as string[]).includes(n.type),
     split: true,
   });
   const newProperties = {
@@ -112,7 +129,7 @@ export function insertLink(editor: ReactEditor, url: string, text?: string) {
   };
 
   if (isCollapsed) {
-    Transforms.insertNodes(editor, link);
+    Transforms.insertNodes(editor, [link, { text: '' }]);
     Transforms.move(editor);
   } else {
     Transforms.wrapNodes(editor, link, { split: true });
@@ -156,4 +173,47 @@ export function removeFocusSaver(editor: WithFocusSaver<ReactEditor>) {
 export function resetSelection(editor: ReactEditor) {
   const point = { path: [0, 0], offset: 0 };
   Transforms.select(editor, { anchor: point, focus: point });
+}
+
+export function calculateRowStyles(rows?: number, maxRows?: number) {
+  if (!rows || !maxRows) {
+    return {};
+  }
+
+  const adjustedRows = rows && maxRows && rows > maxRows ? maxRows : rows;
+
+  return {
+    overflow: 'auto',
+    minHeight: adjustedRows ? `${adjustedRows * 3}em` : undefined,
+    maxHeight: maxRows ? `${maxRows * 3}em` : undefined,
+  };
+}
+
+// Break out of headings, links and empty lists on enter
+export function breakoutBlock(editor: ReactEditor, onBreakout?: () => void) {
+  const { selection } = editor;
+
+  if (!selection) {
+    return;
+  }
+
+  const selectedElement = Node.descendant(
+    editor,
+    selection.anchor.path.slice(0, -1),
+  ) as GenericElement;
+
+  const selectedLeaf = Node.descendant(editor, selection.anchor.path) as BaseText;
+
+  if (([...HEADING_TYPES] as string[]).includes(selectedElement.type)) {
+    if (selectedLeaf.text.length === selection.anchor.offset) {
+      onBreakout?.();
+      Transforms.insertNodes(editor, EMPTY_VALUE);
+    }
+  } else if (selectedElement.type === Nodes.ListItem) {
+    if (selectedLeaf.text.length === 0 && selectedElement.children.length === 1) {
+      const parentNode = Node.parent(editor, selection.anchor.path.slice(0, -1)) as GenericElement;
+      onBreakout?.();
+      toggleBlock(editor, parentNode.type);
+    }
+  }
 }

@@ -27,3 +27,9 @@ export const Nodes = {
 } as const;
 
 export const LIST_TYPES = [Nodes.OrderedList, Nodes.UnorderedList];
+export const HEADING_TYPES = [Nodes.HeadingOne, Nodes.HeadingTwo, Nodes.HeadingThree];
+
+export const EMPTY_VALUE = {
+  type: Nodes.Paragraph,
+  children: [{ text: '' }],
+};

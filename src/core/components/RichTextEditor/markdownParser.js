@@ -8,5 +8,9 @@ export function markdownToSlate(markdownText) {
 }
 
 export function slateToMarkdown(slateState) {
-  return slateState.map((v) => serialize(v)).join('');
+  return slateState
+    .map((v) => serialize(v))
+    .join('')
+    .replaceAll('<br>', '')
+    .trim();
 }

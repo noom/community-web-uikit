@@ -22,7 +22,7 @@ export const ReadMoreButton = styled(Button).attrs({ variant: 'secondary' })`
   display: inline-block;
 `;
 
-const TextContent = ({ text, postMaxLines, mentionees }) => {
+function TextContent({ text, postMaxLines, mentionees }) {
   const textWithMentions = useMemo(
     () => formatMentionChunks(text, mentionees, 'mention'),
     [text, mentionees],
@@ -64,7 +64,7 @@ const TextContent = ({ text, postMaxLines, mentionees }) => {
       {textContent}
     </Truncate>
   );
-};
+}
 
 TextContent.propTypes = {
   text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
