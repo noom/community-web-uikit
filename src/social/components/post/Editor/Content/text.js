@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import InputText from '~/core/components/InputText';
 
+import Editor from '~/core/components/RichTextEditor';
+
 const TextareaWrapper = styled.div`
   padding-top: 0.5rem;
   display: flex;
@@ -21,7 +23,7 @@ const Textarea = styled(InputText).attrs({ rows: 1, maxRows: 15 })`
 const TextContent = ({ text, placeholder, onChange, queryMentionees }) => {
   return (
     <TextareaWrapper>
-      <Textarea
+      <Editor
         placeholder={placeholder}
         type="text"
         value={text}

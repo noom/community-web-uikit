@@ -1,4 +1,11 @@
-import React, { useCallback, useMemo, useState, useLayoutEffect, ReactNode } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useLayoutEffect,
+  ReactNode,
+  useEffect,
+} from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, Slate, ReactEditor } from 'slate-react';
 import { createEditor, Transforms, Range, Editor, Descendant } from 'slate';
@@ -304,6 +311,10 @@ function RichTextEditor({
   const onBlur = React.useCallback(() => {
     insertFocusSaver(editor);
   }, [editor]);
+
+  useEffect(() => {
+    console.log('Mount Editor', value);
+  }, []);
 
   return (
     <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>

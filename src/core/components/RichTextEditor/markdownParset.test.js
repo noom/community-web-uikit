@@ -1,4 +1,5 @@
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
+import { EMPTY_VALUE } from './constants';
 
 const markdownText = 'This is **bold** and _italic_ and ~~strike through~~ text';
 
@@ -32,8 +33,8 @@ const slateState = [
 ];
 
 describe('markdownToSlate', () => {
-  test('should transform empty string to an array', () => {
-    expect(markdownToSlate('')).toEqual([]);
+  test('should transform empty string to an empty value', () => {
+    expect(markdownToSlate('')).toEqual([EMPTY_VALUE]);
   });
 
   test('should transform markdown string to a slate state', () => {
