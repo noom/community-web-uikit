@@ -1,4 +1,5 @@
-import { MentionTarget } from './models';
+import { ParagraphElement, ELEMENT_PARAGRAPH } from '@udecode/plate';
+import { MentionTarget, EditorValue } from './models';
 
 export const MentionSymbol: Record<MentionTarget, string> = {
   user: '@',
@@ -29,7 +30,8 @@ export const Nodes = {
 export const LIST_TYPES = [Nodes.OrderedList, Nodes.UnorderedList];
 export const HEADING_TYPES = [Nodes.HeadingOne, Nodes.HeadingTwo, Nodes.HeadingThree];
 
-export const EMPTY_VALUE = {
-  type: Nodes.Paragraph,
+export const EMPTY_VALUE: ParagraphElement = {
+  type: ELEMENT_PARAGRAPH,
+  url: undefined,
   children: [{ text: '' }],
 };

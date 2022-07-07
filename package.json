@@ -1,6 +1,10 @@
 {
   "name": "@noom/community-web-uikit",
-  "version": "2.12.5",
+  "version": "2.13.1",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=7"
+  },
   "main": "build/index.js",
   "files": [
     "build"
@@ -12,6 +16,7 @@
   "scripts": {
     "start": "npm run storybook",
     "build": "webpack --mode production",
+    "build:watch": "webpack --mode production --watch",
     "build:dev:analyze": "webpack --mode development --analyze true",
     "build:prod:analyze": "webpack --mode production --analyze true",
     "test": "jest",
@@ -72,15 +77,18 @@
     "@amityco/js-sdk": "^5.13.0",
     "@hookform/error-message": "0.0.4",
     "@noom/wax-component-library": "4.8.0",
+    "@udecode/plate": "^14.2.0",
     "classnames": "^2.2.6",
     "filesize": "^6.1.0",
     "hls.js": "^1.0.10",
     "human-readable-numbers": "^0.9.5",
+    "install": "^0.13.0",
     "is-hotkey": "0.2.0",
     "javascript-time-ago": "^2.0.13",
     "lodash": "^4.17.19",
     "lodash.isequal": "^4.5.0",
     "markdown-to-jsx": "^7.1.7",
+    "npm": "^8.13.2",
     "polished": "^3.6.6",
     "prop-types": "^15.7.2",
     "react-autosize-textarea": "^7.1.0",

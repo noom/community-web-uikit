@@ -1,0 +1,67 @@
+import {
+  createBlockquotePlugin,
+  createHeadingPlugin,
+  createParagraphPlugin,
+  createExitBreakPlugin,
+  createListPlugin,
+  createResetNodePlugin,
+  createSoftBreakPlugin,
+  createTodoListPlugin,
+  createLinkPlugin,
+  createPlugins,
+  ELEMENT_BLOCKQUOTE,
+  ELEMENT_CODE_LINE,
+  ELEMENT_H1,
+  ELEMENT_H2,
+  ELEMENT_H3,
+  ELEMENT_LI,
+  ELEMENT_LINK,
+  ELEMENT_MENTION,
+  ELEMENT_MENTION_INPUT,
+  ELEMENT_PARAGRAPH,
+  ELEMENT_TODO_LI,
+  ELEMENT_UL,
+  ELEMENT_OL,
+  withProps,
+} from '@udecode/plate';
+import { Box, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
+
+import { Mention } from '../components/Mention';
+import { EditorValue, Editor } from '../models';
+
+import { resetBlockTypePlugin } from './resetBlockTypePlugin';
+import { softBreakPlugin } from './softBreakPlugin';
+import { exitBreakPlugin } from './exitBreakPlugin';
+
+export const defaultElementsPlugins = createPlugins<EditorValue, Editor>(
+  [
+    createBlockquotePlugin(),
+    createHeadingPlugin(),
+    createParagraphPlugin(),
+    createResetNodePlugin(resetBlockTypePlugin),
+    createSoftBreakPlugin(softBreakPlugin),
+    createExitBreakPlugin(exitBreakPlugin),
+    createListPlugin(),
+    createTodoListPlugin(),
+    createLinkPlugin(),
+  ],
+  {
+    components: {
+      [ELEMENT_BLOCKQUOTE]: withProps(Box, { as: 'blockquote' }),
+      [ELEMENT_CODE_LINE]: withProps(Box, { as: 'code' }),
+      [ELEMENT_H1]: withProps(H1, { fontSize: '2em' }),
+      [ELEMENT_H2]: withProps(H2, { fontSize: '1.5em' }),
+      [ELEMENT_H3]: withProps(H3, { fontSize: '1.2em' }),
+      [ELEMENT_LI]: ListItem,
+      [ELEMENT_LINK]: withProps(Link, { rel: 'noreferrer' }),
+
+      [ELEMENT_MENTION]: Mention,
+      [ELEMENT_MENTION_INPUT]: Box,
+
+      [ELEMENT_PARAGRAPH]: withProps(Box, { as: 'p' }),
+      [ELEMENT_TODO_LI]: ListItem,
+      [ELEMENT_UL]: List,
+      [ELEMENT_OL]: withProps(List, { isOrdered: true }),
+    },
+  },
+);

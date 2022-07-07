@@ -1,5 +1,4 @@
-export { Element, Leaf } from './Elements';
-export { Toolbar, BlockButton, MarkButton } from './Toolbar';
+export { Toolbar } from './Toolbar';
 export { LinkButton } from './LinkButton';
 export {
   Mention,

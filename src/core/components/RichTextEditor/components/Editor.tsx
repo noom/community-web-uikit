@@ -8,22 +8,13 @@ import React, {
 } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, Slate, ReactEditor } from 'slate-react';
-import { createEditor, Transforms, Range, Editor, Descendant } from 'slate';
+import { createEditor, Transforms, Range, Descendant } from 'slate';
+import { Plate, TEditableProps, createPlugins } from '@udecode/plate';
 import { withHistory } from 'slate-history';
-import {
-  MdFormatBold,
-  MdFormatItalic,
-  MdFormatListBulleted,
-  MdFormatListNumbered,
-  MdFormatQuote,
-  MdFormatStrikethrough,
-  MdCode,
-  MdAddLink,
-  MdLinkOff,
-} from 'react-icons/md';
+
 import { Box, Size, ColorScheme } from '@noom/wax-component-library';
 
-import { MentionTarget, MentionData } from '../models';
+import { MentionTarget, MentionData, EditorPlugin, EditorValue, Editor } from '../models';
 import {
   toggleMark,
   insertMention,
@@ -35,16 +26,9 @@ import {
 } from '../utils';
 import { MentionSymbol, Marks, Nodes, EMPTY_VALUE } from '../constants';
 import { withInlined } from '../enhancers';
-import {
-  MarkButton,
-  BlockButton,
-  Element,
-  Leaf,
-  Toolbar,
-  LinkButton,
-  MentionDropdown,
-  renderMentionItem,
-} from '.';
+import { Toolbar } from '.';
+
+import { defaultElementsPlugins, defaultMarksPlugins } from '../plugins';
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -54,15 +38,20 @@ const HOTKEYS = {
   'mod+shift+x': 'strikeThrough',
 };
 
+const plugins = createPlugins<EditorValue, Editor>([
+  ...defaultMarksPlugins,
+  ...defaultElementsPlugins,
+]);
+
 type RichTextEditorProps = {
   id?: string;
   name?: string;
-  value?: Descendant[];
+  value?: EditorValue;
   rows?: number;
   maxRows?: number;
   onClick?: () => void;
   onClear?: () => void;
-  onChange: (data: { value: Descendant[]; lastMentionText?: string; mentions: any[] }) => void;
+  onChange: (data: { value: EditorValue; lastMentionText?: string; mentions: any[] }) => void;
   onFocus?: () => void;
   onBlur?: () => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
@@ -264,8 +253,6 @@ function RichTextEditor({
   queryMentionees,
   loadMoreMentionees,
 }: RichTextEditorProps) {
-  const renderElement = useCallback((props) => <Element {...props} />, []);
-  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
     () => withInlined(withHistory(withReact(createEditor() as ReactEditor))),
     [],
@@ -306,26 +293,47 @@ function RichTextEditor({
     insertFocusSaver(editor);
   }, [editor, onBlur]);
 
+  const editableProps: TEditableProps<EditorValue> = {
+    id,
+    name,
+    onClick,
+    placeholder,
+    spellCheck: true,
+    autoFocus,
+    readOnly: isDisabled,
+    onFocus: handleFocus,
+    onBlur: handleBlur,
+    onKeyDown: (event) => {
+      onKeyPress?.(event);
+      defaultOnKeyDown(editor, event);
+      onKeyDownMentions(event);
+    },
+    style: calculateRowStyles(rows, maxRows),
+  };
+
   return (
-    <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
-      <Toolbar
-        isVisible={isToolbarVisible}
-        isDisabled={isDisabled}
-        size={size}
-        colorScheme={colorScheme}
-      >
-        <MarkButton format={Marks.Bold} icon={<MdFormatBold />} />
-        <MarkButton format={Marks.Italic} icon={<MdFormatItalic />} />
-        <MarkButton format={Marks.Strike} icon={<MdFormatStrikethrough />} />
-        <MarkButton format={Marks.Code} icon={<MdCode />} />
-        <LinkButton format={Nodes.Link} icon={<MdAddLink />} activeIcon={<MdLinkOff />} />
-        <BlockButton format={Nodes.HeadingOne} icon={<span>H1</span>} />
-        <BlockButton format={Nodes.HeadingTwo} icon={<span>H2</span>} />
-        <BlockButton format={Nodes.HeadingThree} icon={<span>H3</span>} />
-        <BlockButton format={Nodes.BlockQuote} icon={<MdFormatQuote />} />
-        <BlockButton format={Nodes.OrderedList} icon={<MdFormatListNumbered />} />
-        <BlockButton format={Nodes.UnorderedList} icon={<MdFormatListBulleted />} />
-      </Toolbar>
+    <>
+      <Toolbar />
+
+      {/* // <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
+    //   <Toolbar
+    //     isVisible={isToolbarVisible}
+    //     isDisabled={isDisabled}
+    //     size={size}
+    //     colorScheme={colorScheme}
+    //   >
+    //     <MarkButton format={Marks.Bold} icon={<MdFormatBold />} />
+    //     <MarkButton format={Marks.Italic} icon={<MdFormatItalic />} />
+    //     <MarkButton format={Marks.Strike} icon={<MdFormatStrikethrough />} />
+    //     <MarkButton format={Marks.Code} icon={<MdCode />} />
+    //     <LinkButton format={Nodes.Link} icon={<MdAddLink />} activeIcon={<MdLinkOff />} />
+    //     <BlockButton format={Nodes.HeadingOne} icon={<span>H1</span>} />
+    //     <BlockButton format={Nodes.HeadingTwo} icon={<span>H2</span>} />
+    //     <BlockButton format={Nodes.HeadingThree} icon={<span>H3</span>} />
+    //     <BlockButton format={Nodes.BlockQuote} icon={<MdFormatQuote />} />
+    //     <BlockButton format={Nodes.OrderedList} icon={<MdFormatListNumbered />} />
+    //     <BlockButton format={Nodes.UnorderedList} icon={<MdFormatListBulleted />} />
+    //   </Toolbar> */}
 
       <Box
         paddingX={1}
@@ -335,7 +343,7 @@ function RichTextEditor({
         borderRadius="md"
       >
         {prepend}
-        <Editable
+        {/* <Editable
           id={id}
           name={name}
           onClick={onClick}
@@ -353,21 +361,28 @@ function RichTextEditor({
             onKeyDownMentions(event);
           }}
           style={calculateRowStyles(rows, maxRows)}
+        /> */}
+        <Plate<EditorValue>
+          onChange={(newValue) => handleChange(newValue)}
+          plugins={plugins}
+          initialValue={value}
+          editableProps={editableProps}
         />
         {append}
       </Box>
-      <MentionDropdown
-        selectedIndex={index}
-        setIndex={setIndex}
-        position={mentionDropdownPosition}
-        isOpen={target && data.length > 0 && isFocused}
-        data={data}
-        renderItem={renderMentionItem}
-        onSelect={(i) => onSelectIndex(i)}
-        loadMore={loadMoreMentionees}
-      />
-    </Slate>
+    </>
   );
+  //    <MentionDropdown
+  //     selectedIndex={index}
+  //     setIndex={setIndex}
+  //     position={mentionDropdownPosition}
+  //     isOpen={target && data.length > 0 && isFocused}
+  //     data={data}
+  //     renderItem={renderMentionItem}
+  //     onSelect={(i) => onSelectIndex(i)}
+  //     loadMore={loadMoreMentionees}
+  //   />
+  // </Slate>
 }
 
 export default RichTextEditor;
