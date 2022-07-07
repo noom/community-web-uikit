@@ -54,7 +54,7 @@ export function Editor({ disabled, invalid, value = '', onChange, ...rest }: Pro
   }) => {
     const newMarkdown = slateToMarkdown(data.value as any);
     setCachedValue(newMarkdown);
-
+    console.log(newMarkdown);
     onChange({
       text: newMarkdown,
       plainText: newMarkdown,
