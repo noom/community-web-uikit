@@ -12,8 +12,8 @@ export const RichText = ({ onChange, ...rest }) => {
   const [value, setValue] = useState(initialValue);
 
   const handleChange = (newVal) => {
-    onChange(newVal);
-    setValue(newVal);
+    onChange(newVal.text);
+    setValue(newVal.text);
   };
 
   return (

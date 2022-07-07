@@ -23,7 +23,7 @@ import {
 } from 'react-icons/md';
 import { Box, Size, ColorScheme } from '@noom/wax-component-library';
 
-import { MentionTarget } from '../models';
+import { MentionTarget, MentionData } from '../models';
 import {
   toggleMark,
   insertMention,
@@ -101,15 +101,16 @@ function useMentionDropdownPosition(editor: ReactEditor, target?: Range) {
 
 function useMentions(
   editor: ReactEditor,
-  onSubmit: (data: any) => void,
-  query?: (search: string, callback: (data: any) => void) => any[],
+  query?: (search: string, callback: (data: MentionData[]) => void) => MentionData[],
+  onSubmit?: (data: MentionData) => void,
 ) {
   const [target, setTarget] = useState<Range | undefined>();
   const [targetType, setTargetType] = useState<MentionTarget | undefined>();
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState('');
   const [activeQuerySearch, setActiveQuerySearch] = useState<string | undefined>(undefined);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<MentionData[]>([]);
+  const [mentions, setMentions] = useState<MentionData[]>([]);
 
   useEffect(() => {
     if (search && target && search !== activeQuerySearch) {
@@ -153,10 +154,12 @@ function useMentions(
   }
 
   function onSelectIndex(selectedIndex: number) {
-    if (target) {
+    const newMention = data[selectedIndex];
+    if (target && newMention) {
       Transforms.select(editor, target);
-      insertMention(editor, data[selectedIndex], targetType); // TODO insert real mention
-      onSubmit(data[selectedIndex]);
+      setMentions([...mentions, newMention]);
+      insertMention(editor, newMention.display, targetType); // TODO insert real mention
+      onSubmit?.(data[selectedIndex]);
       setTarget(undefined);
     }
   }
@@ -189,7 +192,7 @@ function useMentions(
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [index, search, target],
+    [index, search, target, data],
   );
 
   return {
@@ -197,6 +200,7 @@ function useMentions(
     target,
     index,
     search,
+    mentions,
     targetType,
     onEditorChange,
     onKeyDown,
@@ -266,42 +270,39 @@ function RichTextEditor({
     () => withInlined(withHistory(withReact(createEditor() as ReactEditor))),
     [],
   );
+  const [isFocused, setIsFocused] = useState(autoFocus);
 
   const {
     data,
     index,
-    search,
+    search: lastMentionText,
     target,
+    mentions,
     setIndex,
     onEditorChange,
     onKeyDown: onKeyDownMentions,
     onSelectIndex,
-  } = useMentions(
-    editor,
-    (mentionData) => {
-      console.log(mentionData);
-    },
-    queryMentionees,
-    loadMoreMentionees,
-  );
+  } = useMentions(editor, queryMentionees);
 
   const mentionDropdownPosition = useMentionDropdownPosition(editor, target);
 
-  function handleChange(val: Descendant[]) {
-    if (isEmptyValue(val)) {
+  function handleChange(newValue: Descendant[]) {
+    if (isEmptyValue(newValue)) {
       onClear?.();
     }
     onEditorChange();
-    onChange({ value, lastMentionText: search, mentions: [] });
+    onChange({ value: newValue, lastMentionText, mentions });
   }
 
   const handleFocus = React.useCallback(() => {
     onFocus?.();
+    setIsFocused(true);
     removeFocusSaver(editor);
   }, [editor, onFocus]);
 
   const handleBlur = React.useCallback(() => {
     onBlur?.();
+    setIsFocused(false);
     insertFocusSaver(editor);
   }, [editor, onBlur]);
 
@@ -359,7 +360,7 @@ function RichTextEditor({
         selectedIndex={index}
         setIndex={setIndex}
         position={mentionDropdownPosition}
-        isOpen={target && data.length > 0}
+        isOpen={target && data.length > 0 && isFocused}
         data={data}
         renderItem={renderMentionItem}
         onSelect={(i) => onSelectIndex(i)}

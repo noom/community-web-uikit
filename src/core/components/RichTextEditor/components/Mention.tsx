@@ -101,7 +101,7 @@ export type MentionDropdownProps<TData = any> = {
   renderItem: typeof renderMentionItem;
   selectedIndex: number;
   setIndex: (index: number) => void;
-  xc?: () => void;
+  loadMore?: () => void;
 };
 
 export const MentionDropdown = ({
@@ -112,7 +112,8 @@ export const MentionDropdown = ({
   position,
   selectedIndex,
   setIndex,
-  loadMore,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  loadMore = () => {},
 }: MentionDropdownProps) => {
   const parentRef = useRef<HTMLDivElement>();
 
@@ -135,16 +136,10 @@ export const MentionDropdown = ({
         overflow="auto"
         maxH={200}
       >
-        {data.map(({ id }, index) => {
+        {data.map(({ id, isLastItem }, index) => {
           return (
             <Box key={id} onClick={() => onSelect(index)} onMouseOver={() => setIndex(index)}>
-              {renderItem(
-                id,
-                index === selectedIndex,
-                data.length - 1 === index,
-                loadMore,
-                parentRef,
-              )}
+              {renderItem(id, index === selectedIndex, isLastItem, loadMore, parentRef)}
             </Box>
           );
         })}

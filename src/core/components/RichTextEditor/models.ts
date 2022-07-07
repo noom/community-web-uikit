@@ -48,6 +48,13 @@ export type CustomText = {
 
 export type MentionTarget = 'user' | 'tag';
 
+export type MentionData = {
+  avatar: string;
+  display: string;
+  id: string;
+  isLastItem: boolean;
+};
+
 export type MentionElement = {
   type: 'mention';
   target: MentionTarget;

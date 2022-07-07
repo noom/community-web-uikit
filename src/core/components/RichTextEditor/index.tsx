@@ -1,8 +1,9 @@
 import React, { ReactNode, useState, useEffect } from 'react';
+import { Descendant } from 'slate';
 
 import RichTextEditor from './components/Editor';
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
-import { Block } from './models';
+import { MentionData } from './models';
 
 export type Props = {
   id?: string;
@@ -16,7 +17,7 @@ export type Props = {
     text: string;
     plainText: string;
     lastMentionText?: string;
-    mentions: any[];
+    mentions: MentionData[];
   }) => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
   mentionAllowed?: boolean;
@@ -46,14 +47,19 @@ export function Editor({ disabled, invalid, value = '', onChange, ...rest }: Pro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  const handleChange = (data: { value: Block[]; lastMentionText: string }) => {
-    const newMarkdown = slateToMarkdown(data.value);
+  const handleChange = (data: {
+    value: Descendant[];
+    lastMentionText?: string;
+    mentions: MentionData[];
+  }) => {
+    const newMarkdown = slateToMarkdown(data.value as any);
     setCachedValue(newMarkdown);
+
     onChange({
       text: newMarkdown,
       plainText: newMarkdown,
       lastMentionText: data.lastMentionText,
-      mentions: [],
+      mentions: data.mentions,
     });
   };
 
