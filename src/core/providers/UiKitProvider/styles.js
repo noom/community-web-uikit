@@ -11,6 +11,11 @@ export const UIStyles = styled.div`
     box-sizing: border-box;
   }
 
+  blockquote {
+    border-left: 0.3em solid lightgrey;
+    padding-left: 1em;
+  }
+
   /* // CSS resets to avoid inheriting from other other libraries e.g. antd.
   & * {
     font-size: ${({ theme }) => theme.typography.body.fontSize};

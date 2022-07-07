@@ -211,7 +211,7 @@ export function breakoutBlock(editor: ReactEditor, onBreakout?: () => void) {
       onBreakout?.();
       Transforms.insertNodes(editor, EMPTY_VALUE);
     }
-  } else if (selectedElement.type === Nodes.ListItem) {
+  } else if ([Nodes.ListItem, Nodes.BlockQuote].includes(selectedElement.type)) {
     if (selectedLeaf.text.length === 0 && selectedElement.children.length === 1) {
       const parentNode = Node.parent(editor, selection.anchor.path.slice(0, -1)) as Block;
       onBreakout?.();

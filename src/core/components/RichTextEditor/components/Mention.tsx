@@ -1,8 +1,10 @@
 import React, { useRef, useLayoutEffect, forwardRef } from 'react';
 import { Link, Portal, Box } from '@noom/wax-component-library';
 
-import { MentionTarget } from '../models.ts';
-import { MentionSymbol } from '../constants.ts';
+import SocialMentionItem from '~/core/components/SocialMentionItem';
+
+import { MentionTarget } from '../models';
+import { MentionSymbol } from '../constants';
 
 export type MentionProps = {
   children?: React.ReactNode;
@@ -72,6 +74,22 @@ export const MentionDropdownItem = forwardRef(
   },
 );
 
+export const renderMentionItem = (
+  id: string,
+  isFocused: boolean,
+  isLastItem: boolean,
+  loadMore: () => void,
+  rootEl: React.MutableRefObject<HTMLElement | undefined>,
+) => (
+  <SocialMentionItem
+    focused={isFocused}
+    id={id}
+    isLastItem={isLastItem}
+    rootEl={rootEl}
+    loadMore={loadMore}
+  />
+);
+
 export type MentionDropdownProps<TData = any> = {
   isOpen?: boolean;
   onSelect: (index: number) => void;
@@ -80,9 +98,10 @@ export type MentionDropdownProps<TData = any> = {
     top?: number | string;
     left?: number | string;
   };
-  renderItem: (props: MentionDropdownItemProps) => React.ReactNode;
+  renderItem: typeof renderMentionItem;
   selectedIndex: number;
   setIndex: (index: number) => void;
+  xc?: () => void;
 };
 
 export const MentionDropdown = ({
@@ -93,7 +112,10 @@ export const MentionDropdown = ({
   position,
   selectedIndex,
   setIndex,
+  loadMore,
 }: MentionDropdownProps) => {
+  const parentRef = useRef<HTMLDivElement>();
+
   if (!isOpen) {
     return null;
   }
@@ -101,6 +123,7 @@ export const MentionDropdown = ({
   return (
     <Portal>
       <Box
+        ref={parentRef}
         top={position.top}
         left={position.left}
         position="absolute"
@@ -112,14 +135,16 @@ export const MentionDropdown = ({
         overflow="auto"
         maxH={200}
       >
-        {data.map((dataItem, index) => {
+        {data.map(({ id }, index) => {
           return (
-            <Box key={index} onClick={() => onSelect(index)} onMouseOver={() => setIndex(index)}>
-              {renderItem({
-                data: dataItem,
-                index,
-                isSelected: index === selectedIndex,
-              })}
+            <Box key={id} onClick={() => onSelect(index)} onMouseOver={() => setIndex(index)}>
+              {renderItem(
+                id,
+                index === selectedIndex,
+                data.length - 1 === index,
+                loadMore,
+                parentRef,
+              )}
             </Box>
           );
         })}

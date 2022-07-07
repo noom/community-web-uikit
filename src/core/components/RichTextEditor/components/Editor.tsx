@@ -42,9 +42,8 @@ import {
   Leaf,
   Toolbar,
   LinkButton,
-  MentionDropdownItem,
   MentionDropdown,
-  MentionDropdownItemProps,
+  renderMentionItem,
 } from '.';
 
 const HOTKEYS = {
@@ -55,42 +54,6 @@ const HOTKEYS = {
   'mod+shift+x': 'strikeThrough',
 };
 
-const CHARACTERS = [
-  'Admiral Ozzel',
-  'Admiral Raddus',
-  'Admiral Terrinald Screed',
-  'Admiral Trench',
-  'Admiral U.O. Statura',
-  'Agen Kolar',
-  'Agent Kallus',
-  'Aiolin and Morit Astarte',
-  'Admiral Terrinald Screed',
-  'Admiral Trench',
-  'Admiral U.O. Statura',
-  'Agen Kolar',
-  'Agent Kallus',
-  'Aiolin and Morit Astarte',
-  'Aks Moe',
-  'Bristina Temneanu',
-  'Bridget Jones',
-  'Tanvir Singh',
-  'Tanya Roberts',
-];
-
-const HASHTAGS = [
-  'KeepOnNoomin',
-  'KebabIsGreenFood',
-  'SaejuForPresident2024',
-  'SaladHate',
-  'SandPeople4Justice',
-];
-
-function getData(search: string, targetType: MentionTarget) {
-  return (targetType === 'user' ? CHARACTERS : HASHTAGS)
-    .filter((c) => c.toLowerCase().startsWith(search.toLowerCase()))
-    .slice(0, 10);
-}
-
 type RichTextEditorProps = {
   id?: string;
   name?: string;
@@ -99,7 +62,9 @@ type RichTextEditorProps = {
   maxRows?: number;
   onClick?: () => void;
   onClear?: () => void;
-  onChange: (value: Descendant[]) => void;
+  onChange: (data: { value: Descendant[]; lastMentionText?: string; mentions: any[] }) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
   mentionAllowed?: boolean;
   queryMentionees?: () => [];
@@ -107,10 +72,12 @@ type RichTextEditorProps = {
   placeholder?: string;
   isDisabled?: boolean;
   isInvalid?: boolean;
+  isToolbarVisible?: boolean;
   prepend?: ReactNode;
   append?: ReactNode;
   size?: Size;
   colorScheme?: ColorScheme;
+  autoFocus?: boolean;
 };
 
 function useMentionDropdownPosition(editor: ReactEditor, target?: Range) {
@@ -132,11 +99,25 @@ function useMentionDropdownPosition(editor: ReactEditor, target?: Range) {
   return position;
 }
 
-function useMentions(editor: ReactEditor, onSubmit: (data: any) => void) {
+function useMentions(
+  editor: ReactEditor,
+  onSubmit: (data: any) => void,
+  query?: (search: string, callback: (data: any) => void) => any[],
+) {
   const [target, setTarget] = useState<Range | undefined>();
   const [targetType, setTargetType] = useState<MentionTarget | undefined>();
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState('');
+  const [activeQuerySearch, setActiveQuerySearch] = useState<string | undefined>(undefined);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (search && target && search !== activeQuerySearch) {
+      setActiveQuerySearch(search);
+      query?.(search, setData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, target, activeQuerySearch]);
 
   function onEditorChange() {
     const { selection } = editor;
@@ -170,8 +151,6 @@ function useMentions(editor: ReactEditor, onSubmit: (data: any) => void) {
 
     setTarget(undefined);
   }
-
-  const data = targetType ? getData(search, targetType) : [];
 
   function onSelectIndex(selectedIndex: number) {
     if (target) {
@@ -266,6 +245,8 @@ function RichTextEditor({
   onChange,
   onClear,
   onClick,
+  onFocus,
+  onBlur,
   onKeyPress,
   isDisabled,
   isInvalid,
@@ -274,6 +255,10 @@ function RichTextEditor({
   append,
   size,
   colorScheme,
+  isToolbarVisible = true,
+  autoFocus = false,
+  queryMentionees,
+  loadMoreMentionees,
 }: RichTextEditorProps) {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
@@ -285,14 +270,20 @@ function RichTextEditor({
   const {
     data,
     index,
+    search,
     target,
     setIndex,
     onEditorChange,
     onKeyDown: onKeyDownMentions,
     onSelectIndex,
-  } = useMentions(editor, (mentionData) => {
-    console.log(mentionData);
-  });
+  } = useMentions(
+    editor,
+    (mentionData) => {
+      console.log(mentionData);
+    },
+    queryMentionees,
+    loadMoreMentionees,
+  );
 
   const mentionDropdownPosition = useMentionDropdownPosition(editor, target);
 
@@ -301,25 +292,27 @@ function RichTextEditor({
       onClear?.();
     }
     onEditorChange();
-    onChange(val);
+    onChange({ value, lastMentionText: search, mentions: [] });
   }
 
-  const onFocus = React.useCallback(() => {
+  const handleFocus = React.useCallback(() => {
+    onFocus?.();
     removeFocusSaver(editor);
-  }, [editor]);
+  }, [editor, onFocus]);
 
-  const onBlur = React.useCallback(() => {
+  const handleBlur = React.useCallback(() => {
+    onBlur?.();
     insertFocusSaver(editor);
-  }, [editor]);
-
-  useEffect(() => {
-    console.log('Mount Editor', value);
-  }, []);
+  }, [editor, onBlur]);
 
   return (
     <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
-      {prepend}
-      <Toolbar isDisabled={isDisabled} size={size} colorScheme={colorScheme}>
+      <Toolbar
+        isVisible={isToolbarVisible}
+        isDisabled={isDisabled}
+        size={size}
+        colorScheme={colorScheme}
+      >
         <MarkButton format={Marks.Bold} icon={<MdFormatBold />} />
         <MarkButton format={Marks.Italic} icon={<MdFormatItalic />} />
         <MarkButton format={Marks.Strike} icon={<MdFormatStrikethrough />} />
@@ -332,12 +325,15 @@ function RichTextEditor({
         <BlockButton format={Nodes.OrderedList} icon={<MdFormatListNumbered />} />
         <BlockButton format={Nodes.UnorderedList} icon={<MdFormatListBulleted />} />
       </Toolbar>
+
       <Box
         paddingX={1}
-        border={isInvalid ? '1px solid' : undefined}
-        borderColor="error.500"
+        border="1px solid"
+        borderColor={isInvalid ? 'error.500' : 'gray.200'}
         boxSizing="border-box"
+        borderRadius="md"
       >
+        {prepend}
         <Editable
           id={id}
           name={name}
@@ -346,10 +342,10 @@ function RichTextEditor({
           renderLeaf={renderLeaf}
           placeholder={placeholder}
           spellCheck
-          autoFocus
+          autoFocus={autoFocus}
           readOnly={isDisabled}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onKeyDown={(event) => {
             onKeyPress?.(event);
             defaultOnKeyDown(editor, event);
@@ -357,6 +353,7 @@ function RichTextEditor({
           }}
           style={calculateRowStyles(rows, maxRows)}
         />
+        {append}
       </Box>
       <MentionDropdown
         selectedIndex={index}
@@ -364,12 +361,10 @@ function RichTextEditor({
         position={mentionDropdownPosition}
         isOpen={target && data.length > 0}
         data={data}
-        renderItem={(props: MentionDropdownItemProps<string>) => (
-          <MentionDropdownItem {...props} key={props.index} />
-        )}
+        renderItem={renderMentionItem}
         onSelect={(i) => onSelectIndex(i)}
+        loadMore={loadMoreMentionees}
       />
-      {append}
     </Slate>
   );
 }

@@ -4,20 +4,25 @@ import { useSlate, ReactEditor } from 'slate-react';
 
 import { isMarkActive, toggleMark, isBlockActive, toggleBlock } from '../utils';
 
+export type ToolbarProps = {
+  isVisible?: boolean;
+  children: ReactNode;
+  isDisabled?: boolean;
+  size?: ButtonProps['size'];
+  colorScheme?: ButtonProps['colorScheme'];
+};
+
 export const Toolbar = memo(
-  ({
-    children,
-    isDisabled,
-    size = 'sm',
-    colorScheme,
-  }: {
-    children: ReactNode;
-    isDisabled?: boolean;
-    size?: ButtonProps['size'];
-    colorScheme?: ButtonProps['colorScheme'];
-  }) => {
+  ({ children, isDisabled, size = 'sm', colorScheme, isVisible }: ToolbarProps) => {
     return (
-      <ButtonGroup size={size} colorScheme={colorScheme} spacing={1} paddingY={1}>
+      <ButtonGroup
+        size={size}
+        colorScheme={colorScheme}
+        spacing={1}
+        paddingY={1}
+        // CSS hide only to not break the link modal
+        display={isVisible ? 'flex' : 'none'}
+      >
         {Children.toArray(children).map((child: ReactElement) =>
           cloneElement(child, { isDisabled }),
         )}

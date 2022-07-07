@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import InputText from '~/core/components/InputText';
 
 import Editor from '~/core/components/RichTextEditor';
 
@@ -13,17 +12,11 @@ const TextareaWrapper = styled.div`
   border: none;
 `;
 
-const Textarea = styled(InputText).attrs({ rows: 1, maxRows: 15 })`
-  outline: none;
-  border: none;
-  resize: none;
-  font: inherit;
-`;
-
 const TextContent = ({ text, placeholder, onChange, queryMentionees }) => {
   return (
     <TextareaWrapper>
       <Editor
+        autoFocus
         placeholder={placeholder}
         type="text"
         value={text}

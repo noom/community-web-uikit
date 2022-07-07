@@ -10,9 +10,9 @@ export function Element({ attributes, children, element }) {
   switch (element.type) {
     case Nodes.BlockQuote:
       return (
-        <blockquote style={style} {...attributes}>
+        <Box as="blockquote" style={style} {...attributes}>
           {children}
-        </blockquote>
+        </Box>
       );
     case Nodes.UnorderedList:
       return (
@@ -90,7 +90,7 @@ export function Leaf({ attributes, children, leaf }) {
 
   if (leaf[Marks.FocusSaver]) {
     children = (
-      <Box as="span" bg="primary.500">
+      <Box as="span" bg="primary.300" color="white">
         {children}
       </Box>
     );
