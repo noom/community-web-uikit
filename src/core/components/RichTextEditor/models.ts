@@ -1,4 +1,4 @@
-import { Descendant, Editor as SlateEditor, BaseSelection } from 'slate';
+import { Descendant, Editor as SlateEditor, BaseSelection, BaseRange } from 'slate';
 import { BlockType, LeafType } from 'remark-slate';
 
 import {
@@ -86,8 +86,6 @@ export type HeadingThreeElement = {
   children: Descendant[];
 };
 
-export type LinkElement = { type: 'link'; link: string; children: Descendant[] };
-
 export type ListItemElement = { type: 'list_item'; children: Descendant[] };
 
 export type CustomText = {
@@ -142,7 +140,7 @@ export interface RichText extends TText {
  * Inline Elements
  */
 
-export interface MyLinkElement extends TLinkElement {
+export interface LinkElement extends TLinkElement {
   type: typeof ELEMENT_LINK;
   children: RichText[];
 }
@@ -157,7 +155,7 @@ export interface MyMentionElement extends TMentionElement {
   children: [EmptyText];
 }
 
-export type MyInlineElement = MyLinkElement | MyMentionElement | MyMentionInputElement;
+export type MyInlineElement = LinkElement | MyMentionElement | MyMentionInputElement;
 export type MyInlineDescendant = MyInlineElement | RichText;
 export type MyInlineChildren = MyInlineDescendant[];
 
@@ -250,7 +248,10 @@ export type EditorValue = MyRootBlock[];
  * Editor types
  */
 
-export type Editor = PlateEditor<EditorValue> & { isDragging?: boolean };
+export type Editor = PlateEditor<EditorValue> & {
+  isDragging?: boolean;
+  prevSelection?: Partial<BaseRange>;
+};
 export type MyReactEditor = TReactEditor<EditorValue>;
 export type MyNode = ENode<EditorValue>;
 export type MyNodeEntry = ENodeEntry<EditorValue>;

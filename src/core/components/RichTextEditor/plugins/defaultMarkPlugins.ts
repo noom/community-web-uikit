@@ -12,10 +12,18 @@ import {
 } from '@udecode/plate';
 import { Text } from '@noom/wax-component-library';
 
+import { createFocusSaverPlugin } from './focusSaverPlugin';
+
 import { EditorValue, Editor } from '../models';
 
 export const defaultMarksPlugins = createPlugins<EditorValue, Editor>(
-  [createBoldPlugin(), createCodePlugin(), createItalicPlugin(), createStrikethroughPlugin()],
+  [
+    createBoldPlugin(),
+    createCodePlugin(),
+    createItalicPlugin(),
+    createStrikethroughPlugin(),
+    createFocusSaverPlugin(),
+  ],
   {
     components: {
       [MARK_BOLD]: withProps(Text, { as: 'strong' }),

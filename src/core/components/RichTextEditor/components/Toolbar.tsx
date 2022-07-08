@@ -16,7 +16,9 @@ import {
   ELEMENT_BLOCKQUOTE,
   ListToolbarButton,
   BlockToolbarButton,
-  LinkToolbarButton,
+  ELEMENT_H1,
+  ELEMENT_H2,
+  ELEMENT_H3,
 } from '@udecode/plate';
 import {
   MdFormatBold,
@@ -29,7 +31,8 @@ import {
   MdAddLink,
   MdLinkOff,
 } from 'react-icons/md';
-import { isMarkActive, toggleMark, isBlockActive, toggleBlock } from '../utils';
+
+import { LinkToolbarButton, UnLinkToolbarButton } from './LinkButton';
 
 import { Editor, EditorValue } from '../models';
 
@@ -39,65 +42,6 @@ export type ToolbarProps = {
   size?: ButtonProps['size'];
   colorScheme?: ButtonProps['colorScheme'];
 };
-
-// export const Toolbar = memo(
-//   ({ children, isDisabled, size = 'sm', colorScheme, isVisible }: ToolbarProps) => {
-//     return (
-//       <ButtonGroup
-//         size={size}
-//         colorScheme={colorScheme}
-//         spacing={1}
-//         paddingY={1}
-//         // CSS hide only to not break the link modal
-//         display={isVisible ? 'flex' : 'none'}
-//       >
-//         {Children.toArray(children).map((child: ReactElement) =>
-//           cloneElement(child, { isDisabled }),
-//         )}
-//       </ButtonGroup>
-//     );
-//   },
-// );
-
-// export function BlockButton({ format, icon, ...rest }) {
-//   const editor = useSlate() as ReactEditor;
-
-//   const isActive = isBlockActive(editor, format, 'type');
-
-//   return (
-//     <IconButton
-//       {...rest}
-//       title={format}
-//       border="none"
-//       colorScheme={isActive ? 'primary' : 'gray'}
-//       onMouseDown={(event) => {
-//         event.preventDefault();
-//         toggleBlock(editor, format);
-//       }}
-//     >
-//       {icon}
-//     </IconButton>
-//   );
-// }
-
-// export function MarkButton({ format, icon, ...rest }) {
-//   const editor = useSlate() as ReactEditor;
-//   const isActive = isMarkActive(editor, format);
-//   return (
-//     <IconButton
-//       {...rest}
-//       title={format}
-//       border="none"
-//       colorScheme={isActive ? 'primary' : 'gray'}
-//       onMouseDown={(event) => {
-//         event.preventDefault();
-//         toggleMark(editor, format);
-//       }}
-//     >
-//       {icon}
-//     </IconButton>
-//   );
-// }
 
 export const ToolbarWrap = withPlateEventProvider((props: StyleProps) => (
   <Box display="flex" mb={1} {...props} />
@@ -127,6 +71,10 @@ export const ToolbarButtons = () => {
       <ListToolbarButton type={getPluginType(editor, ELEMENT_UL)} icon={<MdFormatListBulleted />} />
       <ListToolbarButton type={getPluginType(editor, ELEMENT_OL)} icon={<MdFormatListNumbered />} />
       <LinkToolbarButton icon={<MdAddLink />} />
+      <UnLinkToolbarButton icon={<MdLinkOff />} />
+      <BlockToolbarButton type={getPluginType(editor, ELEMENT_H1)} icon="H1" />
+      <BlockToolbarButton type={getPluginType(editor, ELEMENT_H2)} icon="H2" />
+      <BlockToolbarButton type={getPluginType(editor, ELEMENT_H3)} icon="H3" />
     </>
   );
 };

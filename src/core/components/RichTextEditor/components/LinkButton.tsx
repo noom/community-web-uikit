@@ -14,11 +14,20 @@ import {
   Input,
   Stack,
   Box,
-  IconButton,
   useDisclosure,
 } from '@noom/wax-component-library';
-import { useSlate } from 'slate-react';
-import { isLinkActive, removeLink, insertLink, getSelectedText } from '../utils.ts';
+
+import {
+  getPluginType,
+  someNode,
+  usePlateEditorState,
+  ELEMENT_LINK,
+  ToolbarButton,
+  ToolbarButtonProps,
+} from '@udecode/plate';
+
+import { removeLink, insertLink, getSelectedText } from '../utils';
+import { Editor, EditorValue } from '../models';
 
 type LinkModalProps = {
   isOpen: boolean;
@@ -119,44 +128,40 @@ const LinkModal = ({
   );
 };
 
-export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
-  const editor = useSlate();
-  const isActive = isLinkActive(editor, format);
+export type LinkToolbarButtonProps = ToolbarButtonProps;
+
+export const LinkToolbarButton = ({ ...props }: LinkToolbarButtonProps) => {
+  const editor = usePlateEditorState<EditorValue, Editor>();
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  if (!editor) {
+    return null;
+  }
+
   const selectedText = getSelectedText(editor);
+  const type = getPluginType(editor, ELEMENT_LINK);
+  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
+
+  function onMouseDown(event: React.MouseEvent) {
+    event.preventDefault();
+    onOpen();
+  }
 
   function insert(url: string, text?: string) {
-    if (url && editor.selection) {
+    if (url && editor) {
       insertLink(editor, url, text);
-    }
-  }
-
-  function remove() {
-    removeLink(editor);
-  }
-
-  function onClick(event: React.MouseEvent) {
-    event.preventDefault();
-    if (isActive) {
-      remove();
-    } else {
-      onOpen();
     }
   }
 
   return (
     <>
-      <IconButton
-        {...rest}
-        title={format}
-        border="none"
-        colorScheme={isActive ? 'primary' : 'gray'}
-        onMouseDown={(event) => {
-          onClick(event);
+      <ToolbarButton
+        active={isLink}
+        onMouseDown={async (event) => {
+          onMouseDown(event);
         }}
-      >
-        {activeIcon && isActive ? activeIcon : icon}
-      </IconButton>
+        {...props}
+      />
       <LinkModal
         isOpen={isOpen}
         size="md"
@@ -165,5 +170,27 @@ export const LinkButton = ({ format, icon, activeIcon, ...rest }) => {
         onSubmit={(url, text) => insert(url, text)}
       />
     </>
+  );
+};
+
+export const UnLinkToolbarButton = ({ ...props }: LinkToolbarButtonProps) => {
+  const editor = usePlateEditorState<EditorValue, Editor>();
+
+  if (!editor) {
+    return null;
+  }
+
+  const type = getPluginType(editor, ELEMENT_LINK);
+  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
+
+  return (
+    <ToolbarButton
+      disabled={!isLink}
+      active={isLink}
+      onMouseDown={() => {
+        removeLink(editor);
+      }}
+      {...props}
+    />
   );
 };

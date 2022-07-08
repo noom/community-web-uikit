@@ -284,13 +284,11 @@ function RichTextEditor({
   const handleFocus = React.useCallback(() => {
     onFocus?.();
     setIsFocused(true);
-    removeFocusSaver(editor);
   }, [editor, onFocus]);
 
   const handleBlur = React.useCallback(() => {
     onBlur?.();
     setIsFocused(false);
-    insertFocusSaver(editor);
   }, [editor, onBlur]);
 
   const editableProps: TEditableProps<EditorValue> = {
