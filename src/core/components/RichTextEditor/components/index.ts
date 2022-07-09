@@ -1,5 +1,5 @@
-export { Toolbar } from './Toolbar';
-export { LinkButton } from './LinkButton';
+export { Toolbar, BubbleToolbar } from './Toolbar';
+
 export {
   Mention,
   MentionDropdownItem,

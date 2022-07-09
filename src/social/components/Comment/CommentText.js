@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Truncate from 'react-truncate-markup';
 import Markdown from 'markdown-to-jsx';
+import { Text } from '@noom/wax-component-library';
 import MentionHighlightTag from '~/core/components/MentionHighlightTag';
 import { formatMentionChunks } from '~/core/components/ChunkHighlighter';
 import { CommentContent, ReadMoreButton } from './styles';

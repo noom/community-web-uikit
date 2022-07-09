@@ -5,7 +5,6 @@ import {
   removeMark,
   isSelectionExpanded,
   withProps,
-  setSelection,
 } from '@udecode/plate';
 
 import { Text } from '@noom/wax-component-library';
@@ -32,8 +31,6 @@ export const createFocusSaverPlugin = createPluginFactory<EditorValue, any>({
       event.preventDefault();
       const { prevSelection } = editor;
       if (prevSelection) {
-        // setSelection(editor, prevSelection);
-
         removeMark(editor, {
           key: FOCUS_SAVER_MARK,
           shouldChange: false,

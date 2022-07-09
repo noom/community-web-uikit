@@ -1,7 +1,8 @@
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
 import { EMPTY_VALUE } from './constants';
 
-const markdownText = 'This is **bold** and _italic_ and ~~strike through~~ text';
+const markdownText =
+  'This is **bold** and _italic_ and ~~strike through~~ text and [link](https://google.com)!';
 
 const slateState = [
   {
@@ -25,10 +26,22 @@ const slateState = [
       },
       { strikeThrough: true, text: 'strike through' },
       {
-        text: ' text',
+        text: ' text and ',
+      },
+      {
+        type: 'a',
+        link: 'https://google.com',
+        children: [
+          {
+            text: 'link',
+          },
+        ],
+      },
+      {
+        text: '!',
       },
     ],
-    type: 'paragraph',
+    type: 'p',
   },
 ];
 

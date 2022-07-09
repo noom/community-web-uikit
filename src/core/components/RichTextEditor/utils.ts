@@ -14,17 +14,12 @@ import {
   ELEMENT_LINK,
   getPluginType,
   someNode,
-  collapseSelection,
   getEditorString,
   insertText as insertEditorText,
 } from '@udecode/plate';
 import { Block, Editor, MentionElement, MentionTarget } from './models';
 
 import { EMPTY_VALUE, Nodes } from './constants';
-
-export function isBlock(item: unknown): item is Block {
-  return isElement(item) && 'type' in item;
-}
 
 export function getSelectedText(editor: Editor) {
   if (editor.selection) {
@@ -73,7 +68,7 @@ export function insertLink(editor: Editor, url: string, text?: string) {
   if (isCollapsed(editor.selection)) {
     insertNodes<TElement>(editor, {
       type,
-      url,
+      link: url,
       children: [{ text: text || url }],
     });
 
@@ -85,11 +80,18 @@ export function insertLink(editor: Editor, url: string, text?: string) {
     editor,
     {
       type,
-      url,
+      link: url,
       children: [],
     },
     { at: editor.selection, split: true },
   );
+}
+
+export function isActiveLink(editor: Editor) {
+  const type = getPluginType(editor, ELEMENT_LINK);
+  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
+
+  return isLink;
 }
 
 export function insertMention(

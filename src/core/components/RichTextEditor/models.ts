@@ -1,10 +1,6 @@
-import { Descendant, Editor as SlateEditor, BaseSelection, BaseRange } from 'slate';
-import { BlockType, LeafType } from 'remark-slate';
+import { BaseRange } from 'slate';
 
 import {
-  Decorate,
-  DecorateEntry,
-  DOMHandler,
   EDescendant,
   EElement,
   EElementEntry,
@@ -14,18 +10,9 @@ import {
   ENodeEntry,
   EText,
   ETextEntry,
-  InjectComponent,
-  InjectProps,
-  KeyboardHandler,
-  OnChange,
-  OverrideByKey,
   PlateEditor,
   PlatePlugin,
-  PlatePluginInsertData,
-  PlatePluginProps,
-  PlateProps,
   PluginOptions,
-  SerializeHtml,
   TElement,
   TImageElement,
   TLinkElement,
@@ -35,13 +22,13 @@ import {
   TReactEditor,
   TText,
   TTodoListItemElement,
-  WithOverride,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_LINE,
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
   ELEMENT_LI,
+  ELEMENT_LIC,
   ELEMENT_LINK,
   ELEMENT_MENTION,
   ELEMENT_MENTION_INPUT,
@@ -52,68 +39,7 @@ import {
   ELEMENT_IMAGE,
 } from '@udecode/plate';
 
-export type Block = BlockType;
-export type Leaf = LeafType;
-export type GenericElement = BlockType | LeafType;
-
-export type BlockQuoteElement = {
-  type: 'block_quote';
-  align?: string;
-  children: Descendant[];
-};
-
-export type BulletedListElement = {
-  type: 'bulleted_list';
-  align?: string;
-  children: Descendant[];
-};
-
-export type HeadingOneElement = {
-  type: 'heading_one';
-  align?: string;
-  children: Descendant[];
-};
-
-export type HeadingTwoElement = {
-  type: 'heading_two';
-  align?: string;
-  children: Descendant[];
-};
-
-export type HeadingThreeElement = {
-  type: 'heading_three';
-  align?: string;
-  children: Descendant[];
-};
-
-export type ListItemElement = { type: 'list_item'; children: Descendant[] };
-
-export type CustomText = {
-  bold?: boolean;
-  italic?: boolean;
-  code?: boolean;
-  text: string;
-};
-
-export type MentionTarget = 'user' | 'tag';
-
-export type MentionData = {
-  avatar: string;
-  display: string;
-  id: string;
-  isLastItem: boolean;
-};
-
-export type MentionElement = {
-  type: 'mention';
-  target: MentionTarget;
-  character: string;
-  children: CustomText[];
-};
-
-export type WithFocusSaver<TEditor extends SlateEditor> = TEditor & {
-  prevSelection?: BaseSelection;
-};
+export const MARK_STRIKETHROUGH = 'strikeThrough';
 
 /**
  * Text
@@ -145,25 +71,25 @@ export interface LinkElement extends TLinkElement {
   children: RichText[];
 }
 
-export interface MyMentionInputElement extends TMentionInputElement {
+export interface MentionInputElement extends TMentionInputElement {
   type: typeof ELEMENT_MENTION_INPUT;
   children: [PlainText];
 }
 
-export interface MyMentionElement extends TMentionElement {
+export interface MentionElement extends TMentionElement {
   type: typeof ELEMENT_MENTION;
   children: [EmptyText];
 }
 
-export type MyInlineElement = LinkElement | MyMentionElement | MyMentionInputElement;
-export type MyInlineDescendant = MyInlineElement | RichText;
-export type MyInlineChildren = MyInlineDescendant[];
+export type InlineElement = LinkElement | MentionElement | MentionInputElement;
+export type InlineDescendant = InlineElement | RichText;
+export type InlineChildren = InlineDescendant[];
 
 /**
  * Block props
  */
 
-export interface MyBlockElement extends TElement {
+export interface BlockElement extends TElement {
   id?: string;
 }
 
@@ -171,78 +97,99 @@ export interface MyBlockElement extends TElement {
  * Blocks
  */
 
-export interface MyParagraphElement extends MyBlockElement {
+export interface ParagraphElement extends BlockElement {
   type: typeof ELEMENT_PARAGRAPH;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyH1Element extends MyBlockElement {
+export interface H1Element extends BlockElement {
   type: typeof ELEMENT_H1;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyH2Element extends MyBlockElement {
+export interface H2Element extends BlockElement {
   type: typeof ELEMENT_H2;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyH3Element extends MyBlockElement {
+export interface H3Element extends BlockElement {
   type: typeof ELEMENT_H3;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyBlockquoteElement extends MyBlockElement {
+export interface BlockquoteElement extends BlockElement {
   type: typeof ELEMENT_BLOCKQUOTE;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyCodeLineElement extends TElement {
+export interface CodeLineElement extends TElement {
   type: typeof ELEMENT_CODE_LINE;
   children: PlainText[];
 }
 
-export interface MyBulletedListElement extends TElement, MyBlockElement {
+export interface BulletedListElement extends TElement, BlockElement {
   type: typeof ELEMENT_UL;
-  children: MyListItemElement[];
+  children: ListItemElement[];
 }
 
-export interface MyNumberedListElement extends TElement, MyBlockElement {
+export interface NumberedListElement extends TElement, BlockElement {
   type: typeof ELEMENT_OL;
-  children: MyListItemElement[];
+  children: ListItemElement[];
 }
 
-export interface MyListItemElement extends TElement, MyBlockElement {
+export interface ListItemElement extends TElement, BlockElement {
   type: typeof ELEMENT_LI;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyTodoListElement extends TTodoListItemElement, MyBlockElement {
+export interface ListItemContentElement extends TElement, BlockElement {
+  type: typeof ELEMENT_LIC;
+  children: InlineChildren;
+}
+
+export interface TodoListElement extends TTodoListItemElement, BlockElement {
   type: typeof ELEMENT_TODO_LI;
-  children: MyInlineChildren;
+  children: InlineChildren;
 }
 
-export interface MyImageElement extends TImageElement, MyBlockElement {
+export interface ImageElement extends TImageElement, BlockElement {
   type: typeof ELEMENT_IMAGE;
   children: [EmptyText];
 }
 
-export type MyNestableBlock = MyParagraphElement;
+export type MentionTarget = 'user' | 'tag';
 
-export type MyBlock = Exclude<MyElement, MyInlineElement>;
-export type MyBlockEntry = TNodeEntry<MyBlock>;
+export type MentionData = {
+  avatar: string;
+  display: string;
+  id: string;
+  isLastItem: boolean;
+};
 
-export type MyRootBlock =
-  | MyParagraphElement
-  | MyH1Element
-  | MyH2Element
-  | MyH3Element
-  | MyBlockquoteElement
-  | MyBulletedListElement
-  | MyNumberedListElement
-  | MyTodoListElement
-  | MyImageElement;
+// export type MentionElement = {
+//   type: 'mention';
+//   target: MentionTarget;
+//   character: string;
+//   children: Text[];
+// };
 
-export type EditorValue = MyRootBlock[];
+export type NestableBlock = ParagraphElement;
+
+export type Block = Exclude<Element, InlineElement> | ListItemContentElement;
+export type BlockEntry = TNodeEntry<Block>;
+
+export type RootBlock =
+  | ParagraphElement
+  | H1Element
+  | H2Element
+  | H3Element
+  | BlockquoteElement
+  | BulletedListElement
+  | NumberedListElement
+  | TodoListElement
+  | ImageElement;
+
+export type EditorValue = RootBlock[];
 
 /**
  * Editor types
@@ -252,33 +199,20 @@ export type Editor = PlateEditor<EditorValue> & {
   isDragging?: boolean;
   prevSelection?: Partial<BaseRange>;
 };
-export type MyReactEditor = TReactEditor<EditorValue>;
-export type MyNode = ENode<EditorValue>;
-export type MyNodeEntry = ENodeEntry<EditorValue>;
-export type MyElement = EElement<EditorValue>;
-export type MyElementEntry = EElementEntry<EditorValue>;
-export type MyText = EText<EditorValue>;
-export type MyTextEntry = ETextEntry<EditorValue>;
-export type MyElementOrText = EElementOrText<EditorValue>;
-export type MyDescendant = EDescendant<EditorValue>;
-export type MyMarks = EMarks<EditorValue>;
-export type MyMark = keyof MyMarks;
+export type ReactEditor = TReactEditor<EditorValue>;
+export type Node = ENode<EditorValue>;
+export type NodeEntry = ENodeEntry<EditorValue>;
+export type Element = EElement<EditorValue> | ListItemContentElement;
+export type ElementEntry = EElementEntry<EditorValue>;
+export type Text = EText<EditorValue>;
+export type TextEntry = ETextEntry<EditorValue>;
+export type ElementOrText = EElementOrText<EditorValue>;
+export type Descendant = EDescendant<EditorValue>;
+export type Marks = EMarks<EditorValue>;
+export type Mark = keyof Marks;
 
 /**
  * Plate types
  */
 
-export type MyDecorate<P = PluginOptions> = Decorate<P, EditorValue, Editor>;
-export type MyDecorateEntry = DecorateEntry<EditorValue>;
-export type MyDOMHandler<P = PluginOptions> = DOMHandler<P, EditorValue, Editor>;
-export type MyInjectComponent = InjectComponent<EditorValue>;
-export type MyInjectProps = InjectProps<EditorValue>;
-export type MyKeyboardHandler<P = PluginOptions> = KeyboardHandler<P, EditorValue, Editor>;
-export type MyOnChange<P = PluginOptions> = OnChange<P, EditorValue, Editor>;
-export type MyOverrideByKey = OverrideByKey<EditorValue, Editor>;
 export type EditorPlugin<P = PluginOptions> = PlatePlugin<P, EditorValue, Editor>;
-export type MyPlatePluginInsertData = PlatePluginInsertData<EditorValue>;
-export type MyPlatePluginProps = PlatePluginProps<EditorValue>;
-export type MyPlateProps = PlateProps<EditorValue, Editor>;
-export type MySerializeHtml = SerializeHtml<EditorValue>;
-export type MyWithOverride<P = PluginOptions> = WithOverride<P, EditorValue, Editor>;

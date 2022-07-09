@@ -5,6 +5,7 @@ import React, {
   useLayoutEffect,
   ReactNode,
   useEffect,
+  useRef,
 } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, Slate, ReactEditor } from 'slate-react';
@@ -25,8 +26,7 @@ import {
   breakoutBlock,
 } from '../utils';
 import { MentionSymbol, Marks, Nodes, EMPTY_VALUE } from '../constants';
-import { withInlined } from '../enhancers';
-import { Toolbar } from '.';
+import { Toolbar, BubbleToolbar } from '.';
 
 import { defaultElementsPlugins, defaultMarksPlugins } from '../plugins';
 
@@ -46,7 +46,7 @@ const plugins = createPlugins<EditorValue, Editor>([
 type RichTextEditorProps = {
   id?: string;
   name?: string;
-  value?: EditorValue;
+  initialValue?: EditorValue;
   rows?: number;
   maxRows?: number;
   onClick?: () => void;
@@ -55,7 +55,7 @@ type RichTextEditorProps = {
   onFocus?: () => void;
   onBlur?: () => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
-  mentionAllowed?: boolean;
+  // mentionAllowed?: boolean;
   queryMentionees?: () => [];
   loadMoreMentionees?: () => [];
   placeholder?: string;
@@ -198,41 +198,10 @@ function useMentions(
   };
 }
 
-function defaultOnKeyDown(editor: ReactEditor, event: React.KeyboardEvent) {
-  const { selection } = editor;
-
-  Object.keys(HOTKEYS).forEach((hotkey) => {
-    if (isHotkey(hotkey, event)) {
-      event.preventDefault();
-      const mark = HOTKEYS[hotkey];
-      toggleMark(editor, mark);
-    }
-  });
-
-  if (selection) {
-    if (isHotkey('left', event)) {
-      event.preventDefault();
-      Transforms.collapse(editor, { edge: 'start' });
-      Transforms.move(editor, { unit: 'character', reverse: true });
-      return;
-    }
-    if (isHotkey('right', event)) {
-      event.preventDefault();
-      Transforms.collapse(editor, { edge: 'end' });
-      Transforms.move(editor, { unit: 'character' });
-    }
-    if (isHotkey('Enter', event)) {
-      breakoutBlock(editor, () => {
-        event.preventDefault();
-      });
-    }
-  }
-}
-
 function RichTextEditor({
   id,
   name,
-  value = [EMPTY_VALUE],
+  initialValue = [EMPTY_VALUE],
   rows,
   maxRows,
   onChange,
@@ -253,11 +222,11 @@ function RichTextEditor({
   queryMentionees,
   loadMoreMentionees,
 }: RichTextEditorProps) {
-  const editor = useMemo(
-    () => withInlined(withHistory(withReact(createEditor() as ReactEditor))),
-    [],
-  );
+  const editor = useMemo(() => withHistory(withReact(createEditor() as ReactEditor)), []);
   const [isFocused, setIsFocused] = useState(autoFocus);
+  useEffect(() => {
+    console.log('Value on Mount', initialValue);
+  }, []);
 
   const {
     data,
@@ -273,7 +242,7 @@ function RichTextEditor({
 
   const mentionDropdownPosition = useMentionDropdownPosition(editor, target);
 
-  function handleChange(newValue: Descendant[]) {
+  function handleChange(newValue: EditorValue) {
     if (isEmptyValue(newValue)) {
       onClear?.();
     }
@@ -284,12 +253,12 @@ function RichTextEditor({
   const handleFocus = React.useCallback(() => {
     onFocus?.();
     setIsFocused(true);
-  }, [editor, onFocus]);
+  }, [onFocus]);
 
   const handleBlur = React.useCallback(() => {
     onBlur?.();
     setIsFocused(false);
-  }, [editor, onBlur]);
+  }, [onBlur]);
 
   const editableProps: TEditableProps<EditorValue> = {
     id,
@@ -301,18 +270,12 @@ function RichTextEditor({
     readOnly: isDisabled,
     onFocus: handleFocus,
     onBlur: handleBlur,
-    onKeyDown: (event) => {
-      onKeyPress?.(event);
-      defaultOnKeyDown(editor, event);
-      onKeyDownMentions(event);
-    },
     style: calculateRowStyles(rows, maxRows),
   };
 
   return (
     <>
       <Toolbar />
-
       {/* // <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
     //   <Toolbar
     //     isVisible={isToolbarVisible}
@@ -332,13 +295,13 @@ function RichTextEditor({
     //     <BlockButton format={Nodes.OrderedList} icon={<MdFormatListNumbered />} />
     //     <BlockButton format={Nodes.UnorderedList} icon={<MdFormatListBulleted />} />
     //   </Toolbar> */}
-
       <Box
         paddingX={1}
         border="1px solid"
         borderColor={isInvalid ? 'error.500' : 'gray.200'}
         boxSizing="border-box"
         borderRadius="md"
+        cursor="text"
       >
         {prepend}
         {/* <Editable
@@ -363,9 +326,11 @@ function RichTextEditor({
         <Plate<EditorValue>
           onChange={(newValue) => handleChange(newValue)}
           plugins={plugins}
-          initialValue={value}
+          initialValue={initialValue}
           editableProps={editableProps}
-        />
+        >
+          <BubbleToolbar />
+        </Plate>
         {append}
       </Box>
     </>

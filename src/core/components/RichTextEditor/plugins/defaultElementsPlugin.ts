@@ -22,6 +22,7 @@ import {
   ELEMENT_TODO_LI,
   ELEMENT_UL,
   ELEMENT_OL,
+  ELEMENT_LIC,
   withProps,
 } from '@udecode/plate';
 import { Box, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
@@ -60,8 +61,12 @@ export const defaultElementsPlugins = createPlugins<EditorValue, Editor>(
 
       [ELEMENT_PARAGRAPH]: withProps(Box, { as: 'p' }),
       [ELEMENT_TODO_LI]: ListItem,
-      [ELEMENT_UL]: List,
-      [ELEMENT_OL]: withProps(List, { isOrdered: true }),
+      [ELEMENT_UL]: withProps(List, { ml: 0 }),
+      [ELEMENT_OL]: withProps(List, { isOrdered: true, ml: 0 }),
+    },
+    // Override because remark-slate can not be reconfigured for it
+    overrideByKey: {
+      [ELEMENT_LIC]: { type: ELEMENT_PARAGRAPH },
     },
   },
 );

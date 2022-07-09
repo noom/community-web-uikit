@@ -1,9 +1,8 @@
-import React, { ReactNode, useState, useEffect } from 'react';
-import { Descendant } from 'slate';
+import React, { ReactNode, useState } from 'react';
 
 import RichTextEditor from './components/Editor';
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
-import { MentionData } from './models';
+import { MentionData, EditorValue } from './models';
 
 export type Props = {
   id?: string;
@@ -33,27 +32,14 @@ export type Props = {
 };
 
 export function Editor({ disabled, invalid, value = '', onChange, ...rest }: Props) {
-  const [cachedValue, setCachedValue] = useState(value);
-  const [instanceNum, setInstanceNum] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
 
-  // Slate does not allow for value swapping. Yet Amity relies on it.
-  // So we rerender the editor if the value unexpectedly changes.
-  useEffect(() => {
-    if (value !== cachedValue) {
-      setInstanceNum(instanceNum + 1);
-      setCachedValue(value);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
-
   const handleChange = (data: {
-    value: Descendant[];
+    value: EditorValue;
     lastMentionText?: string;
     mentions: MentionData[];
   }) => {
-    const newMarkdown = slateToMarkdown(data.value as any);
-    setCachedValue(newMarkdown);
+    const newMarkdown = slateToMarkdown(data.value);
     console.log(data.value, newMarkdown);
     onChange({
       text: newMarkdown,
@@ -74,14 +60,13 @@ export function Editor({ disabled, invalid, value = '', onChange, ...rest }: Pro
 
   return (
     <RichTextEditor
-      key={instanceNum}
       onChange={(data) => handleChange(data)}
       isDisabled={disabled}
       isInvalid={invalid}
-      value={markdownToSlate(value)}
+      initialValue={markdownToSlate(value)}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      isToolbarVisible={isFocused || cachedValue.length > 0}
+      isToolbarVisible={isFocused}
       {...rest}
     />
   );

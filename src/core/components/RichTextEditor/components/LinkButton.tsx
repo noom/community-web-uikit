@@ -17,16 +17,9 @@ import {
   useDisclosure,
 } from '@noom/wax-component-library';
 
-import {
-  getPluginType,
-  someNode,
-  usePlateEditorState,
-  ELEMENT_LINK,
-  ToolbarButton,
-  ToolbarButtonProps,
-} from '@udecode/plate';
+import { usePlateEditorState, ToolbarButton, ToolbarButtonProps } from '@udecode/plate';
 
-import { removeLink, insertLink, getSelectedText } from '../utils';
+import { removeLink, insertLink, getSelectedText, isActiveLink } from '../utils';
 import { Editor, EditorValue } from '../models';
 
 type LinkModalProps = {
@@ -139,8 +132,6 @@ export const LinkToolbarButton = ({ ...props }: LinkToolbarButtonProps) => {
   }
 
   const selectedText = getSelectedText(editor);
-  const type = getPluginType(editor, ELEMENT_LINK);
-  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
 
   function onMouseDown(event: React.MouseEvent) {
     event.preventDefault();
@@ -156,7 +147,7 @@ export const LinkToolbarButton = ({ ...props }: LinkToolbarButtonProps) => {
   return (
     <>
       <ToolbarButton
-        active={isLink}
+        active={isActiveLink(editor)}
         onMouseDown={async (event) => {
           onMouseDown(event);
         }}
@@ -180,13 +171,8 @@ export const UnLinkToolbarButton = ({ ...props }: LinkToolbarButtonProps) => {
     return null;
   }
 
-  const type = getPluginType(editor, ELEMENT_LINK);
-  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
-
   return (
     <ToolbarButton
-      disabled={!isLink}
-      active={isLink}
       onMouseDown={() => {
         removeLink(editor);
       }}

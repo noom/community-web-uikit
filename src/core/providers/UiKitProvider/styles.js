@@ -16,6 +16,20 @@ export const UIStyles = styled.div`
     padding-left: 1em;
   }
 
+  .slate-ToolbarButton-active {
+    color: white;
+    background-color: var(--chakra-colors-primary-500);
+    border-radius: 15%;
+  }
+
+  ul {
+    padding-inline-start: 1.5em;
+  }
+
+  li > p {
+    margin: 0;
+  }
+
   /* // CSS resets to avoid inheriting from other other libraries e.g. antd.
   & * {
     font-size: ${({ theme }) => theme.typography.body.fontSize};

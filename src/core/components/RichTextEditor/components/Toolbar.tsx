@@ -1,6 +1,5 @@
-import React, { ReactNode, ReactElement, Children, memo, cloneElement } from 'react';
-import { Box, StyleProps, ButtonGroup, IconButton, ButtonProps } from '@noom/wax-component-library';
-import { useSlate, ReactEditor } from 'slate-react';
+import React from 'react';
+import { Box, StyleProps, ButtonProps } from '@noom/wax-component-library';
 
 import {
   withPlateEventProvider,
@@ -8,7 +7,6 @@ import {
   MARK_BOLD,
   MARK_CODE,
   MARK_ITALIC,
-  MARK_STRIKETHROUGH,
   MarkToolbarButton,
   usePlateEditorRef,
   ELEMENT_OL,
@@ -19,6 +17,7 @@ import {
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
+  BalloonToolbar,
 } from '@udecode/plate';
 import {
   MdFormatBold,
@@ -34,7 +33,8 @@ import {
 
 import { LinkToolbarButton, UnLinkToolbarButton } from './LinkButton';
 
-import { Editor, EditorValue } from '../models';
+import { Editor, EditorValue, MARK_STRIKETHROUGH } from '../models';
+import { isActiveLink } from '../utils';
 
 export type ToolbarProps = {
   isVisible?: boolean;
@@ -47,7 +47,7 @@ export const ToolbarWrap = withPlateEventProvider((props: StyleProps) => (
   <Box display="flex" mb={1} {...props} />
 ));
 
-export const ToolbarButtons = () => {
+export const Toolbar = () => {
   const editor = usePlateEditorRef<EditorValue, Editor>();
 
   if (!editor) {
@@ -55,7 +55,7 @@ export const ToolbarButtons = () => {
   }
 
   return (
-    <>
+    <ToolbarWrap>
       <MarkToolbarButton type={getPluginType(editor, MARK_BOLD)} icon={<MdFormatBold />} />
       <MarkToolbarButton type={getPluginType(editor, MARK_ITALIC)} icon={<MdFormatItalic />} />
       <MarkToolbarButton
@@ -75,14 +75,34 @@ export const ToolbarButtons = () => {
       <BlockToolbarButton type={getPluginType(editor, ELEMENT_H1)} icon="H1" />
       <BlockToolbarButton type={getPluginType(editor, ELEMENT_H2)} icon="H2" />
       <BlockToolbarButton type={getPluginType(editor, ELEMENT_H3)} icon="H3" />
-    </>
+    </ToolbarWrap>
   );
 };
 
-export const Toolbar = (props: ToolbarProps) => {
+export const BubbleToolbar = () => {
+  const editor = usePlateEditorRef<EditorValue, Editor>();
+
+  if (!editor) {
+    return null;
+  }
+
+  const arrow = false;
+  const theme = 'dark';
+
   return (
-    <ToolbarWrap>
-      <ToolbarButtons />
-    </ToolbarWrap>
+    <BalloonToolbar theme={theme} arrow={arrow}>
+      <MarkToolbarButton type={getPluginType(editor, MARK_BOLD)} icon={<MdFormatBold />} />
+      <MarkToolbarButton type={getPluginType(editor, MARK_ITALIC)} icon={<MdFormatItalic />} />
+      <MarkToolbarButton
+        type={getPluginType(editor, MARK_STRIKETHROUGH)}
+        icon={<MdFormatStrikethrough />}
+      />
+
+      {isActiveLink(editor) ? (
+        <UnLinkToolbarButton icon={<MdLinkOff />} />
+      ) : (
+        <LinkToolbarButton icon={<MdAddLink />} />
+      )}
+    </BalloonToolbar>
   );
 };
