@@ -5,37 +5,35 @@ import React, {
   useLayoutEffect,
   ReactNode,
   useEffect,
-  useRef,
 } from 'react';
-import isHotkey from 'is-hotkey';
-import { Editable, withReact, Slate, ReactEditor } from 'slate-react';
-import { createEditor, Transforms, Range, Descendant } from 'slate';
+
 import { Plate, TEditableProps, createPlugins } from '@udecode/plate';
-import { withHistory } from 'slate-history';
 
 import { Box, Size, ColorScheme } from '@noom/wax-component-library';
 
-import { MentionTarget, MentionData, EditorPlugin, EditorValue, Editor } from '../models';
-import {
-  toggleMark,
-  insertMention,
-  insertFocusSaver,
-  removeFocusSaver,
-  isEmptyValue,
-  calculateRowStyles,
-  breakoutBlock,
-} from '../utils';
-import { MentionSymbol, Marks, Nodes, EMPTY_VALUE } from '../constants';
+import { EditorValue, Editor } from '../models';
+import { isEmptyValue, calculateRowStyles } from '../utils';
+import { EMPTY_VALUE } from '../constants';
 import { Toolbar, BubbleToolbar } from '.';
 
 import { defaultElementsPlugins, defaultMarksPlugins } from '../plugins';
+import { MentionPopover, MentionData, MentionItem, toMentionItem } from '../plugins/mentionPlugin';
 
-const HOTKEYS = {
-  'mod+b': 'bold',
-  'mod+i': 'italic',
-  'mod+u': 'underline',
-  'mod+`': 'code',
-  'mod+shift+x': 'strikeThrough',
+import SocialMentionItem from '~/core/components/SocialMentionItem';
+
+export const renderMentionItem = (
+  data: { item: MentionItem; search: string },
+  // loadMore: () => void,
+  // rootEl: React.MutableRefObject<HTMLElement | undefined>,
+) => {
+  console.log(data.item.key, data.item.data);
+  return (
+    <SocialMentionItem
+      // TODO: Add rootEl with actual popover scrolling element to enable infinite scroll
+      id={data.item.key}
+      isLastItem={data.item.data.isLastItem}
+    />
+  );
 };
 
 const plugins = createPlugins<EditorValue, Editor>([
@@ -56,7 +54,7 @@ type RichTextEditorProps = {
   onBlur?: () => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
   // mentionAllowed?: boolean;
-  queryMentionees?: () => [];
+  queryMentionees?: (search: string, callback: (data: MentionData[]) => void) => MentionData[];
   loadMoreMentionees?: () => [];
   placeholder?: string;
   isDisabled?: boolean;
@@ -68,135 +66,6 @@ type RichTextEditorProps = {
   colorScheme?: ColorScheme;
   autoFocus?: boolean;
 };
-
-function useMentionDropdownPosition(editor: ReactEditor, target?: Range) {
-  const [position, setPosition] = useState({ top: '-9999px', left: '-9999px' });
-
-  // Calculate dropdown position
-  useLayoutEffect(() => {
-    if (target) {
-      const domRange = ReactEditor.toDOMRange(editor, target);
-      const rect = domRange.getBoundingClientRect();
-
-      setPosition({
-        top: `${rect.top + window.pageYOffset + 24}px`,
-        left: `${rect.left + window.pageXOffset}px`,
-      });
-    }
-  }, [editor, target]);
-
-  return position;
-}
-
-function useMentions(
-  editor: ReactEditor,
-  query?: (search: string, callback: (data: MentionData[]) => void) => MentionData[],
-  onSubmit?: (data: MentionData) => void,
-) {
-  const [target, setTarget] = useState<Range | undefined>();
-  const [targetType, setTargetType] = useState<MentionTarget | undefined>();
-  const [index, setIndex] = useState(0);
-  const [search, setSearch] = useState('');
-  const [activeQuerySearch, setActiveQuerySearch] = useState<string | undefined>(undefined);
-  const [data, setData] = useState<MentionData[]>([]);
-  const [mentions, setMentions] = useState<MentionData[]>([]);
-
-  useEffect(() => {
-    if (search && target && search !== activeQuerySearch) {
-      setActiveQuerySearch(search);
-      query?.(search, setData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, target, activeQuerySearch]);
-
-  function onEditorChange() {
-    const { selection } = editor;
-
-    if (selection && Range.isCollapsed(selection)) {
-      const [start] = Range.edges(selection);
-      const wordBefore = Editor.before(editor, start, { unit: 'word' });
-      const before = wordBefore && Editor.before(editor, wordBefore);
-      const beforeRange = before && Editor.range(editor, before, start);
-      const beforeText = beforeRange && Editor.string(editor, beforeRange);
-      const searchRegex = new RegExp(`([${Object.values(MentionSymbol).join('')}])(\\w+)$`);
-      const beforeMatch = beforeText && beforeText.match(searchRegex);
-      const after = Editor.after(editor, start);
-      const afterRange = Editor.range(editor, start, after);
-      const afterText = Editor.string(editor, afterRange);
-      const afterMatch = afterText.match(/^(\s|$)/);
-
-      const mentionSymbol = beforeMatch?.[1];
-      const mentionTargetType = Object.keys(MentionSymbol).find(
-        (key) => MentionSymbol[key] === mentionSymbol,
-      );
-
-      if (beforeMatch && afterMatch) {
-        setTarget(beforeRange);
-        setSearch(beforeMatch[2]);
-        setTargetType(mentionTargetType as MentionTarget);
-        setIndex(0);
-        return;
-      }
-    }
-
-    setTarget(undefined);
-  }
-
-  function onSelectIndex(selectedIndex: number) {
-    const newMention = data[selectedIndex];
-    if (target && newMention) {
-      Transforms.select(editor, target);
-      setMentions([...mentions, newMention]);
-      insertMention(editor, newMention.display, targetType); // TODO insert real mention
-      onSubmit?.(data[selectedIndex]);
-      setTarget(undefined);
-    }
-  }
-
-  const onKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      if (target) {
-        switch (event.key) {
-          case 'ArrowDown':
-            event.preventDefault();
-            // Previous index
-            setIndex(Math.min(index + 1, data.length - 1));
-            break;
-          case 'ArrowUp':
-            event.preventDefault();
-            // Next index
-            setIndex(Math.max(index - 1, 0));
-            break;
-          case 'Tab':
-          case 'Enter':
-            event.preventDefault();
-            onSelectIndex(index);
-            break;
-          case 'Escape':
-            event.preventDefault();
-            setTarget(undefined);
-            break;
-          default:
-        }
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [index, search, target, data],
-  );
-
-  return {
-    data,
-    target,
-    index,
-    search,
-    mentions,
-    targetType,
-    onEditorChange,
-    onKeyDown,
-    setIndex,
-    onSelectIndex,
-  };
-}
 
 function RichTextEditor({
   id,
@@ -222,32 +91,24 @@ function RichTextEditor({
   queryMentionees,
   loadMoreMentionees,
 }: RichTextEditorProps) {
-  const editor = useMemo(() => withHistory(withReact(createEditor() as ReactEditor)), []);
+  const [mentionData, setMentionData] = useState<MentionItem[]>([]);
+  const [mentions, setMentions] = useState<MentionItem[]>([]);
+  const onMentionSearchChange = useCallback(
+    (search: string) => {
+      if (search) {
+        queryMentionees?.(search, (data) => setMentionData(data.map((d) => toMentionItem(d))));
+      }
+    },
+    [setMentionData, queryMentionees],
+  );
+
   const [isFocused, setIsFocused] = useState(autoFocus);
-  useEffect(() => {
-    console.log('Value on Mount', initialValue);
-  }, []);
-
-  const {
-    data,
-    index,
-    search: lastMentionText,
-    target,
-    mentions,
-    setIndex,
-    onEditorChange,
-    onKeyDown: onKeyDownMentions,
-    onSelectIndex,
-  } = useMentions(editor, queryMentionees);
-
-  const mentionDropdownPosition = useMentionDropdownPosition(editor, target);
 
   function handleChange(newValue: EditorValue) {
     if (isEmptyValue(newValue)) {
       onClear?.();
     }
-    onEditorChange();
-    onChange({ value: newValue, lastMentionText, mentions });
+    onChange({ value: newValue, lastMentionText: '', mentions });
   }
 
   const handleFocus = React.useCallback(() => {
@@ -276,25 +137,7 @@ function RichTextEditor({
   return (
     <>
       <Toolbar />
-      {/* // <Slate editor={editor} value={value} onChange={(val) => handleChange(val)}>
-    //   <Toolbar
-    //     isVisible={isToolbarVisible}
-    //     isDisabled={isDisabled}
-    //     size={size}
-    //     colorScheme={colorScheme}
-    //   >
-    //     <MarkButton format={Marks.Bold} icon={<MdFormatBold />} />
-    //     <MarkButton format={Marks.Italic} icon={<MdFormatItalic />} />
-    //     <MarkButton format={Marks.Strike} icon={<MdFormatStrikethrough />} />
-    //     <MarkButton format={Marks.Code} icon={<MdCode />} />
-    //     <LinkButton format={Nodes.Link} icon={<MdAddLink />} activeIcon={<MdLinkOff />} />
-    //     <BlockButton format={Nodes.HeadingOne} icon={<span>H1</span>} />
-    //     <BlockButton format={Nodes.HeadingTwo} icon={<span>H2</span>} />
-    //     <BlockButton format={Nodes.HeadingThree} icon={<span>H3</span>} />
-    //     <BlockButton format={Nodes.BlockQuote} icon={<MdFormatQuote />} />
-    //     <BlockButton format={Nodes.OrderedList} icon={<MdFormatListNumbered />} />
-    //     <BlockButton format={Nodes.UnorderedList} icon={<MdFormatListBulleted />} />
-    //   </Toolbar> */}
+
       <Box
         paddingX={1}
         border="1px solid"
@@ -304,25 +147,7 @@ function RichTextEditor({
         cursor="text"
       >
         {prepend}
-        {/* <Editable
-          id={id}
-          name={name}
-          onClick={onClick}
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          placeholder={placeholder}
-          spellCheck
-          autoFocus={autoFocus}
-          readOnly={isDisabled}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={(event) => {
-            onKeyPress?.(event);
-            defaultOnKeyDown(editor, event);
-            onKeyDownMentions(event);
-          }}
-          style={calculateRowStyles(rows, maxRows)}
-        /> */}
+
         <Plate<EditorValue>
           onChange={(newValue) => handleChange(newValue)}
           plugins={plugins}
@@ -330,22 +155,16 @@ function RichTextEditor({
           editableProps={editableProps}
         >
           <BubbleToolbar />
+          <MentionPopover<MentionData>
+            items={mentionData}
+            onRenderItem={renderMentionItem}
+            onMentionSearchChange={onMentionSearchChange}
+          />
         </Plate>
         {append}
       </Box>
     </>
   );
-  //    <MentionDropdown
-  //     selectedIndex={index}
-  //     setIndex={setIndex}
-  //     position={mentionDropdownPosition}
-  //     isOpen={target && data.length > 0 && isFocused}
-  //     data={data}
-  //     renderItem={renderMentionItem}
-  //     onSelect={(i) => onSelectIndex(i)}
-  //     loadMore={loadMoreMentionees}
-  //   />
-  // </Slate>
 }
 
 export default RichTextEditor;

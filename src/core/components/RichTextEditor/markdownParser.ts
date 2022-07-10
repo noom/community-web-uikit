@@ -2,16 +2,18 @@ import { unified } from 'unified';
 import markdown from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import slate, { serialize, defaultNodeTypes } from 'remark-slate';
-import { ELEMENT_BLOCKQUOTE, ELEMENT_LIC, isElement, ELEMENT_PARAGRAPH } from '@udecode/plate';
+import { ELEMENT_BLOCKQUOTE, ELEMENT_MENTION, isElement, ELEMENT_PARAGRAPH } from '@udecode/plate';
+
+import { MentionSymbol } from './plugins/mentionPlugin';
 
 import { EMPTY_VALUE } from './constants';
 import {
   EditorValue,
   Descendant,
   Element,
-  ListItemContentElement,
   BlockquoteElement,
   ParagraphElement,
+  MentionElement,
 } from './models';
 
 const DEFAULT_HEADINGS = {
@@ -59,7 +61,7 @@ function transformNodes(
   return node as Descendant;
 }
 
-const deserializeTransformElement: Partial<Record<Element['type'], (el: Element) => Element>> = {
+const deserializeTransformElement: Partial<Record<Element['type'], (el: Element) => Descendant>> = {
   [ELEMENT_BLOCKQUOTE]: (el: BlockquoteElement) =>
     ({
       type: ELEMENT_BLOCKQUOTE,
@@ -88,36 +90,13 @@ export function markdownToSlate(markdownText: string): EditorValue {
   return processedState as EditorValue;
 }
 
-// function mentionToText(slateNode: BlockType | LeafType): BlockType | LeafType {
-//   if (isBlock(slateNode)) {
-//     if (slateNode.type === Nodes.Mention) {
-//       return {
-//         text:
-//           MentionSymbol[(slateNode as MentionElement).target] +
-//           (slateNode as MentionElement).character,
-//       };
-//     }
-
-//     if (slateNode.children) {
-//       // eslint-disable-next-line no-param-reassign
-//       return {
-//         ...slateNode,
-//         children: slateNode.children.map((child) => mentionToText(child)),
-//       };
-//     }
-//   }
-
-//   return slateNode;
-// }
-
-const serializeTransformElement: Partial<Record<Element['type'], (el: Element) => Element>> = {
-  [ELEMENT_LIC]: (el: ListItemContentElement) =>
-    ({ ...el, type: ELEMENT_PARAGRAPH } as ParagraphElement),
+const serializeTransformElement: Partial<Record<Element['type'], (el: Element) => Descendant>> = {
+  [ELEMENT_MENTION]: (el: MentionElement) => ({ text: `${MentionSymbol[el.type]}${el.value}` }),
 };
 
 export function slateToMarkdown(slateState: EditorValue) {
   return slateState
-
+    .map((v) => transformNodes(v, serializeTransformElement))
     .map((v) => serialize(v as any, SERIALIZE_OPTS as any))
     .join('')
     .replaceAll('<br>', '')

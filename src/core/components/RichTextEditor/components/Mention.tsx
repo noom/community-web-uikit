@@ -13,16 +13,18 @@ export type MentionProps = {
   attributes?: any;
 };
 
-export const Mention = ({ attributes, character, target = 'user', children }) => {
+export const Mention = (props: MentionProps) => {
+  const { attributes, target = 'user', children, element } = props;
+
+  console.log(props);
+
+  const { value } = element;
+
   return (
-    <Link
-      {...attributes}
-      contentEditable={false}
-      data-cy={`mention-${character.replace(' ', '-')}`}
-    >
+    <Link {...attributes} contentEditable={false} data-cy={`mention-${value?.replace(' ', '-')}`}>
       {children}
       {MentionSymbol[target]}
-      {character}
+      {value}
     </Link>
   );
 };

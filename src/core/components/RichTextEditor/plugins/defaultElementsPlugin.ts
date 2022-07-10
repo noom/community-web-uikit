@@ -9,6 +9,7 @@ import {
   createTodoListPlugin,
   createLinkPlugin,
   createPlugins,
+  createComboboxPlugin,
   ELEMENT_BLOCKQUOTE,
   ELEMENT_CODE_LINE,
   ELEMENT_H1,
@@ -27,12 +28,12 @@ import {
 } from '@udecode/plate';
 import { Box, Link, H1, H2, H3, List, ListItem } from '@noom/wax-component-library';
 
-import { Mention } from '../components/Mention';
 import { EditorValue, Editor } from '../models';
 
 import { resetBlockTypePlugin } from './resetBlockTypePlugin';
 import { softBreakPlugin } from './softBreakPlugin';
 import { exitBreakPlugin } from './exitBreakPlugin';
+import { createMentionPlugin, Mention, MentionInput } from './mentionPlugin';
 
 export const defaultElementsPlugins = createPlugins<EditorValue, Editor>(
   [
@@ -45,6 +46,8 @@ export const defaultElementsPlugins = createPlugins<EditorValue, Editor>(
     createListPlugin(),
     createTodoListPlugin(),
     createLinkPlugin(),
+    createMentionPlugin(),
+    createComboboxPlugin({ options: { insertSpaceAfterMention: true } }),
   ],
   {
     components: {
@@ -57,7 +60,7 @@ export const defaultElementsPlugins = createPlugins<EditorValue, Editor>(
       [ELEMENT_LINK]: withProps(Link, { rel: 'noreferrer' }),
 
       [ELEMENT_MENTION]: Mention,
-      [ELEMENT_MENTION_INPUT]: Box,
+      [ELEMENT_MENTION_INPUT]: MentionInput,
 
       [ELEMENT_PARAGRAPH]: withProps(Box, { as: 'p' }),
       [ELEMENT_TODO_LI]: ListItem,

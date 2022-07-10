@@ -64,10 +64,10 @@ const SocialMentionItem = ({ id, focused, isLastItem, loadMore = () => {}, rootE
 
 SocialMentionItem.propTypes = {
   id: PropTypes.string, // userId
-  focused: PropTypes.bool.isRequired,
+  focused: PropTypes.bool,
   isLastItem: PropTypes.bool.isRequired,
   loadMore: PropTypes.func,
-  rootEl: PropTypes.element.isRequired,
+  rootEl: PropTypes.element,
 };
 
 export default SocialMentionItem;
