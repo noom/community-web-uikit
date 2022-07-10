@@ -78,6 +78,8 @@ export interface MentionInputElement extends TMentionInputElement {
 
 export interface MentionElement extends TMentionElement {
   type: typeof ELEMENT_MENTION;
+  id: string;
+  value: string;
   children: [EmptyText];
 }
 
@@ -156,15 +158,6 @@ export interface ImageElement extends TImageElement, BlockElement {
   type: typeof ELEMENT_IMAGE;
   children: [EmptyText];
 }
-
-export type MentionTarget = 'user' | 'tag';
-
-export type MentionData = {
-  avatar: string;
-  display: string;
-  id: string;
-  isLastItem: boolean;
-};
 
 // export type MentionElement = {
 //   type: 'mention';

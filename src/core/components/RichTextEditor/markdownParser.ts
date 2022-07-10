@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import slate, { serialize, defaultNodeTypes } from 'remark-slate';
 import { ELEMENT_BLOCKQUOTE, ELEMENT_MENTION, isElement, ELEMENT_PARAGRAPH } from '@udecode/plate';
 
-import { MentionSymbol } from './plugins/mentionPlugin';
+import { MentionSymbol } from './plugins/mentionPlugin/constants';
 
 import { EMPTY_VALUE } from './constants';
 import {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, StyleProps, ButtonProps } from '@noom/wax-component-library';
+import { Box, StyleProps } from '@noom/wax-component-library';
 
 import {
   withPlateEventProvider,
@@ -38,16 +38,13 @@ import { isActiveLink } from '../utils';
 
 export type ToolbarProps = {
   isVisible?: boolean;
-  isDisabled?: boolean;
-  size?: ButtonProps['size'];
-  colorScheme?: ButtonProps['colorScheme'];
 };
 
 export const ToolbarWrap = withPlateEventProvider((props: StyleProps) => (
   <Box display="flex" mb={1} {...props} />
 ));
 
-export const Toolbar = () => {
+export const Toolbar = ({ isVisible }: ToolbarProps) => {
   const editor = usePlateEditorRef<EditorValue, Editor>();
 
   if (!editor) {
@@ -55,8 +52,8 @@ export const Toolbar = () => {
   }
 
   return (
-    <ToolbarWrap>
-      <MarkToolbarButton type={getPluginType(editor, MARK_BOLD)} icon={<MdFormatBold />} />
+    <ToolbarWrap display={isVisible ? 'flex' : 'none'}>
+      <MarkToolbarButton type={getPluginType(editor, MARK_BOLD)} icon={<MdFormatBold />} dis />
       <MarkToolbarButton type={getPluginType(editor, MARK_ITALIC)} icon={<MdFormatItalic />} />
       <MarkToolbarButton
         type={getPluginType(editor, MARK_STRIKETHROUGH)}

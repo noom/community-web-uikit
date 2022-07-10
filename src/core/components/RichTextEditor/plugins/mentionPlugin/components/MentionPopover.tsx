@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import {
   Data,
   NoData,
@@ -12,12 +12,13 @@ import {
   useEventEditorSelectors,
 } from '@udecode/plate';
 
-import { MentionPlugin } from '../models';
+import { MentionPlugin, MentionItem } from '../models';
 
 export interface MentionComboboxProps<TData extends Data = NoData>
   extends Partial<ComboboxProps<TData>> {
   pluginKey?: string;
   onMentionSearchChange?: (search: string) => void;
+  onMentionSelect?: (item: MentionItem, search: string) => void;
 }
 
 export const MentionPopover = <TData extends Data = NoData>({

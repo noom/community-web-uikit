@@ -1,15 +1,8 @@
-import React, {
-  useCallback,
-  useMemo,
-  useState,
-  useLayoutEffect,
-  ReactNode,
-  useEffect,
-} from 'react';
+import React, { useCallback, useState, ReactNode } from 'react';
 
 import { Plate, TEditableProps, createPlugins } from '@udecode/plate';
 
-import { Box, Size, ColorScheme } from '@noom/wax-component-library';
+import { Box } from '@noom/wax-component-library';
 
 import { EditorValue, Editor } from '../models';
 import { isEmptyValue, calculateRowStyles } from '../utils';
@@ -26,7 +19,6 @@ export const renderMentionItem = (
   // loadMore: () => void,
   // rootEl: React.MutableRefObject<HTMLElement | undefined>,
 ) => {
-  console.log(data.item.key, data.item.data);
   return (
     <SocialMentionItem
       // TODO: Add rootEl with actual popover scrolling element to enable infinite scroll
@@ -55,15 +47,15 @@ type RichTextEditorProps = {
   onKeyPress?: (event: React.KeyboardEvent) => void;
   // mentionAllowed?: boolean;
   queryMentionees?: (search: string, callback: (data: MentionData[]) => void) => MentionData[];
-  loadMoreMentionees?: () => [];
+  // loadMoreMentionees?: () => [];
   placeholder?: string;
   isDisabled?: boolean;
   isInvalid?: boolean;
   isToolbarVisible?: boolean;
   prepend?: ReactNode;
   append?: ReactNode;
-  size?: Size;
-  colorScheme?: ColorScheme;
+  // size?: Size;
+  // colorScheme?: ColorScheme;
   autoFocus?: boolean;
 };
 
@@ -84,15 +76,12 @@ function RichTextEditor({
   placeholder,
   prepend,
   append,
-  size,
-  colorScheme,
   isToolbarVisible = true,
   autoFocus = false,
   queryMentionees,
-  loadMoreMentionees,
 }: RichTextEditorProps) {
   const [mentionData, setMentionData] = useState<MentionItem[]>([]);
-  const [mentions, setMentions] = useState<MentionItem[]>([]);
+
   const onMentionSearchChange = useCallback(
     (search: string) => {
       if (search) {
@@ -102,23 +91,19 @@ function RichTextEditor({
     [setMentionData, queryMentionees],
   );
 
-  const [isFocused, setIsFocused] = useState(autoFocus);
-
   function handleChange(newValue: EditorValue) {
     if (isEmptyValue(newValue)) {
       onClear?.();
     }
-    onChange({ value: newValue, lastMentionText: '', mentions });
+    onChange({ value: newValue, lastMentionText: '', mentions: [] });
   }
 
   const handleFocus = React.useCallback(() => {
     onFocus?.();
-    setIsFocused(true);
   }, [onFocus]);
 
   const handleBlur = React.useCallback(() => {
     onBlur?.();
-    setIsFocused(false);
   }, [onBlur]);
 
   const editableProps: TEditableProps<EditorValue> = {
@@ -132,19 +117,20 @@ function RichTextEditor({
     onFocus: handleFocus,
     onBlur: handleBlur,
     style: calculateRowStyles(rows, maxRows),
+    onKeyDown: onKeyPress,
   };
 
   return (
     <>
-      <Toolbar />
+      <Toolbar isVisible={isToolbarVisible} />
 
       <Box
-        paddingX={1}
         border="1px solid"
         borderColor={isInvalid ? 'error.500' : 'gray.200'}
         boxSizing="border-box"
         borderRadius="md"
         cursor="text"
+        paddingX={1}
       >
         {prepend}
 

@@ -17,9 +17,9 @@ import {
   getEditorString,
   insertText as insertEditorText,
 } from '@udecode/plate';
-import { Block, Editor, MentionElement, MentionTarget } from './models';
+import { Block, Editor } from './models';
 
-import { EMPTY_VALUE, Nodes } from './constants';
+import { EMPTY_VALUE } from './constants';
 
 export function getSelectedText(editor: Editor) {
   if (editor.selection) {
@@ -93,40 +93,6 @@ export function isActiveLink(editor: Editor) {
 
   return isLink;
 }
-
-export function insertMention(
-  editor: ReactEditor,
-  character: string,
-  target: MentionTarget = 'user',
-) {
-  const mention: MentionElement = {
-    type: Nodes.Mention,
-    character,
-    target,
-    children: [{ text: '' }],
-  };
-  Transforms.insertNodes(editor, mention);
-  Transforms.move(editor);
-}
-
-// export function insertFocusSaver(editor: WithFocusSaver<ReactEditor>) {
-//   const currentSelection = editor.selection;
-//   const hasSelection = !!currentSelection;
-
-//   if (hasSelection) {
-//     Editor.addMark(editor, Marks.FocusSaver, true);
-//     editor.prevSelection = { ...currentSelection };
-//   }
-// }
-
-// export function removeFocusSaver(editor: WithFocusSaver<ReactEditor>) {
-//   const { prevSelection } = editor;
-
-//   if (prevSelection) {
-//     editor.prevSelection = undefined;
-//     Editor.removeMark(editor, Marks.FocusSaver);
-//   }
-// }
 
 export function resetSelection(editor: ReactEditor) {
   const point = { path: [0, 0], offset: 0 };
