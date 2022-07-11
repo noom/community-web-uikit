@@ -1,6 +1,6 @@
-import { MentionTarget } from './models';
+import { MentionType } from './models';
 
-export const MentionSymbol: Record<MentionTarget, string> = {
-  mention: '@',
+export const MentionSymbol: Record<MentionType, string> = {
+  user: '@',
   tag: '#',
 };

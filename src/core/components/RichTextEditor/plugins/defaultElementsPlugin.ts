@@ -48,7 +48,12 @@ export const defaultElementsPlugins = createPlugins<EditorValue, Editor>(
       options: {
         insertSpaceAfterMention: true,
         createMentionNode: (item) => {
-          return { type: ELEMENT_MENTION, id: item.key, value: item.text } as MentionElement;
+          return {
+            type: ELEMENT_MENTION,
+            id: item.key,
+            value: item.text,
+            mentionType: 'user',
+          } as MentionElement;
         },
       },
     }),

@@ -87,6 +87,7 @@ const PostEditor = ({ postId, onSave, className, placeholder }) => {
     <PostEditorContainer className={className}>
       <ContentContainer>
         <Content
+          id={postId}
           data={{ text: markup }}
           dataType={dataType}
           placeholder={placeholder}
@@ -95,6 +96,7 @@ const PostEditor = ({ postId, onSave, className, placeholder }) => {
         />
         {childImagePosts.length > 0 && (
           <Content
+            id={postId}
             data={childImagePosts}
             dataType={PostDataType.ImagePost}
             onRemoveChild={handleRemoveChild}
@@ -102,6 +104,7 @@ const PostEditor = ({ postId, onSave, className, placeholder }) => {
         )}
         {childVideoPosts.length > 0 && (
           <Content
+            id={postId}
             data={childVideoPosts}
             dataType={PostDataType.VideoPost}
             onRemoveChild={handleRemoveChild}

@@ -13,7 +13,7 @@ export type MentionProps = {
 export const Mention = (props: MentionProps) => {
   const { attributes, children, element } = props;
 
-  const { value, type } = element;
+  const { value, mentionType } = element;
 
   return (
     <Link
@@ -23,7 +23,7 @@ export const Mention = (props: MentionProps) => {
       data-cy={`mention-${value?.replace(' ', '-')}`}
     >
       {children}
-      {MentionSymbol[type]}
+      {MentionSymbol[mentionType]}
       {value}
     </Link>
   );

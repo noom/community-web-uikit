@@ -38,14 +38,15 @@ import { isActiveLink } from '../utils';
 
 export type ToolbarProps = {
   isVisible?: boolean;
+  editorId?: string;
 };
 
 export const ToolbarWrap = withPlateEventProvider((props: StyleProps) => (
   <Box display="flex" mb={1} {...props} />
 ));
 
-export const Toolbar = ({ isVisible }: ToolbarProps) => {
-  const editor = usePlateEditorRef<EditorValue, Editor>();
+export const Toolbar = ({ isVisible, editorId }: ToolbarProps) => {
+  const editor = usePlateEditorRef<EditorValue, Editor>(editorId);
 
   if (!editor) {
     return null;

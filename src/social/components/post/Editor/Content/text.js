@@ -12,10 +12,11 @@ const TextareaWrapper = styled.div`
   border: none;
 `;
 
-const TextContent = ({ text, placeholder, onChange, queryMentionees }) => {
+const TextContent = ({ id, text, placeholder, onChange, queryMentionees }) => {
   return (
     <TextareaWrapper>
       <Editor
+        id={`update-post-${id}`}
         autoFocus
         placeholder={placeholder}
         type="text"

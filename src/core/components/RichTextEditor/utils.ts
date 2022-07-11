@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { Transforms, Descendant } from 'slate';
+import { Transforms, Descendant, Editor as SlateEditor, BaseEditor } from 'slate';
 import { ReactEditor } from 'slate-react';
 import isEqual from 'lodash.isequal';
 
@@ -17,7 +17,7 @@ import {
   getEditorString,
   insertText as insertEditorText,
 } from '@udecode/plate';
-import { Block, Editor } from './models';
+import { Editor } from './models';
 
 import { EMPTY_VALUE } from './constants';
 
@@ -50,7 +50,7 @@ export function isLinkActive(editor: Editor) {
 
 export function removeLink(editor: Editor) {
   unwrapNodes(editor, {
-    match: (n: Block) => !isEditor(n) && isElement(n) && n.type === ELEMENT_LINK,
+    match: (n) => !isEditor(n) && isElement(n) && n.type === ELEMENT_LINK,
   });
 }
 
@@ -111,4 +111,13 @@ export function calculateRowStyles(rows?: number, maxRows?: number) {
     minHeight: adjustedRows ? `${adjustedRows * 3}em` : undefined,
     maxHeight: maxRows ? `${maxRows * 3}em` : undefined,
   };
+}
+
+export function clear(editor: Editor) {
+  Transforms.delete(editor as BaseEditor, {
+    at: {
+      anchor: SlateEditor.start(editor as BaseEditor, []),
+      focus: SlateEditor.end(editor as BaseEditor, []),
+    },
+  });
 }

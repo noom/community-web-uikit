@@ -34,7 +34,7 @@ const plugins = createPlugins<EditorValue, Editor>([
 ]);
 
 type RichTextEditorProps = {
-  id?: string;
+  id: string;
   name?: string;
   initialValue?: EditorValue;
   rows?: number;
@@ -107,7 +107,6 @@ function RichTextEditor({
   }, [onBlur]);
 
   const editableProps: TEditableProps<EditorValue> = {
-    id,
     name,
     onClick,
     placeholder,
@@ -122,7 +121,7 @@ function RichTextEditor({
 
   return (
     <>
-      <Toolbar isVisible={isToolbarVisible} />
+      <Toolbar editorId={id} isVisible={isToolbarVisible} />
 
       <Box
         border="1px solid"
@@ -135,6 +134,7 @@ function RichTextEditor({
         {prepend}
 
         <Plate<EditorValue>
+          id={id}
           onChange={(newValue) => handleChange(newValue)}
           plugins={plugins}
           initialValue={initialValue}

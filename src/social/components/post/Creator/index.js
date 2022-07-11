@@ -292,6 +292,7 @@ const PostCreatorBar = ({
       </ConditionalRender>
       <PostContainer>
         <Editor
+          id="create-post"
           data-qa-anchor="social-create-post-input"
           multiline
           value={postText}

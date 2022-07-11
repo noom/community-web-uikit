@@ -1,6 +1,6 @@
 import { TElement, Data, NoData, CreateMentionNode, TComboboxItemWithData } from '@udecode/plate';
 
-export type MentionTarget = 'mention' | 'tag';
+export type MentionType = 'user' | 'tag';
 
 export type MentionElement = TElement & {
   value: string;
@@ -26,3 +26,11 @@ export type MentionData = {
 };
 
 export type MentionItem = TComboboxItemWithData<MentionData>;
+
+export type MentionOutput = {
+  id: string;
+  index: number;
+  childIndex: number;
+  plainTextIndex: number;
+  display: string;
+};

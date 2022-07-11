@@ -2,10 +2,11 @@ import React, { ReactNode, useState } from 'react';
 
 import RichTextEditor from './components/Editor';
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
-import { MentionData, EditorValue } from './models';
+import { EditorValue } from './models';
+import { MentionOutput } from './plugins/mentionPlugin/models';
 
 export type Props = {
-  id?: string;
+  id: string;
   name?: string;
   value?: string;
   rows?: number;
@@ -16,7 +17,7 @@ export type Props = {
     text: string;
     plainText: string;
     lastMentionText?: string;
-    mentions: MentionData[];
+    mentions: MentionOutput[];
   }) => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
   mentionAllowed?: boolean;
@@ -31,21 +32,19 @@ export type Props = {
   autoFocus?: boolean;
 };
 
-export function Editor({ disabled, invalid, value = '', onChange, ...rest }: Props) {
+export function Editor({ id, disabled, invalid, value = '', onChange, ...rest }: Props) {
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleChange = (data: {
-    value: EditorValue;
-    lastMentionText?: string;
-    mentions: MentionData[];
-  }) => {
+  const handleChange = (data: { value: EditorValue }) => {
     const newMarkdown = slateToMarkdown(data.value);
+
     console.log(data.value, newMarkdown);
+
     onChange({
-      text: newMarkdown,
-      plainText: newMarkdown,
-      lastMentionText: data.lastMentionText,
-      mentions: data.mentions,
+      text: newMarkdown.text,
+      plainText: newMarkdown.text,
+      lastMentionText: '',
+      mentions: newMarkdown.mentions,
     });
   };
 
@@ -60,13 +59,14 @@ export function Editor({ disabled, invalid, value = '', onChange, ...rest }: Pro
 
   return (
     <RichTextEditor
+      id={id}
       onChange={(data) => handleChange(data)}
       isDisabled={disabled}
       isInvalid={invalid}
       initialValue={markdownToSlate(value)}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      isToolbarVisible={isFocused}
+      // isToolbarVisible={isFocused}
       {...rest}
     />
   );

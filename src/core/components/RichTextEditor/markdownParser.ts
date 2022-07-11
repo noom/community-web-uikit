@@ -2,9 +2,17 @@ import { unified } from 'unified';
 import markdown from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import slate, { serialize, defaultNodeTypes } from 'remark-slate';
-import { ELEMENT_BLOCKQUOTE, ELEMENT_MENTION, isElement, ELEMENT_PARAGRAPH } from '@udecode/plate';
+import {
+  ELEMENT_BLOCKQUOTE,
+  ELEMENT_MENTION,
+  isElement,
+  ELEMENT_PARAGRAPH,
+  isText,
+  ELEMENT_LI,
+} from '@udecode/plate';
 
 import { MentionSymbol } from './plugins/mentionPlugin/constants';
+import { MentionOutput } from './plugins/mentionPlugin/models';
 
 import { EMPTY_VALUE } from './constants';
 import {
@@ -14,6 +22,7 @@ import {
   BlockquoteElement,
   ParagraphElement,
   MentionElement,
+  ListItemElement,
 } from './models';
 
 const DEFAULT_HEADINGS = {
@@ -72,7 +81,7 @@ const deserializeTransformElement: Partial<Record<Element['type'], (el: Element)
     } as BlockquoteElement),
 };
 
-export function markdownToSlate(markdownText: string): EditorValue {
+export function markdownToSlate(markdownText: string, mentions?: MentionOutput[]): EditorValue {
   if (markdownText === '') {
     return [EMPTY_VALUE];
   }
@@ -91,14 +100,70 @@ export function markdownToSlate(markdownText: string): EditorValue {
 }
 
 const serializeTransformElement: Partial<Record<Element['type'], (el: Element) => Descendant>> = {
-  [ELEMENT_MENTION]: (el: MentionElement) => ({ text: `${MentionSymbol[el.type]}${el.value}` }),
+  // Render mentions as text
+  [ELEMENT_MENTION]: (el: MentionElement) => ({
+    text: `${MentionSymbol[el.mentionType]}${el.value}`,
+  }),
+
+  // Add space to list items
+  [ELEMENT_LI]: (el: ListItemElement) =>
+    ({
+      type: ELEMENT_LI,
+      children: el.children?.map((ch) =>
+        isElement(ch) && ch.type === ELEMENT_PARAGRAPH
+          ? { ...ch, children: [...(ch as ParagraphElement).children, { text: ' ' }] }
+          : ch,
+      ),
+    } as ListItemElement),
 };
 
+function exportMentions(slateState: EditorValue, text: string): MentionOutput[] {
+  const mentions = [] as MentionOutput[];
+  const lastIndexRef = { current: 0 };
+  const plainTextIndexRef = { current: 0 };
+
+  function processDescendants(decendants: Descendant[]) {
+    decendants.forEach((decendant) => {
+      if (isElement(decendant)) {
+        if (decendant.type === ELEMENT_MENTION) {
+          const display = `${MentionSymbol[decendant.mentionType]}${decendant.value}`;
+          const index =
+            text.substring(lastIndexRef.current).indexOf(display) + lastIndexRef.current;
+
+          mentions.push({
+            id: decendant.id,
+            display,
+            index,
+            plainTextIndex: index,
+            childIndex: 0,
+          });
+
+          lastIndexRef.current = index + display.length;
+        }
+
+        if (decendant.children) {
+          processDescendants(decendant.children);
+        }
+      } else if (isText(decendant)) {
+        plainTextIndexRef.current += decendant.text?.length ?? 0;
+      }
+    });
+  }
+
+  processDescendants(slateState);
+
+  return mentions;
+}
+
 export function slateToMarkdown(slateState: EditorValue) {
-  return slateState
+  const text = slateState
     .map((v) => transformNodes(v, serializeTransformElement))
     .map((v) => serialize(v as any, SERIALIZE_OPTS as any))
     .join('')
     .replaceAll('<br>', '')
     .trim();
+
+  const mentions: MentionOutput[] = exportMentions(slateState, text);
+
+  return { text, mentions };
 }

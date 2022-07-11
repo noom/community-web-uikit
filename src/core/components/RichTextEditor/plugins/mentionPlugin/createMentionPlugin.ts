@@ -24,6 +24,7 @@ export const createMentionPlugin = createPluginFactory<MentionPlugin>({
   options: {
     trigger: '@',
     createMentionNode: (item) => ({ value: item.text }),
+    insertSpaceAfterMention: true,
   },
   plugins: [
     {
