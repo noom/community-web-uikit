@@ -53,7 +53,7 @@ function TextContent({ text, postMaxLines, mentionees }) {
   if (textContent && isExpanded) return textContent;
 
   return (
-    <Truncate
+    <Truncate.Atom
       lines={postMaxLines}
       ellipsis={
         <ReadMoreButton onClick={onExpand}>
@@ -62,7 +62,7 @@ function TextContent({ text, postMaxLines, mentionees }) {
       }
     >
       {textContent}
-    </Truncate>
+    </Truncate.Atom>
   );
 }
 

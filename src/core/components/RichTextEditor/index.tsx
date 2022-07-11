@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useLayoutEffect } from 'react';
 
-import RichTextEditor from './components/Editor';
+import RichTextEditor, { useEditor } from './components/Editor';
 import { markdownToSlate, slateToMarkdown } from './markdownParser';
 import { EditorValue } from './models';
 import { MentionOutput } from './plugins/mentionPlugin/models';
@@ -33,7 +33,13 @@ export type Props = {
 };
 
 export function Editor({ id, disabled, invalid, value = '', onChange, ...rest }: Props) {
-  const [isFocused, setIsFocused] = useState(false);
+  const { clear: clearEditor } = useEditor(id);
+
+  useLayoutEffect(() => {
+    if (value === '') {
+      clearEditor();
+    }
+  }, [value, clearEditor]);
 
   const handleChange = (data: { value: EditorValue }) => {
     const newMarkdown = slateToMarkdown(data.value);
@@ -48,15 +54,6 @@ export function Editor({ id, disabled, invalid, value = '', onChange, ...rest }:
     });
   };
 
-  // To reduce visual clutter show toolbar on focus only
-  const handleFocus = React.useCallback(() => {
-    setIsFocused(true);
-  }, []);
-
-  const handleBlur = React.useCallback(() => {
-    setIsFocused(false);
-  }, []);
-
   return (
     <RichTextEditor
       id={id}
@@ -64,8 +61,6 @@ export function Editor({ id, disabled, invalid, value = '', onChange, ...rest }:
       isDisabled={disabled}
       isInvalid={invalid}
       initialValue={markdownToSlate(value)}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
       // isToolbarVisible={isFocused}
       {...rest}
     />

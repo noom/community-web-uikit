@@ -1,6 +1,6 @@
 import React, { useCallback, useState, ReactNode } from 'react';
 
-import { Plate, TEditableProps, createPlugins } from '@udecode/plate';
+import { Plate, TEditableProps, createPlugins, getPlateActions } from '@udecode/plate';
 
 import { Box } from '@noom/wax-component-library';
 
@@ -28,6 +28,15 @@ export const renderMentionItem = (
   );
 };
 
+export const useEditor = (editorId: string) => {
+  const clear = useCallback(() => {
+    getPlateActions(editorId).value([EMPTY_VALUE]);
+    getPlateActions(editorId).resetEditor();
+  }, [editorId]);
+
+  return { clear };
+};
+
 const plugins = createPlugins<EditorValue, Editor>([
   ...defaultMarksPlugins,
   ...defaultElementsPlugins,
@@ -45,7 +54,7 @@ type RichTextEditorProps = {
   onFocus?: () => void;
   onBlur?: () => void;
   onKeyPress?: (event: React.KeyboardEvent) => void;
-  // mentionAllowed?: boolean;
+  mentionAllowed?: boolean;
   queryMentionees?: (search: string, callback: (data: MentionData[]) => void) => MentionData[];
   // loadMoreMentionees?: () => [];
   placeholder?: string;
@@ -79,6 +88,7 @@ function RichTextEditor({
   isToolbarVisible = true,
   autoFocus = false,
   queryMentionees,
+  mentionAllowed,
 }: RichTextEditorProps) {
   const [mentionData, setMentionData] = useState<MentionItem[]>([]);
 
@@ -141,11 +151,13 @@ function RichTextEditor({
           editableProps={editableProps}
         >
           <BubbleToolbar />
-          <MentionPopover<MentionData>
-            items={mentionData}
-            onRenderItem={renderMentionItem}
-            onMentionSearchChange={onMentionSearchChange}
-          />
+          {mentionAllowed && (
+            <MentionPopover<MentionData>
+              items={mentionData}
+              onRenderItem={renderMentionItem}
+              onMentionSearchChange={onMentionSearchChange}
+            />
+          )}
         </Plate>
         {append}
       </Box>
