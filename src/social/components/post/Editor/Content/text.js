@@ -12,7 +12,7 @@ const TextareaWrapper = styled.div`
   border: none;
 `;
 
-const TextContent = ({ id, text, placeholder, onChange, queryMentionees }) => {
+const TextContent = ({ id, text, initialMentionees, placeholder, onChange, queryMentionees }) => {
   return (
     <TextareaWrapper>
       <Editor
@@ -24,6 +24,7 @@ const TextContent = ({ id, text, placeholder, onChange, queryMentionees }) => {
         multiline
         mentionAllowed
         queryMentionees={queryMentionees}
+        initialMentionees={initialMentionees}
         onChange={onChange}
       />
     </TextareaWrapper>

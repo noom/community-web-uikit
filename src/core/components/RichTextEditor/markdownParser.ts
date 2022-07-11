@@ -11,14 +11,22 @@ import {
   ELEMENT_LI,
 } from '@udecode/plate';
 
-import { MentionSymbol } from './plugins/mentionPlugin/constants';
+import { MentionSymbol, ObfuscatedMentionRegex } from './plugins/mentionPlugin/constants';
 import { MentionOutput } from './plugins/mentionPlugin/models';
+import {
+  stripMentionTags,
+  mentionElementToStringWithTags,
+  mentionElementToStringWithoutTags,
+  obfuscateMentionTags,
+  breakTextNodeIntoMentions,
+} from './plugins/mentionPlugin/utils';
 
 import { EMPTY_VALUE } from './constants';
 import {
   EditorValue,
   Descendant,
   Element,
+  RichText,
   BlockquoteElement,
   ParagraphElement,
   MentionElement,
@@ -51,26 +59,43 @@ const SERIALIZE_OPTS = {
   },
 };
 
+type TransformMetadata = { mentions?: MentionOutput[] };
+type TransformMap = Partial<
+  Record<
+    Element['type'] | 'text',
+    (el: Descendant, metadata?: TransformMetadata) => Descendant | Descendant[]
+  >
+>;
+
 function transformNodes(
   slateNode: Descendant,
   transformations: typeof serializeTransformElement,
-): Descendant {
+  metadata?: TransformMetadata,
+): Descendant | Descendant[] {
   const node =
     isElement(slateNode) && typeof transformations[slateNode.type] === 'function'
-      ? transformations[slateNode.type]?.(slateNode)
+      ? transformations[slateNode.type]?.(slateNode, metadata)
       : slateNode;
 
   if (isElement(node) && node.children) {
     return {
       ...node,
-      children: node.children.map((child) => transformNodes(child, transformations)),
+      children: node.children.flatMap(
+        (child) => transformNodes(child, transformations, metadata),
+        1,
+      ),
     } as Descendant;
+  }
+
+  if (isText(node) && transformations.text) {
+    return transformations.text(node) as Descendant;
   }
 
   return node as Descendant;
 }
 
-const deserializeTransformElement: Partial<Record<Element['type'], (el: Element) => Descendant>> = {
+const deserializeTransformElement: TransformMap = {
+  // Unwrap the paragraph from block quote children
   [ELEMENT_BLOCKQUOTE]: (el: BlockquoteElement) =>
     ({
       type: ELEMENT_BLOCKQUOTE,
@@ -79,6 +104,7 @@ const deserializeTransformElement: Partial<Record<Element['type'], (el: Element)
           ? (el.children?.[0] as unknown as ParagraphElement).children
           : el.children,
     } as BlockquoteElement),
+  text: (el: RichText) => breakTextNodeIntoMentions(el, ObfuscatedMentionRegex),
 };
 
 export function markdownToSlate(markdownText: string, mentions?: MentionOutput[]): EditorValue {
@@ -90,62 +116,74 @@ export function markdownToSlate(markdownText: string, mentions?: MentionOutput[]
     .use(markdown)
     .use(remarkGfm)
     .use(slate, SERIALIZE_OPTS)
-    .processSync(markdownText).result as EditorValue;
+    .processSync(obfuscateMentionTags(markdownText)).result as EditorValue;
 
   const processedState = slateState.map((node) =>
-    transformNodes(node, deserializeTransformElement),
+    transformNodes(node, deserializeTransformElement, { mentions }),
   );
 
   return processedState as EditorValue;
 }
 
-const serializeTransformElement: Partial<Record<Element['type'], (el: Element) => Descendant>> = {
+const serializeTransformElement: TransformMap = {
   // Render mentions as text
   [ELEMENT_MENTION]: (el: MentionElement) => ({
-    text: `${MentionSymbol[el.mentionType]}${el.value}`,
+    text: `${MentionSymbol[el.mentionType]}[${el.value}](${el.id})`,
   }),
 
-  // Add space to list items
+  // Add space to list items to prevent broken markdown when the last text node does not have a space
   [ELEMENT_LI]: (el: ListItemElement) =>
     ({
       type: ELEMENT_LI,
-      children: el.children?.map((ch) =>
-        isElement(ch) && ch.type === ELEMENT_PARAGRAPH
-          ? { ...ch, children: [...(ch as ParagraphElement).children, { text: ' ' }] }
-          : ch,
-      ),
+      children: el.children?.map((ch) => {
+        if (isElement(ch) && ch.type === ELEMENT_PARAGRAPH && ch.children) {
+          const lastNode = ch.children[Math.max(ch.children.length - 1, 0)];
+          if (isText(lastNode) && lastNode.text?.[Math.max(lastNode.text.length - 1, 0)] !== ' ') {
+            return { type: ELEMENT_PARAGRAPH, children: [...ch.children, { text: ' ' }] };
+          }
+        }
+
+        return ch;
+      }),
     } as ListItemElement),
 };
 
+/** Export mentions from Slate state to a format Amity understands (react-mentions) */
 function exportMentions(slateState: EditorValue, text: string): MentionOutput[] {
   const mentions = [] as MentionOutput[];
   const lastIndexRef = { current: 0 };
   const plainTextIndexRef = { current: 0 };
+  const textWithRemovedMentionTags = stripMentionTags(text);
 
   function processDescendants(decendants: Descendant[]) {
     decendants.forEach((decendant) => {
       if (isElement(decendant)) {
         if (decendant.type === ELEMENT_MENTION) {
-          const display = `${MentionSymbol[decendant.mentionType]}${decendant.value}`;
+          const displayWithTags = mentionElementToStringWithTags(decendant as MentionElement);
+          const displayWithoutTags = mentionElementToStringWithoutTags(decendant as MentionElement);
           const index =
-            text.substring(lastIndexRef.current).indexOf(display) + lastIndexRef.current;
+            text.substring(lastIndexRef.current).indexOf(displayWithTags) + lastIndexRef.current;
+
+          const plainTextIndex =
+            textWithRemovedMentionTags
+              .substring(plainTextIndexRef.current)
+              .indexOf(displayWithoutTags) + plainTextIndexRef.current;
 
           mentions.push({
-            id: decendant.id,
-            display,
+            id: decendant.id as string,
+            display: displayWithoutTags,
             index,
-            plainTextIndex: index,
+            plainTextIndex,
             childIndex: 0,
           });
 
-          lastIndexRef.current = index + display.length;
+          lastIndexRef.current = index + displayWithTags.length;
+          plainTextIndexRef.current = plainTextIndex + displayWithoutTags.length;
         }
 
         if (decendant.children) {
           processDescendants(decendant.children);
         }
-      } else if (isText(decendant)) {
-        plainTextIndexRef.current += decendant.text?.length ?? 0;
       }
     });
   }
