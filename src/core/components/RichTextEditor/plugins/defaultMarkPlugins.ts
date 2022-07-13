@@ -16,6 +16,13 @@ import { createFocusSaverPlugin } from './focusSaverPlugin';
 
 import { EditorValue, Editor, MARK_STRIKETHROUGH } from '../models';
 
+export const defaultMarkComponentMap = {
+  [MARK_BOLD]: withProps(Text, { as: 'strong' }),
+  [MARK_CODE]: withProps(Text, { as: 'code' }),
+  [MARK_ITALIC]: withProps(Text, { as: 'em' }),
+  [MARK_STRIKETHROUGH_ORIGINAL]: withProps(Text, { as: 's' }),
+};
+
 export const defaultMarksPlugins = createPlugins<EditorValue, Editor>(
   [
     createBoldPlugin(),
@@ -25,12 +32,7 @@ export const defaultMarksPlugins = createPlugins<EditorValue, Editor>(
     createFocusSaverPlugin(),
   ],
   {
-    components: {
-      [MARK_BOLD]: withProps(Text, { as: 'strong' }),
-      [MARK_CODE]: withProps(Text, { as: 'code' }),
-      [MARK_ITALIC]: withProps(Text, { as: 'em' }),
-      [MARK_STRIKETHROUGH_ORIGINAL]: withProps(Text, { as: 's' }),
-    },
+    components: defaultMarkComponentMap,
     // Override because remark-slate can not be reconfigured for it
     overrideByKey: {
       [MARK_STRIKETHROUGH_ORIGINAL]: { key: MARK_STRIKETHROUGH },

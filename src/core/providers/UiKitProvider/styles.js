@@ -11,26 +11,10 @@ export const UIStyles = styled.div`
     box-sizing: border-box;
   }
 
-  blockquote {
-    border-left: 0.3em solid lightgrey;
-    padding-left: 1em;
-    margin-left: 0.5em;
-  }
-
   .slate-ToolbarButton-active {
     color: white;
     background-color: var(--chakra-colors-primary-500);
     border-radius: 15%;
-  }
-
-  ul,
-  ol {
-    padding-inline-start: 1.5em;
-  }
-
-  p {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
   }
 
   li > p {

@@ -6,7 +6,7 @@ import { EditorValue } from './models';
 import { MentionOutput } from './plugins/mentionPlugin/models';
 import { stripMentionTags } from './plugins/mentionPlugin/utils';
 
-export type Props = {
+export type AmityAdapterProps = {
   id: string;
   name?: string;
   value?: string;
@@ -29,7 +29,7 @@ export type Props = {
   autoFocus?: boolean;
 };
 
-export function Editor({
+export function AmityAdapterEditor({
   id,
   disabled,
   invalid,
@@ -38,7 +38,7 @@ export function Editor({
   onChange,
   rows = 3,
   ...rest
-}: Props) {
+}: AmityAdapterProps) {
   const { clear: clearEditor } = useEditor(id);
 
   useLayoutEffect(() => {
@@ -71,4 +71,4 @@ export function Editor({
   );
 }
 
-export default Editor;
+export default AmityAdapterEditor;

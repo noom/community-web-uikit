@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import RichTextEditor from './index.tsx';
+import RichTextEditor from '.';
 
 export default {
   title: 'Ui Only/RichTextEditor',
