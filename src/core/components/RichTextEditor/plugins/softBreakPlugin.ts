@@ -13,7 +13,7 @@ export const softBreakPlugin: Partial<EditorPlugin<SoftBreakPlugin>> = {
       {
         hotkey: 'enter',
         query: {
-          allow: [ELEMENT_CODE_BLOCK, ELEMENT_BLOCKQUOTE, ELEMENT_TD],
+          allow: [ELEMENT_CODE_BLOCK, ELEMENT_TD],
         },
       },
     ],

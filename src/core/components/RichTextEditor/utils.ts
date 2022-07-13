@@ -100,7 +100,7 @@ export function resetSelection(editor: ReactEditor) {
 }
 
 export function calculateRowStyles(rows?: number, maxRows?: number) {
-  if (!rows || !maxRows) {
+  if (!rows && !maxRows) {
     return {};
   }
 
@@ -108,8 +108,8 @@ export function calculateRowStyles(rows?: number, maxRows?: number) {
 
   return {
     overflow: 'auto',
-    minHeight: adjustedRows ? `${adjustedRows * 3}em` : undefined,
-    maxHeight: maxRows ? `${maxRows * 3}em` : undefined,
+    minHeight: adjustedRows ? `${adjustedRows * 1.3}em` : undefined,
+    maxHeight: maxRows ? `${maxRows * 1.3}em` : undefined,
   };
 }
 

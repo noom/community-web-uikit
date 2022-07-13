@@ -36,6 +36,7 @@ export function Editor({
   initialMentionees,
   value = '',
   onChange,
+  rows = 3,
   ...rest
 }: Props) {
   const { clear: clearEditor } = useEditor(id);
@@ -59,6 +60,7 @@ export function Editor({
   return (
     <RichTextEditor
       id={id}
+      rows={rows}
       onChange={(data) => handleChange(data)}
       isDisabled={disabled}
       isInvalid={invalid}

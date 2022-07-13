@@ -14,6 +14,7 @@ export const UIStyles = styled.div`
   blockquote {
     border-left: 0.3em solid lightgrey;
     padding-left: 1em;
+    margin-left: 0.5em;
   }
 
   .slate-ToolbarButton-active {
@@ -24,6 +25,11 @@ export const UIStyles = styled.div`
 
   ul {
     padding-inline-start: 1.5em;
+  }
+
+  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
   }
 
   li > p {

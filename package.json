@@ -32,7 +32,8 @@
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "@noom/wax-component-library": ">=4.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",

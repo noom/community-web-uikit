@@ -125,7 +125,6 @@ function RichTextEditor({
     readOnly: isDisabled,
     onFocus: handleFocus,
     onBlur: handleBlur,
-    style: calculateRowStyles(rows, maxRows),
     onKeyDown: onKeyPress,
   };
 
@@ -140,6 +139,8 @@ function RichTextEditor({
         borderRadius="md"
         cursor="text"
         paddingX={1}
+        paddingY={2}
+        {...calculateRowStyles(rows, maxRows)}
       >
         {prepend}
 

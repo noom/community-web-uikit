@@ -67,7 +67,7 @@ const decorator = (Story, { globals: { [GLOBAL_NAME]: val } }) => {
   };
 
   return (
-    <ThemeProvider theme={compassTheme}>
+    <ThemeProvider theme={compassTheme} resetCSS>
       <UiKitProvider
         ref={ref}
         key={userId}
