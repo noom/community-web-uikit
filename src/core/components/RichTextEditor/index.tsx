@@ -49,8 +49,6 @@ export function Editor({
   const handleChange = (data: { value: EditorValue }) => {
     const newMarkdown = slateToMarkdown(data.value);
 
-    console.log(data.value, newMarkdown);
-
     onChange({
       text: newMarkdown.text,
       plainText: stripMentionTags(newMarkdown.text),
