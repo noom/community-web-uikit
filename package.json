@@ -93,6 +93,7 @@
     "polished": "^3.6.6",
     "prop-types": "^15.7.2",
     "react-autosize-textarea": "^7.1.0",
+    "react-dnd": "^16.0.1",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^6.6.0",
     "react-icons": "^4.4.0",
