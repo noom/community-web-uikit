@@ -23,7 +23,8 @@ export const UIStyles = styled.div`
     border-radius: 15%;
   }
 
-  ul {
+  ul,
+  ol {
     padding-inline-start: 1.5em;
   }
 
