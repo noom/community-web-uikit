@@ -13,6 +13,12 @@ import { Editor, EditorValue } from '../models';
 
 const FOCUS_SAVER_MARK = 'focus-saver';
 
+/**
+ * It is used for interacting with components outside of the editor. For example a link modal.
+ * Clicking on a modal causes the editor to lose focus. So when you get back the selector would be
+ * reset to the beginning of the end of the document. This preserves the selection to be where you
+ * left it before losing focus.
+ */
 export const createFocusSaverPlugin = createPluginFactory<EditorValue, any>({
   key: FOCUS_SAVER_MARK,
   isLeaf: true,

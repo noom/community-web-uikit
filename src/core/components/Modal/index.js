@@ -24,13 +24,7 @@ const Modal = ({ size, className, onOverlayClick, onCancel, title, footer, clean
           <Header clean={clean}>
             <span>{title}</span>
             <ConditionalRender condition={onCancel}>
-              <IconButton
-                size="sm"
-                cursor="pointer"
-                icon="close"
-                variant="outline"
-                onClick={onCancel}
-              />
+              <IconButton size="sm" icon="close" variant="outline" onClick={onCancel} />
             </ConditionalRender>
           </Header>
         </ConditionalRender>

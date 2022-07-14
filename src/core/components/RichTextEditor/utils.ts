@@ -30,11 +30,7 @@ export function getSelectedText(editor: Editor) {
 }
 
 export function isEmptyValue(value?: Descendant[]) {
-  if (!value || value.length === 0) {
-    return true;
-  }
-
-  return value.length === 1 && isEqual(EMPTY_VALUE, value[0]);
+  return value?.length === 1 && isEqual(EMPTY_VALUE, value[0]);
 }
 
 export function insertText(editor: Editor, text: string) {
@@ -85,13 +81,6 @@ export function insertLink(editor: Editor, url: string, text?: string) {
     },
     { at: editor.selection, split: true },
   );
-}
-
-export function isActiveLink(editor: Editor) {
-  const type = getPluginType(editor, ELEMENT_LINK);
-  const isLink = !!editor?.selection && someNode(editor, { match: { type } });
-
-  return isLink;
 }
 
 export function resetSelection(editor: ReactEditor) {

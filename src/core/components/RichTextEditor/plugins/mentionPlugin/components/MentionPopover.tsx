@@ -37,23 +37,12 @@ export const MentionPopover = <TData extends Data = NoData>({
   const activeId = comboboxStore.use.activeId();
   const focusedEditorId = useEventEditorSelectors.focus();
 
-  const open = comboboxStore.use.isOpen();
-  const text = comboboxStore.use.text();
+  const open = comboboxStore.use.isOpen() ?? false;
+  const text = comboboxStore.use.text() ?? '';
 
-  const isOpen = useMemo(() => {
-    if (!open || focusedEditorId !== editor.id || activeId !== id) {
-      return false;
-    }
-    return true;
-  }, [open, activeId, id, focusedEditorId, editor.id]);
-
-  // then is you are using a useEffect to fire off an async search it can be controlled like this
+  const isOpen = !(!open || focusedEditorId !== editor.id || activeId !== id);
 
   useEffect(() => {
-    if (text === null) {
-      search.current = text;
-      return;
-    }
     if (isOpen && text !== search.current) {
       search.current = text;
       if (onMentionSearchChange) {

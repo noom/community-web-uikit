@@ -34,7 +34,7 @@ import {
 import { LinkToolbarButton, UnLinkToolbarButton } from './LinkButton';
 
 import { Editor, EditorValue, MARK_STRIKETHROUGH } from '../models';
-import { isActiveLink } from '../utils';
+import { isLinkActive } from '../utils';
 
 export type ToolbarProps = {
   isVisible?: boolean;
@@ -96,7 +96,7 @@ export const BubbleToolbar = () => {
         icon={<MdFormatStrikethrough />}
       />
 
-      {isActiveLink(editor) ? (
+      {isLinkActive(editor) ? (
         <UnLinkToolbarButton icon={<MdLinkOff />} />
       ) : (
         <LinkToolbarButton icon={<MdAddLink />} />

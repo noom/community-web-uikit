@@ -198,7 +198,7 @@ export function slateToMarkdown(slateState: EditorValue) {
     .map((v) => transformNodes(v, serializeTransformElement))
     .map((v) => serialize(v as any, SERIALIZE_OPTS as any))
     .join('')
-    .replaceAll('<br>', '')
+    .replaceAll('<br>', '\n')
     .trim();
 
   const mentions: MentionOutput[] = exportMentions(slateState, text);

@@ -21,12 +21,6 @@ export const UIStyles = styled.div`
     margin: 0;
   }
 
-  /* // CSS resets to avoid inheriting from other other libraries e.g. antd.
-  & * {
-    font-size: ${({ theme }) => theme.typography.body.fontSize};
-    line-height: 1.5;
-  } */
-
   & pre {
     ${({ theme }) => theme.typography.body}
   }

@@ -19,7 +19,7 @@ import {
 
 import { usePlateEditorState, ToolbarButton, ToolbarButtonProps } from '@udecode/plate';
 
-import { removeLink, insertLink, getSelectedText, isActiveLink } from '../utils';
+import { removeLink, insertLink, getSelectedText, isLinkActive } from '../utils';
 import { Editor, EditorValue } from '../models';
 
 type LinkModalProps = {
@@ -147,7 +147,7 @@ export const LinkToolbarButton = ({ ...props }: LinkToolbarButtonProps) => {
   return (
     <>
       <ToolbarButton
-        active={isActiveLink(editor)}
+        active={isLinkActive(editor)}
         onMouseDown={async (event) => {
           onMouseDown(event);
         }}

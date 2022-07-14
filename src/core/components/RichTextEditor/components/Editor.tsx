@@ -1,4 +1,4 @@
-import React, { useCallback, useState, ReactNode } from 'react';
+import React, { useCallback, useState, ReactNode, useMemo } from 'react';
 
 import { Plate, TEditableProps, createPlugins, getPlateActions } from '@udecode/plate';
 
@@ -14,11 +14,7 @@ import { MentionPopover, MentionData, MentionItem, toMentionItem } from '../plug
 
 import SocialMentionItem from '~/core/components/SocialMentionItem';
 
-export const renderMentionItem = (
-  data: { item: MentionItem; search: string },
-  // loadMore: () => void,
-  // rootEl: React.MutableRefObject<HTMLElement | undefined>,
-) => {
+const renderMentionItem = (data: { item: MentionItem; search: string }) => {
   return (
     <SocialMentionItem
       // TODO: Add rootEl with actual popover scrolling element to enable infinite scroll
@@ -30,8 +26,9 @@ export const renderMentionItem = (
 
 export const useEditor = (editorId: string) => {
   const clear = useCallback(() => {
-    getPlateActions(editorId).value([EMPTY_VALUE]);
-    getPlateActions(editorId).resetEditor();
+    const plateActions = getPlateActions(editorId);
+    plateActions.value([EMPTY_VALUE]);
+    plateActions.resetEditor();
   }, [editorId]);
 
   return { clear };
@@ -56,15 +53,12 @@ type RichTextEditorProps = {
   onKeyPress?: (event: React.KeyboardEvent) => void;
   mentionAllowed?: boolean;
   queryMentionees?: (search: string, callback: (data: MentionData[]) => void) => MentionData[];
-  // loadMoreMentionees?: () => [];
   placeholder?: string;
   isDisabled?: boolean;
   isInvalid?: boolean;
   isToolbarVisible?: boolean;
   prepend?: ReactNode;
   append?: ReactNode;
-  // size?: Size;
-  // colorScheme?: ColorScheme;
   autoFocus?: boolean;
 };
 
@@ -86,7 +80,7 @@ function RichTextEditor({
   prepend,
   append,
   isToolbarVisible = true,
-  autoFocus = false,
+  autoFocus,
   queryMentionees,
   mentionAllowed,
 }: RichTextEditorProps) {
@@ -116,6 +110,8 @@ function RichTextEditor({
     onBlur?.();
   }, [onBlur]);
 
+  const rowStyles = useMemo(() => calculateRowStyles(rows, maxRows), [rows, maxRows]);
+
   const editableProps: TEditableProps<EditorValue> = {
     name,
     onClick,
@@ -140,7 +136,7 @@ function RichTextEditor({
         cursor="text"
         paddingX={1}
         paddingY={2}
-        {...calculateRowStyles(rows, maxRows)}
+        sx={rowStyles}
       >
         {prepend}
 

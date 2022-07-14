@@ -14,7 +14,6 @@ export const createLinkPlugin = createPluginFactory<LinkPlugin>({
   key: ELEMENT_LINK,
   isElement: true,
   isInline: true,
-  // props: ({ element }) => ({ nodeProps: { url: element?.url } }),
   handlers: {
     onKeyDown: onKeyDownLink,
   },
