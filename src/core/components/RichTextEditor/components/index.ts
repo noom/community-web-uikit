@@ -1,1 +1,1 @@
-export { Toolbar, BubbleToolbar } from './Toolbar';
+export { Toolbar, BalloonToolbar } from './Toolbar';

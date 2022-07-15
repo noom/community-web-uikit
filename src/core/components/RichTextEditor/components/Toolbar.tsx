@@ -17,7 +17,7 @@ import {
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
-  BalloonToolbar,
+  BalloonToolbar as PlateBalloonToolbar,
 } from '@udecode/plate';
 import {
   MdFormatBold,
@@ -77,7 +77,7 @@ export const Toolbar = ({ isVisible, editorId }: ToolbarProps) => {
   );
 };
 
-export const BubbleToolbar = () => {
+export const BalloonToolbar = () => {
   const editor = usePlateEditorRef<EditorValue, Editor>();
 
   if (!editor) {
@@ -88,7 +88,7 @@ export const BubbleToolbar = () => {
   const theme = 'dark';
 
   return (
-    <BalloonToolbar theme={theme} arrow={arrow}>
+    <PlateBalloonToolbar theme={theme} arrow={arrow}>
       <MarkToolbarButton type={getPluginType(editor, MARK_BOLD)} icon={<MdFormatBold />} />
       <MarkToolbarButton type={getPluginType(editor, MARK_ITALIC)} icon={<MdFormatItalic />} />
       <MarkToolbarButton
@@ -101,6 +101,6 @@ export const BubbleToolbar = () => {
       ) : (
         <LinkToolbarButton icon={<MdAddLink />} />
       )}
-    </BalloonToolbar>
+    </PlateBalloonToolbar>
   );
 };

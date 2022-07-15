@@ -7,7 +7,7 @@ import { Box } from '@noom/wax-component-library';
 import { EditorValue, Editor } from '../models';
 import { isEmptyValue, calculateRowStyles } from '../utils';
 import { EMPTY_VALUE } from '../constants';
-import { Toolbar, BubbleToolbar } from '.';
+import { Toolbar, BalloonToolbar } from '.';
 
 import { defaultElementsPlugins, defaultMarksPlugins } from '../plugins';
 import { MentionPopover, MentionData, MentionItem, toMentionItem } from '../plugins/mentionPlugin';
@@ -147,7 +147,7 @@ function RichTextEditor({
           initialValue={initialValue}
           editableProps={editableProps}
         >
-          <BubbleToolbar />
+          <BalloonToolbar />
           {mentionAllowed && (
             <MentionPopover<MentionData>
               items={mentionData}
