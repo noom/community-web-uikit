@@ -20,7 +20,7 @@ const CommunityHeaderContainer = styled.a.attrs((props) => props)`
   color: ${({ theme }) => theme.palette.base.main};
 
   &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.palette.base.shade4};
+    background-color: ${({ theme }) => theme.palette.tertiary.shade1};
   }
 
   ${({ $loading }) =>
@@ -34,7 +34,7 @@ const CommunityHeaderContainer = styled.a.attrs((props) => props)`
     isActive &&
     css`
       color: ${theme.palette.primary.main};
-      background-color: ${theme.palette.primary.shade3};
+      background-color: ${theme.palette.tertiary.shade3};
     `};
 
   ${({ hasChildren }) =>

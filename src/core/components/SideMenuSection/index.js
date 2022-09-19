@@ -10,13 +10,14 @@ const SectionContainer = styled.div`
 
 export const ListHeading = styled.h4`
   ${({ theme }) => theme.typography.title};
-  padding: 0 8px 0;
+  padding: 0.5rem 0.8rem;
   margin: 0 0 0.5rem;
   border-bottom: 1px solid #f7f7f8;
-  display: flex;
   flex-direction: row;
   align-items: center;
-  height: 50px;
+  display: inline-flex;
+  width: 100%;
+  font-size: 0.9rem !important;
 `;
 
 const SideMenuSection = ({ heading, icon, children }) => (
