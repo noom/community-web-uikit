@@ -16,15 +16,18 @@ const CommunityHeaderContainer = styled.a.attrs((props) => props)`
   grid-template-rows: min-content min-content;
   grid-gap: 0 0.75em;
   padding: 0.5em;
-  border-radius: 4px;
   align-items: center;
   color: ${({ theme }) => theme.palette.base.main};
+
+  &:hover:not(:disabled) {
+    background-color: ${({ theme }) => theme.palette.base.shade4};
+  }
 
   ${({ $loading }) =>
     !$loading &&
     `&:hover {
     cursor: pointer;
-    background-color: ${({ theme }) => theme.palette.base.shade4};
+    background-color: ${({ theme }) => theme.palette.base.shade3};
   }`}
 
   ${({ isActive, theme }) =>
