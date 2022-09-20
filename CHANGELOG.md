@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.15.2](https://github.com/noom/community-web-uikit/compare/2.15.1...2.15.2) (2022-09-20)
+
+
+### Bug Fixes
+
+* avatar URL ([f82f333](https://github.com/noom/community-web-uikit/commit/f82f333827f28c86e0dfe37ee42abf931df21bb8))
+
 ### [2.15.1](https://github.com/noom/community-web-uikit/compare/2.15.0...2.15.1) (2022-09-20)
 
 
