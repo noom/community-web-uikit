@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { PostTargetType, FeedType, CommunityFilter } from '@amityco/js-sdk';
 
+import { ImpressionTracker } from '~/core/components/ImpressionTracker';
 import DefaultPostRenderer from '~/social/components/post/Post/DefaultPostRenderer';
 import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import PostCreator from '~/social/components/post/Creator';
@@ -72,14 +73,21 @@ const Feed = ({
           {!loading && posts.length > 0 && (
             <LoadMore hasMore={hasMore} loadMore={loadMore} className="load-more no-border">
               {posts.map(({ postId }) => (
-                <Post
+                <ImpressionTracker
                   key={postId}
                   postId={postId}
-                  hidePostTarget={targetType !== PostTargetType.GlobalFeed}
-                  readonly={readonly}
-                  handleCopyPostPath={handleCopyPostPath}
-                  handleCopyCommentPath={handleCopyCommentPath}
-                />
+                  visibleThreshold={0}
+                  className="post-wrapper"
+                >
+                  <Post
+                    key={postId}
+                    postId={postId}
+                    hidePostTarget={targetType !== PostTargetType.GlobalFeed}
+                    readonly={readonly}
+                    handleCopyPostPath={handleCopyPostPath}
+                    handleCopyCommentPath={handleCopyCommentPath}
+                  />
+                </ImpressionTracker>
               ))}
               {loadingMore && renderLoadingSkeleton()}
             </LoadMore>
