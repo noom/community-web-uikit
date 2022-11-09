@@ -358,5 +358,15 @@
 
   "notificationTray.title": "Notifications",
   "notificationTray.markAllRead": "Mark all as read",
-  "notificationTray.viewAll": "View all notifications"
+  "notificationTray.viewAll": "View all notifications",
+
+  "onboarding.welcome.title": "Welcome to Noom Connect",
+  "onboarding.welcome.subTitle": "Get tips specific to your life from expert Noom Coaches in 30+ communities!",
+  "onboarding.welcome.bullets": [
+    "Learn new strategies & get advice from Noomers & Coaches like you",
+    "Get inspired by success stories, food ideas, & ways to get active",
+    "Connect with Noomers for support, encouragement, & accountability",
+    "Be reminded that you’re not alone on this journey!"
+  ],
+  "onboarding.welcome.button": "Lets Go!"
 }

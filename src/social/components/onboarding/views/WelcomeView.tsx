@@ -11,23 +11,32 @@ import {
   ModalContent,
   ModalFooter,
 } from '@noom/wax-component-library';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-export type WelcomeViewProps = {};
+import { PrimaryButton } from '~/core/components/Button';
 
-export function WelcomeView(props: WelcomeViewProps) {
+export type WelcomeViewProps = { isLoading?: boolean; error?: string };
+
+export function WelcomeView({ isLoading }: WelcomeViewProps) {
   return (
     <ModalContent>
-      <ModalHeader>Header</ModalHeader>
+      <ModalHeader>
+        <H1>
+          <FormattedMessage id="onboarding.welcome.title" />
+        </H1>
+        <Text>
+          <FormattedMessage id="onboarding.welcome.subTitle" />
+        </Text>
+      </ModalHeader>
       <ModalBody>
         <List>
           <ListItem>List item</ListItem>
         </List>
       </ModalBody>
       <ModalFooter>
-        <Button isFullWidth colorScheme="primary" size="md">
-          Click
-        </Button>
+        <PrimaryButton isFullWidth isLoading={isLoading}>
+          <FormattedMessage id="onboarding.welcome.button" />
+        </PrimaryButton>
       </ModalFooter>
     </ModalContent>
   );
