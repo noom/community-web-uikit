@@ -5,7 +5,34 @@ import { Table, TableContainer, Tbody, Tr, Td, Icon } from '@noom/wax-component-
 import Time from '~/core/components/Time';
 import { useNoomUserMetadata } from '~/social/hooks/useNoomUserMetadata';
 
-export const UIUserMetadata = ({ user, noomMetadata }) => (
+type User = {
+  userId: string;
+  metadata?: {
+    userType?: string;
+    hasFinishedInitialProfileSync?: boolean;
+    isMigratedFromCircles?: boolean;
+  };
+  createdAt: string;
+};
+
+type NoomMetadata = {
+  deviceInformation: {
+    os: string;
+    clientVersion: string;
+  };
+  localeInformation: {
+    language: string;
+    timezone: string;
+  };
+};
+
+export const UIUserMetadata = ({
+  user,
+  noomMetadata,
+}: {
+  user: User;
+  noomMetadata: NoomMetadata;
+}) => (
   <TableContainer>
     <b>
       <FormattedMessage id="userMetadata.title" />
@@ -87,7 +114,7 @@ export const UIUserMetadata = ({ user, noomMetadata }) => (
   </TableContainer>
 );
 
-export const UserMetadata = ({ user }) => {
-  const noomMetadata = useNoomUserMetadata(user.userId);
+export const UserMetadata = ({ user }: { user: User }) => {
+  const noomMetadata = useNoomUserMetadata(user.userId) as NoomMetadata;
   return <UIUserMetadata user={user} noomMetadata={noomMetadata} />;
 };
