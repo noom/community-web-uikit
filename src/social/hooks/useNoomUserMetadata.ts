@@ -8,7 +8,6 @@ export function useNoomUserMetadata(userId: string) {
 
   const getMetadata = useCallback(
     async (userId: string, callback: (data: Record<string, unknown>) => void) => {
-      console.log(userId);
       const response = await getUserMetadata?.(userId);
       callback?.(response?.data ?? {});
     },
