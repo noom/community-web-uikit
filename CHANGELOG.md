@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.30.0](https://github.com/noom/community-web-uikit/compare/2.29.0...2.30.0) (2023-01-04)
+
+
+### Features
+
+* Explore page redesign ([#20](https://github.com/noom/community-web-uikit/issues/20)) ([d024ed7](https://github.com/noom/community-web-uikit/commit/d024ed73b42edebd4601e37fc1b50bd5b37436f7))
+
 ## [2.29.0](https://github.com/noom/community-web-uikit/compare/2.28.0...2.29.0) (2022-12-23)
 
 
