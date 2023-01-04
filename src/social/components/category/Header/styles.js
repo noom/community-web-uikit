@@ -26,11 +26,7 @@ const CategoryHeaderContainer = styled.div`
     clickable &&
     `
     border-radius: 4px;
-    cursor: pointer;
-    
-    &:hover {
-      background: ${theme.palette.base.shade4};
-    }`}
+    cursor: pointer;`}
 `;
 
 const CategoryHeaderAvatar = styled(Avatar)`
