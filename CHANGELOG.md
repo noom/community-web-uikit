@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.30.1](https://github.com/noom/community-web-uikit/compare/2.30.0...2.30.1) (2023-01-04)
+
+
+### Bug Fixes
+
+* Explore page sorting ([0c45935](https://github.com/noom/community-web-uikit/commit/0c459352bfbd88f3326be36cbf259eca49c582bf))
+
 ## [2.30.0](https://github.com/noom/community-web-uikit/compare/2.29.0...2.30.0) (2023-01-04)
 
 
