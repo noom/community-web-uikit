@@ -2,6 +2,7 @@ import { CommunitySortingMethod } from '@amityco/js-sdk';
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import { Grid, ListEmptyState } from './styles';
@@ -34,30 +35,32 @@ const CategoryCommunitiesList = ({ categoryId }) => {
   }, [communities, loading, loadingMore]);
 
   return (
-    <PaginatedList
-      items={items}
-      hasMore={hasMore}
-      loadMore={loadMore}
-      container={Grid}
-      containerProps={{
-        columns: { 880: 2, 1280: 3, 1440: 3, 1800: 3 },
-      }}
-      emptyState={
-        <ListEmptyState
-          icon={<EmptyFeedIcon width={48} height={48} />}
-          title={<FormattedMessage id="CategoryCommunitiesList.emptyTitle" />}
-          description={<FormattedMessage id="CategoryCommunitiesList.emptyDescription" />}
-        />
-      }
-    >
-      {({ communityId, skeleton }) =>
-        skeleton ? (
-          <CommunityCard key={communityId} loading />
-        ) : (
-          <CommunityCard key={communityId} communityId={communityId} onClick={onClickCommunity} />
-        )
-      }
-    </PaginatedList>
+    <InfiniteScroll useWindow loadMore={loadMore} hasMore={hasMore}>
+      <PaginatedList
+        items={items}
+        hasMore={hasMore}
+        loadMore={loadMore}
+        container={Grid}
+        containerProps={{
+          columns: { 880: 2, 1280: 3, 1440: 3, 1800: 3 },
+        }}
+        emptyState={
+          <ListEmptyState
+            icon={<EmptyFeedIcon width={48} height={48} />}
+            title={<FormattedMessage id="CategoryCommunitiesList.emptyTitle" />}
+            description={<FormattedMessage id="CategoryCommunitiesList.emptyDescription" />}
+          />
+        }
+      >
+        {({ communityId, skeleton }) =>
+          skeleton ? (
+            <CommunityCard key={communityId} loading />
+          ) : (
+            <CommunityCard key={communityId} communityId={communityId} onClick={onClickCommunity} />
+          )
+        }
+      </PaginatedList>
+    </InfiniteScroll>
   );
 };
 

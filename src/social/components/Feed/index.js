@@ -92,6 +92,8 @@ const Feed = ({
             />
           )}
 
+          <div id="feed-start" />
+
           {loading && renderLoadingSkeleton()}
 
           {!loading && posts.length > 0 && (
