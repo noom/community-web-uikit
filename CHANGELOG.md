@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.30.2](https://github.com/noom/community-web-uikit/compare/2.30.1...2.30.2) (2023-01-04)
+
+
+### Bug Fixes
+
+* Category screen infinite scroll ([2c2a6c9](https://github.com/noom/community-web-uikit/commit/2c2a6c90c8b1f3fd160162069ff3a6670bbd4082))
+
 ### [2.30.1](https://github.com/noom/community-web-uikit/compare/2.30.0...2.30.1) (2023-01-04)
 
 
