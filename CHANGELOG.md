@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.30.5](https://github.com/noom/community-web-uikit/compare/2.30.4...2.30.5) (2023-01-05)
+
+
+### Bug Fixes
+
+* Notification tray popover in Safari ([372e239](https://github.com/noom/community-web-uikit/commit/372e2391e6d1db3ca71b9ec1b7b6e84ba1fbdf25))
+
 ### [2.30.4](https://github.com/noom/community-web-uikit/compare/2.30.3...2.30.4) (2023-01-05)
 
 
