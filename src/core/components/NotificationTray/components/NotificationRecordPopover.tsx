@@ -66,7 +66,7 @@ export function NotificationRecordPopover({
   const width = useBreakpointValue({ base: '100vw', md: '450px' });
 
   return (
-    <Popover isLazy isOpen={isOpen} onClose={onClose} {...popoverProps}>
+    <Popover isLazy isOpen={isOpen} onClose={onClose} autoFocus={false} {...popoverProps}>
       <PopoverTrigger>
         <Button onClick={onOpen} position="relative" p={2} {...triggerButtonProps}>
           <Icon icon="bell" size="xl" />
