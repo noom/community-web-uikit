@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.30.4](https://github.com/noom/community-web-uikit/compare/2.30.3...2.30.4) (2023-01-05)
+
+
+### Bug Fixes
+
+* Style bugs ([20b5527](https://github.com/noom/community-web-uikit/commit/20b5527f99c7092623b1c579ecbbca4016276901))
+
 ### [2.30.3](https://github.com/noom/community-web-uikit/compare/2.30.2...2.30.3) (2023-01-05)
 
 
