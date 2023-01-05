@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Box, CompassColor, IconButton } from '@noom/wax-component-library';
+import { Box, CompassColor, IconButton, H2 } from '@noom/wax-component-library';
 import styled from 'styled-components';
 
 import useMeasure from 'react-use/lib/useMeasure';
@@ -24,12 +24,6 @@ const Header = styled.div`
   align-items: flex-end;
   flex-wrap: wrap;
   padding: 0 1rem;
-`;
-
-const Title = styled.h2`
-  ${({ theme }) => theme.typography.headline};
-  display: inline-block;
-  margin: 0;
 `;
 
 const SubTitle = styled.div`
@@ -129,7 +123,7 @@ const HorizontalList = ({
   return (
     <Wrap ref={wrapperRef}>
       <Header>
-        <Title>{title}</Title>
+        <H2>{title}</H2>
         {subTitle && <SubTitle>{subTitle}</SubTitle>}
       </Header>
       <ScrollContainer ref={containerRef} page={page}>

@@ -55,8 +55,8 @@ export const CoverContent = styled.div`
 
 export const CommunityName = styled(SocialCommunityName)`
   color: #ffffff;
-  font-size: 2rem !important;
   ${({ theme }) => theme.typography.headline};
+  font-size: 2rem !important;
 `;
 
 export const Content = styled.div`

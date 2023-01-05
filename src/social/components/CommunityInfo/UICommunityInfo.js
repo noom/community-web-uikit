@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Truncate from 'react-truncate-markup';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { H1 } from '@noom/wax-component-library';
 
 import { toHumanString } from '~/helpers/toHumanString';
 import customizableComponent from '~/core/hocs/customization';
@@ -61,6 +62,7 @@ const UICommunityInfo = ({
             name={name}
             truncate={2}
           />
+
           <CategoriesList>{(communityCategories || []).join(', ')}</CategoriesList>
         </CoverContent>
       </Cover>
