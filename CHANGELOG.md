@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.30.3](https://github.com/noom/community-web-uikit/compare/2.30.2...2.30.3) (2023-01-05)
+
+
+### Bug Fixes
+
+* Font sizes ([101aa3c](https://github.com/noom/community-web-uikit/commit/101aa3c4e50f9e49123da74aadc57063ac432d8d))
+
 ### [2.30.2](https://github.com/noom/community-web-uikit/compare/2.30.1...2.30.2) (2023-01-04)
 
 
