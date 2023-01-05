@@ -35,7 +35,7 @@ export const CoverContent = styled.div`
 
 export const CommunityName = styled(SocialCommunityName)`
   ${({ theme }) => theme.typography.headline}
-  line-height: 1.2rem;
+  line-height: 1.5rem;
 
   * {
     padding: 0;

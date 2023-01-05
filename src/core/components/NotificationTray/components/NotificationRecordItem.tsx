@@ -19,7 +19,7 @@ export type BadgeProps = {
 };
 
 const BadgeSizeMap = {
-  xs: 2,
+  xs: 3,
   sm: 4,
 };
 
