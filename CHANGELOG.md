@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.31.0](https://github.com/noom/community-web-uikit/compare/2.30.5...2.31.0) (2023-01-06)
+
+
+### Features
+
+* Coach post and comment highlight ([#21](https://github.com/noom/community-web-uikit/issues/21)) ([b3f7b57](https://github.com/noom/community-web-uikit/commit/b3f7b571e572952ff2323346fc4f0f6dc72b46cb))
+
 ### [2.30.5](https://github.com/noom/community-web-uikit/compare/2.30.4...2.30.5) (2023-01-05)
 
 
