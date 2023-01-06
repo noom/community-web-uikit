@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.31.1](https://github.com/noom/community-web-uikit/compare/2.31.0...2.31.1) (2023-01-06)
+
+
+### Bug Fixes
+
+* Comment header ([55f4335](https://github.com/noom/community-web-uikit/commit/55f433546814007fcf87d59d42a204ce55563f1e))
+
 ## [2.31.0](https://github.com/noom/community-web-uikit/compare/2.30.5...2.31.0) (2023-01-06)
 
 
