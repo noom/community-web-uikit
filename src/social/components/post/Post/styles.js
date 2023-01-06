@@ -10,24 +10,20 @@ export const PostContainer = styled(({ className, isHighlighted, ...props }) => 
   <div className={cx('post', className)} {...props} />
 ))`
   padding: 1rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0;
   background: ${({ theme }) => theme.palette.system.background};
   border: 1px solid #edeef2;
-  border-radius: 8px;
+  border-radius: 0;
   position: relative;
 
   ${({ isHighlighted, theme }) =>
     isHighlighted &&
-    `
-    border-color: ${theme.palette.primary.main};
-    padding-top: 2.5rem
+    `padding-top: 2.5rem
   `}
 `;
 
 export const PostHighlight = styled.div`
   color: white;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
   text-transform: uppercase;
   position: absolute;
   top: 0;

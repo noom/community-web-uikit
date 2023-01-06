@@ -28,6 +28,7 @@ const UIEngagementBar = ({
   totalLikes,
   totalComments,
   readonly,
+  isHighlighted,
   onClickComment,
   isComposeBarDisplayed,
   handleAddComment,
@@ -51,7 +52,7 @@ const UIEngagementBar = ({
     </Counters>
     <ConditionalRender condition={!readonly}>
       <>
-        <InteractionBar>
+        <InteractionBar isHighlighted={isHighlighted}>
           <PostLikeButton postId={postId} />
           <SecondaryButton data-qa-anchor="engagement-bar-comment-button" onClick={onClickComment}>
             <CommentIcon /> <FormattedMessage id="comment" />
@@ -109,6 +110,7 @@ UIEngagementBar.propTypes = {
   handleAddComment: PropTypes.func,
   onClickComment: PropTypes.func,
   handleCopyCommentPath: PropTypes.func,
+  isHighlighted: PropTypes.bool,
 };
 
 UIEngagementBar.defaultProps = {

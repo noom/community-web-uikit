@@ -230,6 +230,7 @@ const DefaultPostRenderer = ({
             <EngagementBar
               readonly={readonly}
               postId={postId}
+              isHighlighted={isHighlighted}
               handleCopyCommentPath={handleCopyCommentPath}
             />
           )}

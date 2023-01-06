@@ -7,7 +7,7 @@ import customizableComponent from '~/core/hocs/customization';
 import usePost from '~/social/hooks/usePost';
 import UIEngagementBar from './UIEngagementBar';
 
-const EngagementBar = ({ postId, readonly, handleCopyCommentPath }) => {
+const EngagementBar = ({ postId, readonly, handleCopyCommentPath, isHighlighted }) => {
   const [isComposeBarDisplayed, setComposeBarDisplayed] = useState(false);
   const toggleComposeBar = () => setComposeBarDisplayed((prevValue) => !prevValue);
 
@@ -33,6 +33,7 @@ const EngagementBar = ({ postId, readonly, handleCopyCommentPath }) => {
       postId={post.postId}
       targetId={targetId}
       targetType={targetType}
+      isHighlighted={isHighlighted}
       totalLikes={reactions[LIKE_REACTION_KEY]}
       totalComments={commentsCount}
       readonly={readonly}
@@ -48,6 +49,7 @@ EngagementBar.propTypes = {
   postId: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   handleCopyCommentPath: PropTypes.func,
+  isHighlighted: PropTypes.bool,
 };
 
 EngagementBar.defaultProps = {
