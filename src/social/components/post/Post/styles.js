@@ -6,14 +6,39 @@ import Skeleton from '~/core/components/Skeleton';
 
 export const OptionMenu = UIOptionMenu;
 
-export const PostContainer = styled(({ className, ...props }) => (
+export const PostContainer = styled(({ className, isHighlighted, ...props }) => (
   <div className={cx('post', className)} {...props} />
 ))`
-  padding: 16px;
-  padding-bottom: 8px;
+  padding: 1rem;
+  padding-bottom: 0.5rem;
   background: ${({ theme }) => theme.palette.system.background};
   border: 1px solid #edeef2;
   border-radius: 8px;
+  position: relative;
+
+  ${({ isHighlighted, theme }) =>
+    isHighlighted &&
+    `
+    border-color: ${theme.palette.primary.main};
+    padding-top: 2.5rem
+  `}
+`;
+
+export const PostHighlight = styled.div`
+  color: white;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  text-transform: uppercase;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  ${({ theme }) => theme.typography.label}
+
+  ${({ theme }) =>
+    `background-color: ${theme.palette.primary.main};
+  `}
+  padding: 0.25rem 0.5rem;
 `;
 
 export const PostHeadContainer = styled.div`

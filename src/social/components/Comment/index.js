@@ -15,6 +15,7 @@ import StyledComment from './Comment.styles';
 import useSocialMention from '~/social/hooks/useSocialMention';
 import usePost from '~/social/hooks/usePost';
 import { useNavigation } from '~/social/providers/NavigationProvider';
+import { getUserType, shouldHighlightUserType } from '~/helpers/userTypes';
 
 import {
   CommentBlock,
@@ -155,6 +156,8 @@ const Comment = ({ readonly = false, commentId, currentUserId, userRoles, handle
 
   const isCommentOwner = commentAuthor.userId === currentUserId;
   const isReplyComment = !!comment.parentId;
+  const userType = getUserType(commentAuthor);
+  const isHighlighted = shouldHighlightUserType(userType);
 
   const deleteComment = () => {
     const title = isReplyComment ? 'reply.delete' : 'comment.delete';
@@ -195,6 +198,7 @@ const Comment = ({ readonly = false, commentId, currentUserId, userRoles, handle
       authorName={
         commentAuthor.displayName || commentAuthor.userId || formatMessage({ id: 'anonymous' })
       }
+      authorType={isHighlighted ? userType : undefined}
       authorAvatar={commentAuthorAvatar.fileUrl}
       canDelete={canDelete}
       canEdit={canEdit}

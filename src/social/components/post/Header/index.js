@@ -9,7 +9,7 @@ import { useNavigation } from '~/social/providers/NavigationProvider';
 import UIPostHeader from './UIPostHeader';
 import useCommunityOneMember from '~/social/hooks/useCommunityOneMember';
 
-const PostHeader = ({ postId, hidePostTarget, loading }) => {
+const PostHeader = ({ postId, hidePostTarget, userType, loading }) => {
   const { onClickCommunity, onClickUser } = useNavigation();
   const { post, file, user } = usePost(postId);
 
@@ -28,11 +28,9 @@ const PostHeader = ({ postId, hidePostTarget, loading }) => {
   );
   const handleClickUser = () => onClickUser(postedUserId);
 
-  const userTag = user?.metadata?.userType;
-
   return (
     <UIPostHeader
-      userTag={userTag && userTag !== 'user' ? userTag : undefined}
+      userType={userType}
       avatarFileUrl={file.fileUrl}
       postAuthorName={user.displayName || <FormattedMessage id="anonymous" />}
       postTargetName={postTargetName}

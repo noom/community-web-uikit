@@ -18,6 +18,7 @@ import {
   Content,
   CommentHeader,
   AuthorName,
+  AuthorTag,
   CommentDate,
   InteractionBar,
   ReplyIcon,
@@ -33,6 +34,7 @@ const StyledComment = ({
   commentId,
   authorName,
   authorAvatar,
+  authorType,
   canDelete = false,
   canEdit = false,
   canLike = true,
@@ -76,7 +78,12 @@ const StyledComment = ({
 
   return (
     <>
-      <Avatar displayName={authorName} avatar={authorAvatar} backgroundImage={UserImage} />
+      <Avatar
+        displayName={authorName}
+        avatar={authorAvatar}
+        backgroundImage={UserImage}
+        size={isReplyComment ? 'small' : 'regular'}
+      />
       <Content>
         <Truncate
           ellipsis={
@@ -96,7 +103,10 @@ const StyledComment = ({
             <AuthorName onClick={onClickUser}>{authorName}</AuthorName>
             <Truncate.Atom>
               {isBanned && <BanIcon css="margin-left: 0.265rem; margin-top: 1px;" />}
-              <CommentDate date={createdAt} />
+              <AuthorTag>
+                {authorType && <FormattedMessage id={`userType.${authorType}`} />}
+              </AuthorTag>
+              <CommentDate date={createdAt} showSeparator={!!authorType} />
               {editedAt - createdAt > 0 && (
                 <EditedMark>
                   <FormattedMessage id="comment.edited" />
@@ -183,6 +193,7 @@ StyledComment.propTypes = {
   onClickReply: PropTypes.func,
   onChange: PropTypes.func.isRequired,
   handleCopyPath: PropTypes.func,
+  authorType: PropTypes.string,
 };
 
 export default StyledComment;

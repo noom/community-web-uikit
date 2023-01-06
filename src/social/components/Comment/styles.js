@@ -59,9 +59,7 @@ export const CommentContent = styled.div`
   overflow-wrap: anywhere !important;
   word-break: break-word;
   color: ${({ theme }) => theme.palette.neutral.main};
-  background-color: ${({ theme }) => theme.palette.background.main};
   border-radius: 0 12px 12px 12px;
-  padding: 12px;
   display: inline-block;
   white-space: pre-wrap;
   ${({ theme }) => theme.typography.body}
@@ -71,26 +69,41 @@ export const CommentInfo = styled.div`
   margin-left: 8px;
 `;
 
-export const AuthorName = styled.span`
-  // react-truncate-markup tries to set to inline-block
-  display: inline !important;
+export const AuthorName = styled.div`
   cursor: pointer;
   ${({ theme }) => theme.typography.body}
   font-weight: 500;
 `;
 
+export const AuthorTag = styled.span`
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  ${({ theme }) => theme.typography.label}
+
+  ${({ theme }) =>
+    `color: ${theme.palette.primary.main};
+`}
+`;
+
 export const CommentDate = styled(Time)`
   display: inline;
-  margin-left: 5px;
+
   color: ${({ theme }) => theme.palette.base.shade1};
-  &::before {
+
+  ${({ theme }) => theme.typography.caption}
+
+  ${({ showSeparator }) =>
+    showSeparator &&
+    `
+    &::before {
     content: '• ';
   }
-  ${({ theme }) => theme.typography.caption}
+  margin-left: 0.25rem;
+  `}
 `;
 
 export const EditedMark = styled.span`
-  margin-left: 5px;
+  margin-left: 0.25rem;
   color: ${({ theme }) => theme.palette.neutral.shade1};
   &::before {
     content: '• ';
@@ -136,7 +149,6 @@ export const DeletedReplyContainer = styled.div`
   display: inline-flex;
   align-items: center;
   margin: 7px 0px 7px 40px;
-  background: ${({ theme }) => theme.palette.base.shade4};
   color: ${({ theme }) => theme.palette.base.shade2};
   border-radius: 4px;
   padding: 4px 8px 2px 0px;

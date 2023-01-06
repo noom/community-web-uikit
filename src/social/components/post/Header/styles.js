@@ -20,6 +20,12 @@ export const Name = styled.div`
       cursor: pointer;
     }
   }
+
+  ${({ isHighlighted, theme }) =>
+    isHighlighted &&
+    `
+    color: ${theme.palette.primary.main}
+  `}
 `;
 
 export const ArrowSeparator = styled(ArrowRight).attrs({
@@ -48,6 +54,17 @@ export const MessageContainer = styled.div`
   &::before {
     content: '• ';
     margin-left: 4px;
+  }
+`;
+
+export const PostTarget = styled.div`
+  color: ${({ theme }) => theme.palette.base.main};
+  font-weight: 500;
+
+  &::after {
+    content: '•';
+    margin-left: 4px;
+    margin-right: 4px;
   }
 `;
 
