@@ -28,7 +28,7 @@ const CommentComposeBar = ({
   const { post } = usePost(postId);
   const { targetId: communityId, targetType: communityType } = post;
 
-  const { file } = useUser(currentUserId);
+  const { file, user } = useUser(currentUserId);
   const { text, markup, mentions, onChange, clearAll, queryMentionees } = useSocialMention({
     targetId: communityId,
     targetType: communityType,
@@ -76,7 +76,7 @@ const CommentComposeBar = ({
 
   return (
     <CommentComposeBarContainer className={className}>
-      <Avatar avatar={file?.fileUrl} backgroundImage={UserImage} />
+      <Avatar avatar={file?.fileUrl} backgroundImage={UserImage} displayName={user.displayName} />
       <CommentComposeBarInput
         ref={commentInputRef}
         data-qa-anchor="comment-compose-bar-textarea"

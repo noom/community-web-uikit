@@ -15,14 +15,14 @@ import {
   ShieldIcon,
   ModeratorBadge,
   AdditionalInfo,
-  ArrowSeparator,
+  PostTarget,
   PostHeaderContainer,
   PostNamesContainer,
   MessageContainer,
 } from './styles';
 
 const UIPostHeader = ({
-  userTag,
+  userType,
   avatarFileUrl,
   postAuthorName,
   postTargetName,
@@ -44,25 +44,21 @@ const UIPostHeader = ({
             data-qa-anchor="post-header-post-name"
             className={cx({ clickable: !!onClickUser })}
             onClick={onClickUser}
+            isHighlighted={!!userType}
           >
             {postAuthorName}
+            {userType ? (
+              <>
+                {' - '}
+                <FormattedMessage id={`userType.${userType}`} />
+              </>
+            ) : (
+              ''
+            )}
           </Name>
         </TruncateMarkup>
 
         {isBanned && <BanIcon height={14} width={14} />}
-
-        {postTargetName && !hidePostTarget && (
-          <>
-            <ArrowSeparator />
-            <Name
-              data-qa-anchor="post-header-post-target-name"
-              className={cx({ clickable: !!onClickCommunity })}
-              onClick={onClickCommunity}
-            >
-              {postTargetName}
-            </Name>
-          </>
-        )}
       </PostNamesContainer>
     );
   };
@@ -70,16 +66,22 @@ const UIPostHeader = ({
   const renderAdditionalInfo = () => {
     return (
       <AdditionalInfo showTime={!!timeAgo} data-qa-anchor="post-header-additional-info">
+        {postTargetName && !hidePostTarget && (
+          <PostTarget
+            data-qa-anchor="post-header-post-target-name"
+            className={cx({ clickable: !!onClickCommunity })}
+            onClick={onClickCommunity}
+          >
+            {postTargetName}
+          </PostTarget>
+        )}
+
         {isModerator && isModeratorTagVisible && (
           <ModeratorBadge data-qa-anchor="post-header-additional-info-moderator-badge">
             <ShieldIcon width={14} height={14} /> <FormattedMessage id="moderator" />
           </ModeratorBadge>
         )}
-        {userTag && (
-          <ModeratorBadge>
-            <FormattedMessage id={`userType.${userTag}`} />
-          </ModeratorBadge>
-        )}
+
         {timeAgo && <Time date={timeAgo} />}
 
         {isEdited && (
@@ -120,7 +122,7 @@ const UIPostHeader = ({
 };
 
 UIPostHeader.propTypes = {
-  userTag: PropTypes.string,
+  userType: PropTypes.string,
   avatarFileUrl: PropTypes.string,
   postAuthorName: PropTypes.node,
   postTargetName: PropTypes.string,

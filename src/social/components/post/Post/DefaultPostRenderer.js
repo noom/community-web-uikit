@@ -16,7 +16,10 @@ import Header from '~/social/components/post/Header';
 import Content from '~/social/components/post/Post/Content';
 import useCommunity from '~/social/hooks/useCommunity';
 import useCommunityOneMember from '~/social/hooks/useCommunityOneMember';
+import { getUserType, shouldHighlightUserType } from '~/helpers/userTypes';
+
 import {
+  PostHighlight,
   ContentSkeleton,
   OptionMenu,
   PostContainer,
@@ -55,6 +58,7 @@ const DefaultPostRenderer = ({
   hidePostTarget,
   isFlaggedByMe,
   readonly,
+  user,
   post,
   userRoles,
   loading,
@@ -73,6 +77,9 @@ const DefaultPostRenderer = ({
     currentUserId,
     community.userId,
   );
+
+  const userType = getUserType(user);
+  const isHighlighted = shouldHighlightUserType(userType);
 
   const [onReportClick] = useAsyncCallback(async () => {
     await handleReportPost();
@@ -185,9 +192,24 @@ const DefaultPostRenderer = ({
   );
 
   return (
-    <PostContainer className={className} data-post-id={post.postId} data-qa-anchor="post">
+    <PostContainer
+      className={className}
+      data-post-id={post.postId}
+      data-qa-anchor="post"
+      isHighlighted={isHighlighted}
+    >
+      {isHighlighted && userType && (
+        <PostHighlight>
+          <FormattedMessage id={`userType.${userType}`} />
+        </PostHighlight>
+      )}
       <PostHeadContainer>
-        <Header hidePostTarget={hidePostTarget} postId={postId} loading={loading} />
+        <Header
+          hidePostTarget={hidePostTarget}
+          postId={postId}
+          loading={loading}
+          userType={isHighlighted ? userType : undefined}
+        />
         {!loading && <OptionMenu options={allOptions} data-qa-anchor="post-options-button" />}
       </PostHeadContainer>
 
