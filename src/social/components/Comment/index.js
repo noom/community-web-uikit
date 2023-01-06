@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import withSDK from '~/core/hocs/withSDK';
+import { useConfig } from '~/social/providers/ConfigProvider';
 import { confirm } from '~/core/components/Confirm';
 import customizableComponent from '~/core/hocs/customization';
 import useComment from '~/social/hooks/useComment';
@@ -70,6 +71,7 @@ const Comment = ({ readonly = false, commentId, currentUserId, userRoles, handle
   const { formatMessage } = useIntl();
   const [isExpanded, setExpanded] = useState(false);
   const { onClickUser } = useNavigation();
+  const { showOldStyleComments: isOldStyle } = useConfig();
 
   const {
     isCommentReady,
@@ -225,6 +227,7 @@ const Comment = ({ readonly = false, commentId, currentUserId, userRoles, handle
       onClickUser={handleClickUser}
       onChange={onChange}
       handleCopyPath={handleCopyPath ? onCopyPathClick : undefined}
+      isOldStyle={isOldStyle}
     />
   );
 

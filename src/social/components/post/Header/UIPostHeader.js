@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import cx from 'classnames';
 import TruncateMarkup from 'react-truncate-markup';
 import Skeleton from '~/core/components/Skeleton';
@@ -36,6 +36,9 @@ const UIPostHeader = ({
   loading,
   isBanned,
 }) => {
+  const { formatMessage } = useIntl();
+  const formattedAuthorType = userType ? formatMessage({ id: `userType.${userType}` }) : '';
+
   const renderPostNames = () => {
     return (
       <PostNamesContainer data-qa-anchor="post-header-post-names">
@@ -47,14 +50,7 @@ const UIPostHeader = ({
             isHighlighted={!!userType}
           >
             {postAuthorName}
-            {userType ? (
-              <>
-                {' - '}
-                <FormattedMessage id={`userType.${userType}`} />
-              </>
-            ) : (
-              ''
-            )}
+            {formattedAuthorType && ` - ${formattedAuthorType}`}
           </Name>
         </TruncateMarkup>
 

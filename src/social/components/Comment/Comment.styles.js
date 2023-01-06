@@ -2,7 +2,7 @@
 import React from 'react';
 import Truncate from 'react-truncate-markup';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { POSITION_LEFT } from '~/helpers/getCssPosition';
 import Button, { PrimaryButton } from '~/core/components/Button';
@@ -18,7 +18,6 @@ import {
   Content,
   CommentHeader,
   AuthorName,
-  AuthorTag,
   CommentDate,
   InteractionBar,
   ReplyIcon,
@@ -60,7 +59,10 @@ const StyledComment = ({
   mentionees,
   metadata,
   handleCopyPath,
+  isOldStyle,
 }) => {
+  const { formatMessage } = useIntl();
+
   const options = [
     canEdit && { name: isReplyComment ? 'reply.edit' : 'comment.edit', action: startEditing },
     canReport && {
@@ -75,6 +77,7 @@ const StyledComment = ({
   ].filter(Boolean);
 
   const isEmpty = !markup || markup?.trim().length === 0;
+  const formattedAuthorType = authorType ? formatMessage({ id: `userType.${authorType}` }) : '';
 
   return (
     <>
@@ -82,7 +85,7 @@ const StyledComment = ({
         displayName={authorName}
         avatar={authorAvatar}
         backgroundImage={UserImage}
-        size={isReplyComment ? 'small' : 'regular'}
+        size={!isOldStyle && isReplyComment ? 'small' : 'regular'}
       />
       <Content>
         <Truncate
@@ -100,13 +103,13 @@ const StyledComment = ({
           lines={2}
         >
           <CommentHeader>
-            <AuthorName onClick={onClickUser}>{authorName}</AuthorName>
+            <AuthorName isHighlighted={!!authorType} onClick={onClickUser}>
+              {authorName}
+              {formattedAuthorType && ` - ${formattedAuthorType}`}
+            </AuthorName>
             <Truncate.Atom>
               {isBanned && <BanIcon css="margin-left: 0.265rem; margin-top: 1px;" />}
-              <AuthorTag>
-                {authorType && <FormattedMessage id={`userType.${authorType}`} />}
-              </AuthorTag>
-              <CommentDate date={createdAt} showSeparator={!!authorType} />
+              <CommentDate date={createdAt} />
               {editedAt - createdAt > 0 && (
                 <EditedMark>
                   <FormattedMessage id="comment.edited" />
@@ -139,7 +142,12 @@ const StyledComment = ({
               </PrimaryButton>
             </ButtonContainer>
           </CommentEditContainer>
-          <CommentText text={text} mentionees={mentionees} metadata={metadata} />
+          <CommentText
+            text={text}
+            mentionees={mentionees}
+            metadata={metadata}
+            isOldStyle={isOldStyle}
+          />
         </ConditionalRender>
 
         {!isEditing && (canLike || canReply || options.length > 0) && (

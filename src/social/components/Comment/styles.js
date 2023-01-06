@@ -63,6 +63,12 @@ export const CommentContent = styled.div`
   display: inline-block;
   white-space: pre-wrap;
   ${({ theme }) => theme.typography.body}
+  ${({ isOldStyle, theme }) =>
+    isOldStyle &&
+    `
+  background-color: ${theme.palette.background.main};
+  padding: 12px;
+  `}
 `;
 
 export const CommentInfo = styled.div`
@@ -73,16 +79,11 @@ export const AuthorName = styled.div`
   cursor: pointer;
   ${({ theme }) => theme.typography.body}
   font-weight: 500;
-`;
-
-export const AuthorTag = styled.span`
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  ${({ theme }) => theme.typography.label}
-
-  ${({ theme }) =>
-    `color: ${theme.palette.primary.main};
-`}
+  ${({ isHighlighted, theme }) =>
+    isHighlighted &&
+    `
+    color: ${theme.palette.primary.main}
+  `}
 `;
 
 export const CommentDate = styled(Time)`

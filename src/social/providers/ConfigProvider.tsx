@@ -5,12 +5,14 @@ export type SocialConfiguration = {
   socialCommunityCreationButtonVisible?: boolean;
   showCreatePublicCommunityOption?: boolean;
   showUserProfileMetadata?: boolean;
+  showOldStyleComments?: boolean;
 };
 
 const defaultConfig = {
   socialCommunityCreationButtonVisible: true,
   showCreatePublicCommunityOption: false,
   showUserProfileMetadata: false,
+  showOldStyleComments: false,
 };
 
 const ConfigContext = createContext(defaultConfig);

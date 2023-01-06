@@ -13,7 +13,7 @@ import {
 
 const COMMENT_MAX_LINES = 8;
 
-const CommentText = ({ text, className, mentionees, maxLines = COMMENT_MAX_LINES }) => {
+const CommentText = ({ text, className, mentionees, maxLines = COMMENT_MAX_LINES, isOldStyle }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const expand = () => setIsExpanded(true);
 
@@ -37,7 +37,7 @@ const CommentText = ({ text, className, mentionees, maxLines = COMMENT_MAX_LINES
   );
 
   const textContent = text && (
-    <CommentContent className={className} data-qa-anchor="comment-content">
+    <CommentContent className={className} data-qa-anchor="comment-content" isOldStyle={isOldStyle}>
       <Markdown
         options={{
           overrides: renderOverrides,
