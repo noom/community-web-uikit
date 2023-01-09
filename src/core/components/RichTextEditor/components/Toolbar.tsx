@@ -96,11 +96,7 @@ export const BalloonToolbar = () => {
         icon={<MdFormatStrikethrough />}
       />
 
-      {isLinkActive(editor) ? (
-        <UnLinkToolbarButton icon={<MdLinkOff />} />
-      ) : (
-        <LinkToolbarButton icon={<MdAddLink />} />
-      )}
+      {isLinkActive(editor) ? <UnLinkToolbarButton icon={<MdLinkOff />} /> : null}
     </PlateBalloonToolbar>
   );
 };

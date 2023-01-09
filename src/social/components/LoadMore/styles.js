@@ -26,6 +26,7 @@ export const LoadMoreButton = styled(Button)`
     align-items: center;
 
     border-bottom: none;
+    margin-bottom: 1rem;
   }
 
   &.reply-button {
