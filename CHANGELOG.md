@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.31.2](https://github.com/noom/community-web-uikit/compare/2.31.1...2.31.2) (2023-01-06)
+
+
+### Bug Fixes
+
+* Move highlight border ([dc5eba6](https://github.com/noom/community-web-uikit/commit/dc5eba612410049de664425c402223a092279277))
+
 ### [2.31.1](https://github.com/noom/community-web-uikit/compare/2.31.0...2.31.1) (2023-01-06)
 
 
