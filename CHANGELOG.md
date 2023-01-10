@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.31.4](https://github.com/noom/community-web-uikit/compare/2.31.3...2.31.4) (2023-01-10)
+
+
+### Bug Fixes
+
+* Highligh updates ([34a8396](https://github.com/noom/community-web-uikit/commit/34a83962a9f707627bb0c78c5290cb67cb6a6051))
+
 ### [2.31.3](https://github.com/noom/community-web-uikit/compare/2.31.2...2.31.3) (2023-01-09)
 
 
