@@ -11,19 +11,19 @@ export const Counters = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid #e3e4e8;
   padding: 8px 0;
+
+  ${({ isHighlighted, theme }) =>
+    isHighlighted &&
+    `
+    border-color: ${theme.palette.primary.main};
+    margin: 0 -1rem;
+    padding: 8px 1rem;
+  `}
 `;
 
 export const InteractionBar = styled.div`
   display: flex;
   padding: 2px 0;
-
-  ${({ isHighlighted, theme }) =>
-    isHighlighted &&
-    `
-    border-bottom: 1px solid ${theme.palette.primary.main};
-    margin: 0 -1rem;
-    padding: 8px 1rem;
-  `}
 `;
 
 export const CommentIcon = styled(Comment).attrs({ width: 16, height: 16 })`

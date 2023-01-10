@@ -18,7 +18,7 @@ export const PostContainer = styled(({ className, isHighlighted, ...props }) => 
 
   ${({ isHighlighted, theme }) =>
     isHighlighted &&
-    `padding-top: 2.5rem
+    `padding-top: 3rem
   `}
 `;
 
@@ -40,7 +40,7 @@ export const PostHighlight = styled.div`
 export const PostHeadContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 1rem;
 `;
 
 export const ReviewButtonsContainer = styled.div`

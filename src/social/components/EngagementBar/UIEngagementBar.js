@@ -35,7 +35,7 @@ const UIEngagementBar = ({
   handleCopyCommentPath,
 }) => (
   <EngagementBarContainer>
-    <Counters>
+    <Counters isHighlighted={isHighlighted}>
       {totalLikes > 0 && (
         <span data-qa-anchor="engagement-bar-like-counter">
           {toHumanString(totalLikes)}{' '}
@@ -52,7 +52,7 @@ const UIEngagementBar = ({
     </Counters>
     <ConditionalRender condition={!readonly}>
       <>
-        <InteractionBar isHighlighted={isHighlighted}>
+        <InteractionBar>
           <PostLikeButton postId={postId} />
           <SecondaryButton data-qa-anchor="engagement-bar-comment-button" onClick={onClickComment}>
             <CommentIcon /> <FormattedMessage id="comment" />
