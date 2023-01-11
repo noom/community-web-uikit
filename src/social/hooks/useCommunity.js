@@ -54,6 +54,15 @@ const useCommunity = (communityId, resolver) => {
     await CommunityRepository.closeCommunity(communityId);
   };
 
+  const handleCommentingToggle = () =>
+    updateCommunity({
+      metadata: {
+        ...community.metadata,
+        showComments: !community.metadata.showComments,
+        isCommentingDisabled: !community.metadata.isCommentingDisabled,
+      },
+    });
+
   return {
     community,
     file,
@@ -62,6 +71,7 @@ const useCommunity = (communityId, resolver) => {
     leaveCommunity,
     updateCommunity,
     closeCommunity,
+    handleCommentingToggle,
   };
 };
 

@@ -30,6 +30,7 @@ const UIEngagementBar = ({
   readonly,
   isHighlighted,
   onClickComment,
+  isCommentingEnabled,
   isComposeBarDisplayed,
   handleAddComment,
   handleCopyCommentPath,
@@ -54,10 +55,21 @@ const UIEngagementBar = ({
       <>
         <InteractionBar>
           <PostLikeButton postId={postId} />
-          <SecondaryButton data-qa-anchor="engagement-bar-comment-button" onClick={onClickComment}>
+          <SecondaryButton
+            data-qa-anchor="engagement-bar-comment-button"
+            onClick={onClickComment}
+            isDisabled={!isCommentingEnabled}
+          >
             <CommentIcon /> <FormattedMessage id="comment" />
           </SecondaryButton>
         </InteractionBar>
+
+        {!isCommentingEnabled && (
+          <NoInteractionMessage>
+            <FormattedMessage id="post.disabledComments" />
+          </NoInteractionMessage>
+        )}
+
         <LazyRender
           idleTimeout={0}
           lazyBehavior="keepMounted"
@@ -71,6 +83,7 @@ const UIEngagementBar = ({
             referenceType={CommentReferenceType.Post}
             last={COMMENTS_PER_PAGE}
             handleCopyCommentPath={handleCopyCommentPath}
+            isCommentingEnabled={isCommentingEnabled}
           />
         </LazyRender>
         {isComposeBarDisplayed && (
@@ -111,6 +124,7 @@ UIEngagementBar.propTypes = {
   onClickComment: PropTypes.func,
   handleCopyCommentPath: PropTypes.func,
   isHighlighted: PropTypes.bool,
+  isCommentingEnabled: PropTypes.bool,
 };
 
 UIEngagementBar.defaultProps = {

@@ -14,6 +14,7 @@ import ChildrenContent from '~/social/components/post/ChildrenContent';
 import PostEditor from '~/social/components/post/Editor';
 import Header from '~/social/components/post/Header';
 import Content from '~/social/components/post/Post/Content';
+import usePost from '~/social/hooks/usePost';
 import useCommunity from '~/social/hooks/useCommunity';
 import useCommunityOneMember from '~/social/hooks/useCommunityOneMember';
 import { getUserType, shouldHighlightUserType } from '~/helpers/userTypes';
@@ -44,6 +45,17 @@ function showHasBeenReviewedMessageIfNeeded(error) {
   }
 }
 
+function shouldShowComments(communityMetadata, postMetadata) {
+  return !(communityMetadata?.areCommentsHidden || postMetadata?.areCommentsHidden);
+}
+
+function shouldCommentingBeEnabled(communityMetadata, postMetadata) {
+  return (
+    shouldShowComments(communityMetadata, postMetadata) &&
+    !(communityMetadata?.isCommentingDisabled || postMetadata?.isCommentingDisabled)
+  );
+}
+
 const DefaultPostRenderer = ({
   childrenPosts = [],
   className,
@@ -71,12 +83,15 @@ const DefaultPostRenderer = ({
   const closeEditingPostModal = () => setIsEditing(false);
 
   const { data, dataType, postId, targetId, targetType, metadata } = post;
+  const { handleCommentingToggle } = usePost(postId);
   const { community } = useCommunity(targetId, () => targetType !== PostTargetType.CommunityFeed);
   const { currentMember, canReviewCommunityPosts } = useCommunityOneMember(
     targetId,
     currentUserId,
     community.userId,
   );
+  const showComments = shouldShowComments(metadata, community.metadata);
+  const isCommentingEnabled = shouldCommentingBeEnabled(metadata, community.metadata);
 
   const userType = getUserType(user);
   const isHighlighted = shouldHighlightUserType(userType);
@@ -172,6 +187,17 @@ const DefaultPostRenderer = ({
         name: 'poll.close',
         action: handleClosePoll,
       },
+    canEditPost({
+      userId: currentUserId,
+      user: { roles: userRoles },
+      communityUser: currentMember,
+      post,
+      community,
+      childrenPosts,
+    }) && {
+      name: isCommentingEnabled ? 'post.disableComments' : 'post.enableComments',
+      action: handleCommentingToggle,
+    },
     !!handleCopyPostPath && {
       name: 'post.copyPath',
       action: onCopyPathClick,
@@ -226,11 +252,12 @@ const DefaultPostRenderer = ({
 
           {hasChildrenPosts && <ChildrenContent>{childrenContent}</ChildrenContent>}
 
-          {!isUnderReview && (
+          {!isUnderReview && showComments && (
             <EngagementBar
               readonly={readonly}
               postId={postId}
               isHighlighted={isHighlighted}
+              isCommentingEnabled={isCommentingEnabled}
               handleCopyCommentPath={handleCopyCommentPath}
             />
           )}

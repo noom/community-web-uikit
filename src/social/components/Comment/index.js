@@ -65,7 +65,14 @@ const DeletedReply = () => {
   );
 };
 
-const Comment = ({ readonly = false, commentId, currentUserId, userRoles, handleCopyPath }) => {
+const Comment = ({
+  readonly = false,
+  commentId,
+  currentUserId,
+  userRoles,
+  handleCopyPath,
+  isCommentingEnabled,
+}) => {
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const { formatMessage } = useIntl();
@@ -177,7 +184,7 @@ const Comment = ({ readonly = false, commentId, currentUserId, userRoles, handle
   const canDelete = (!readonly && isCommentOwner) || isModerator(userRoles);
   const canEdit = !readonly && isCommentOwner;
   const canLike = !readonly;
-  const canReply = !readonly && !isReplyComment;
+  const canReply = !readonly && !isReplyComment && isCommentingEnabled;
   const canReport = !readonly && !isCommentOwner;
 
   if (!isCommentReady) {
@@ -270,6 +277,7 @@ Comment.propTypes = {
   currentUserId: PropTypes.string.isRequired,
   userRoles: PropTypes.array,
   handleCopyPath: PropTypes.func,
+  isCommentingEnabled: PropTypes.bool,
 };
 
 export default memo(withSDK(customizableComponent('Comment', Comment)));
