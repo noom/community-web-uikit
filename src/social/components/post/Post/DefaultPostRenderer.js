@@ -194,10 +194,11 @@ const DefaultPostRenderer = ({
       post,
       community,
       childrenPosts,
-    }) && {
-      name: isCommentingEnabled ? 'post.disableComments' : 'post.enableComments',
-      action: handleCommentingToggle,
-    },
+    }) &&
+      !community?.metadata?.isCommentingDisabled && {
+        name: isCommentingEnabled ? 'post.disableComments' : 'post.enableComments',
+        action: handleCommentingToggle,
+      },
     !!handleCopyPostPath && {
       name: 'post.copyPath',
       action: onCopyPathClick,
