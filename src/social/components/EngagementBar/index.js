@@ -12,6 +12,7 @@ const EngagementBar = ({
   readonly,
   handleCopyCommentPath,
   isHighlighted,
+  showComments,
   isCommentingEnabled,
 }) => {
   const [isComposeBarDisplayed, setComposeBarDisplayed] = useState(false);
@@ -44,6 +45,7 @@ const EngagementBar = ({
       totalLikes={reactions[LIKE_REACTION_KEY]}
       totalComments={commentsCount}
       readonly={readonly}
+      showComments={showComments}
       isComposeBarDisplayed={isComposeBarDisplayed}
       handleAddComment={handleAddComment}
       onClickComment={toggleComposeBar}
@@ -57,6 +59,7 @@ EngagementBar.propTypes = {
   readonly: PropTypes.bool,
   handleCopyCommentPath: PropTypes.func,
   isHighlighted: PropTypes.bool,
+  showComments: PropTypes.bool,
   isCommentingEnabled: PropTypes.bool,
 };
 

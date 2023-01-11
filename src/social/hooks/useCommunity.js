@@ -58,7 +58,7 @@ const useCommunity = (communityId, resolver) => {
     updateCommunity({
       metadata: {
         ...community.metadata,
-        showComments: !community.metadata.showComments,
+        areCommentsHidden: !community.metadata.isCommentingDisabled,
         isCommentingDisabled: !community.metadata.isCommentingDisabled,
       },
     });

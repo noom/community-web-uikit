@@ -23,7 +23,7 @@ const usePost = (postId) => {
     handleUpdatePost(post.data, {
       metadata: {
         ...post.metadata,
-        showComments: true,
+        areCommentsHidden: false,
         isCommentingDisabled: !post.metadata.isCommentingDisabled,
       },
     });

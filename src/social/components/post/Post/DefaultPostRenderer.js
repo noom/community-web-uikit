@@ -252,11 +252,12 @@ const DefaultPostRenderer = ({
 
           {hasChildrenPosts && <ChildrenContent>{childrenContent}</ChildrenContent>}
 
-          {!isUnderReview && showComments && (
+          {!isUnderReview && (
             <EngagementBar
               readonly={readonly}
               postId={postId}
               isHighlighted={isHighlighted}
+              showComments={showComments}
               isCommentingEnabled={isCommentingEnabled}
               handleCopyCommentPath={handleCopyCommentPath}
             />

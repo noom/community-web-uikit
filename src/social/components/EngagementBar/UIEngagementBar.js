@@ -30,6 +30,7 @@ const UIEngagementBar = ({
   readonly,
   isHighlighted,
   onClickComment,
+  showComments,
   isCommentingEnabled,
   isComposeBarDisplayed,
   handleAddComment,
@@ -44,7 +45,7 @@ const UIEngagementBar = ({
         </span>
       )}
 
-      {totalComments > 0 && (
+      {showComments && totalComments > 0 && (
         <span data-qa-anchor="engagement-bar-comment-counter">
           {toHumanString(totalComments)}{' '}
           <FormattedMessage id="plural.comment" values={{ amount: totalComments }} />
@@ -65,27 +66,29 @@ const UIEngagementBar = ({
         </InteractionBar>
 
         {!isCommentingEnabled && (
-          <NoInteractionMessage>
+          <NoInteractionMessage noMargin>
             <FormattedMessage id="post.disabledComments" />
           </NoInteractionMessage>
         )}
 
-        <LazyRender
-          idleTimeout={0}
-          lazyBehavior="keepMounted"
-          visibleOffset={500}
-          placeholderHeight={
-            Math.min(totalComments, COMMENTS_PER_PAGE) * COMMENT_PLACEHOLDER_HEIGHT
-          }
-        >
-          <CommentList
-            referenceId={postId}
-            referenceType={CommentReferenceType.Post}
-            last={COMMENTS_PER_PAGE}
-            handleCopyCommentPath={handleCopyCommentPath}
-            isCommentingEnabled={isCommentingEnabled}
-          />
-        </LazyRender>
+        {showComments && (
+          <LazyRender
+            idleTimeout={0}
+            lazyBehavior="keepMounted"
+            visibleOffset={500}
+            placeholderHeight={
+              Math.min(totalComments, COMMENTS_PER_PAGE) * COMMENT_PLACEHOLDER_HEIGHT
+            }
+          >
+            <CommentList
+              referenceId={postId}
+              referenceType={CommentReferenceType.Post}
+              last={COMMENTS_PER_PAGE}
+              handleCopyCommentPath={handleCopyCommentPath}
+              isCommentingEnabled={isCommentingEnabled}
+            />
+          </LazyRender>
+        )}
         {isComposeBarDisplayed && (
           <CommentComposeBar
             postId={postId}
@@ -124,6 +127,7 @@ UIEngagementBar.propTypes = {
   onClickComment: PropTypes.func,
   handleCopyCommentPath: PropTypes.func,
   isHighlighted: PropTypes.bool,
+  showComments: PropTypes.bool,
   isCommentingEnabled: PropTypes.bool,
 };
 

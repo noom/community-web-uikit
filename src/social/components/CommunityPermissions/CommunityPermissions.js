@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import SwitchItem from './SwitchItem';
 import {
   CommunityPermissionsBody,
@@ -7,7 +7,14 @@ import {
   CommunityPermissionsHeader,
 } from './styles';
 
-export default ({ needApprovalOnPostCreation, onNeedApprovalOnPostCreationChange }) => {
+export default ({
+  needApprovalOnPostCreation,
+  onNeedApprovalOnPostCreationChange,
+  areCommentsDisabled,
+  onDisableComments,
+}) => {
+  const { formatMessage } = useIntl();
+
   return (
     <CommunityPermissionsContainer>
       <CommunityPermissionsHeader>
@@ -18,6 +25,14 @@ export default ({ needApprovalOnPostCreation, onNeedApprovalOnPostCreationChange
         <SwitchItem
           value={needApprovalOnPostCreation}
           onChange={onNeedApprovalOnPostCreationChange}
+          title={formatMessage({ id: 'community.permissions.approvePosts' })}
+          prompt={formatMessage({ id: 'community.permissions.approvePosts.prompt' })}
+        />
+        <SwitchItem
+          value={areCommentsDisabled}
+          onChange={onDisableComments}
+          title={formatMessage({ id: 'community.permissions.disableComments' })}
+          prompt={formatMessage({ id: 'community.permissions.disableComments.prompt' })}
         />
       </CommunityPermissionsBody>
     </CommunityPermissionsContainer>

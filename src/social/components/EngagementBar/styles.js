@@ -35,4 +35,10 @@ export const NoInteractionMessage = styled.div`
   color: ${({ theme }) => theme.palette.base.shade2};
   margin-top: 0.5rem;
   text-align: center;
+
+  ${({ noMargin }) =>
+    noMargin &&
+    `
+    margin: 0;
+  `}
 `;
