@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import Switch from '~/core/components/Switch';
 import {
   SwitchItemContainer,
@@ -9,17 +8,13 @@ import {
 } from './styles';
 import { useSDK } from '~/core/hooks/useSDK';
 
-const SwitchItem = ({ onChange, value }) => {
+const SwitchItem = ({ onChange, value, title, prompt }) => {
   const { connected } = useSDK();
   return (
     <SwitchItemContainer>
       <SwitchItemDescription>
-        <SwitchItemName>
-          <FormattedMessage id="community.permissions.approvePosts" />
-        </SwitchItemName>
-        <SwitchItemPrompt>
-          <FormattedMessage id="community.permissions.approvePosts.prompt" />
-        </SwitchItemPrompt>
+        <SwitchItemName>{title}</SwitchItemName>
+        <SwitchItemPrompt>{prompt}</SwitchItemPrompt>
       </SwitchItemDescription>
 
       <Switch

@@ -18,6 +18,7 @@ const CommentList = ({
   last,
   readonly = false,
   isExpanded = true,
+  isCommentingEnabled = true,
   handleCopyCommentPath,
 }) => {
   const { commentIds, hasMore, loadMore } = useCommentsQuery({
@@ -60,6 +61,7 @@ const CommentList = ({
           commentId={commentId}
           readonly={readonly}
           handleCopyPath={handleCopyCommentPath}
+          isCommentingEnabled={isCommentingEnabled}
         />
       ))}
     </LoadMore>
@@ -76,6 +78,7 @@ CommentList.propTypes = {
   readonly: PropTypes.bool,
   isExpanded: PropTypes.bool,
   handleCopyCommentPath: PropTypes.func,
+  isCommentingEnabled: PropTypes.bool,
 };
 
 export default memo(CommentList);

@@ -14,6 +14,10 @@ export const CommunityPermissionsHeader = styled.div`
 
 export const CommunityPermissionsBody = styled.div`
   padding: 12px 16px;
+
+  & > :not(:last-child) {
+    margin-bottom: 1rem;
+  }
 `;
 
 export const SwitchItemContainer = styled.div`

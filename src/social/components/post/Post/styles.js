@@ -10,7 +10,7 @@ export const PostContainer = styled(({ className, isHighlighted, ...props }) => 
   <div className={cx('post', className)} {...props} />
 ))`
   padding: 1rem;
-  padding-bottom: 0;
+  padding-bottom: 0.5rem;
   background: ${({ theme }) => theme.palette.system.background};
   border: 1px solid #edeef2;
   border-radius: 0;

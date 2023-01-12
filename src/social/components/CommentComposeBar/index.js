@@ -99,7 +99,7 @@ const CommentComposeBar = ({
           <FormattedMessage id="cancel" />
         </Button>
         <PrimaryButton
-          disabled={isEmpty}
+          isDisabled={isEmpty}
           onClick={addComment}
           colorScheme="primary"
           data-qa-anchor={

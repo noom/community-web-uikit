@@ -28,6 +28,9 @@
   "post.readMore": "...Read more",
   "post.editPost": "Edit post",
   "post.deletePost": "Delete post",
+  "post.enableComments": "Enable comments",
+  "post.disableComments": "Disable comments",
+  "post.disabledComments": "Comments are turned off",
   "post.confirmDelete": "This post will be permanently deleted. You’ll no longer to see and find this post. Continue?",
   "post.confirmPendingDelete": "This post will be permanently deleted from the pending list",
   "post.edited": "Edited",
@@ -98,6 +101,8 @@
   "community.permissions.error.needApprovalOnPostCreation.turnOn": "Unable to turn on post review",
   "community.permissions.error.needApprovalOnPostCreation.turnOff": "Unable to turn off post review",
   "community.review.declinePendingPosts": "Decline pending post will permanently delete the selected post from community.",
+  "community.permissions.disableComments": "Disable comments",
+  "community.permissions.disableComments.prompt": "Comments on all posts in this community will be hidden and commenting will be disabled",
 
   "community.pendingPostsBanner.title": "Pending posts",
   "community.pendingPostsBanner.pendingForReview": "Your posts are pending for review",

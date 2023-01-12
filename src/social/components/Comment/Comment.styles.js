@@ -60,6 +60,7 @@ const StyledComment = ({
   metadata,
   handleCopyPath,
   isOldStyle,
+  isCommentingEnabled,
 }) => {
   const { formatMessage } = useIntl();
 

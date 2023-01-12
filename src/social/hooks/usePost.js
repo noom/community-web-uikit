@@ -19,6 +19,14 @@ const usePost = (postId) => {
   const handleDeletePost = () => PostRepository.deletePost(postId);
   const handleApprovePost = () => PostRepository.approvePost(postId);
   const handleDeclinePost = () => PostRepository.declinePost(postId);
+  const handleCommentingToggle = () =>
+    handleUpdatePost(post.data, {
+      metadata: {
+        ...post.metadata,
+        areCommentsHidden: false,
+        isCommentingDisabled: !post.metadata.isCommentingDisabled,
+      },
+    });
 
   const childrenPosts = usePostChildren(children);
 
@@ -40,6 +48,7 @@ const usePost = (postId) => {
     handleDeclinePost,
     childrenPosts,
     isFlaggedByMe,
+    handleCommentingToggle,
   };
 };
 
