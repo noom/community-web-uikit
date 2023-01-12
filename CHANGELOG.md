@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.32.0](https://github.com/noom/community-web-uikit/compare/2.31.4...2.32.0) (2023-01-12)
+
+
+### Features
+
+* Comment moderation ([#22](https://github.com/noom/community-web-uikit/issues/22)) ([bd0fa2c](https://github.com/noom/community-web-uikit/commit/bd0fa2c7f2e0d148ec5f74c42f439361480eb4ce))
+
 ### [2.31.4](https://github.com/noom/community-web-uikit/compare/2.31.3...2.31.4) (2023-01-10)
 
 
