@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.33.0](https://github.com/noom/community-web-uikit/compare/2.32.0...2.33.0) (2023-01-18)
+
+
+### Features
+
+* Add Comment MixPanel events ([6fbe338](https://github.com/noom/community-web-uikit/commit/6fbe338b84d49de24866c8cd335d233d31e7f632))
+
 ## [2.32.0](https://github.com/noom/community-web-uikit/compare/2.31.4...2.32.0) (2023-01-12)
 
 
