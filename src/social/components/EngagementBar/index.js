@@ -6,6 +6,7 @@ import { LIKE_REACTION_KEY } from '~/constants';
 import customizableComponent from '~/core/hocs/customization';
 import usePost from '~/social/hooks/usePost';
 import UIEngagementBar from './UIEngagementBar';
+import { useActionEvents } from '~/core/providers/ActionProvider';
 
 const EngagementBar = ({
   postId,
@@ -17,7 +18,7 @@ const EngagementBar = ({
 }) => {
   const [isComposeBarDisplayed, setComposeBarDisplayed] = useState(false);
   const toggleComposeBar = () => setComposeBarDisplayed((prevValue) => !prevValue);
-
+  const actionEvents = useActionEvents();
   const hideComposeBar = () => setComposeBarDisplayed(false);
 
   const { post } = usePost(postId);
@@ -30,6 +31,11 @@ const EngagementBar = ({
       text: commentText,
       mentionees,
       metadata,
+    });
+
+    actionEvents.onCommentCreate?.({
+      isReply: false,
+      isDisabled: !isCommentingEnabled,
     });
 
     hideComposeBar();

@@ -7,6 +7,8 @@ export type ActionEvents = {
   onCommunityLeave: (params: { communityId: string }) => void;
   onPostCreate: (params: { postId: string }) => void;
   onPostImpression: (params: { postId: string }) => void;
+  onCommentCreate: (params: { isReply: boolean; isDisabled: boolean }) => void;
+  onCommentsToggled: (params: { target: 'post' | 'community'; value: 'on' | 'off' }) => void;
 };
 
 export type ActionContextProps = {

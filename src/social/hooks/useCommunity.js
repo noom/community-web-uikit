@@ -54,7 +54,7 @@ const useCommunity = (communityId, resolver) => {
     await CommunityRepository.closeCommunity(communityId);
   };
 
-  const handleCommentingToggle = () =>
+  const handleCommentingToggle = () => {
     updateCommunity({
       metadata: {
         ...community.metadata,
@@ -62,6 +62,12 @@ const useCommunity = (communityId, resolver) => {
         isCommentingDisabled: !community.metadata.isCommentingDisabled,
       },
     });
+
+    actionEvents.onCommentsToggled?.({
+      target: 'community',
+      value: community.metadata.isCommentingDisabled ? 'on' : 'off',
+    });
+  };
 
   return {
     community,

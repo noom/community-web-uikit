@@ -260,7 +260,7 @@ const Comment = ({
           postType={comment?.referenceType}
           userToReply={commentAuthor.displayName}
           onSubmit={(replyText, mentionees, metadata) => {
-            handleReplyToComment(replyText, mentionees, metadata);
+            handleReplyToComment(replyText, mentionees, metadata, !isCommentingEnabled);
             setIsReplying(false);
             setExpanded(true);
           }}
