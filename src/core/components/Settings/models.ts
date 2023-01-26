@@ -9,6 +9,7 @@ export type NotificationSettings = {
   global: {
     comment: boolean;
     post: boolean;
-    reaction: boolean;
+    reaction?: boolean;
+    mention?: boolean;
   };
 };

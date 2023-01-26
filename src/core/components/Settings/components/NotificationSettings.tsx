@@ -6,7 +6,7 @@ import { SwitchSetting } from './SwitchSetting';
 
 import { NotificationSettings as Settings } from '../models';
 
-const NOTIFICATION_ORDER = ['comment', 'reaction', 'post'];
+const NOTIFICATION_ORDER = ['comment', 'mention', 'reaction', 'post'];
 const TypeToTile = {
   email: <FormattedMessage id="settings.emailNotifications.title" />,
   push: <FormattedMessage id="settings.pushNotifications.title" />,
@@ -41,7 +41,7 @@ export function NotificationSettings({
     <Box>
       <H3 pb={spacing}>{TypeToTile[type]}</H3>
       <Stack divider={<Box />} spacing={spacing}>
-        {NOTIFICATION_ORDER.map((key) => (
+        {NOTIFICATION_ORDER.filter(key => settings && Object.keys(settings.global).includes(key)).map((key) => (
           <SwitchSetting
             key={key}
             name={key}
@@ -64,7 +64,7 @@ export function NotificationSettings({
                 {community.communityName}
               </Text>
             }
-            isDisabled={isLoading || isDisabled || !settings?.global.post}
+            isDisabled={isLoading || isDisabled }
             isChecked={community.isEnabled}
             onChange={() => onChangeCommunity(community.communityId, !community.isEnabled)}
           />

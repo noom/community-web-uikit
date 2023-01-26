@@ -388,6 +388,8 @@
 
   "settings.notifications.comment.label": "Comment",
   "settings.notifications.comment.helper": "When someone comments on your post or comment",
+  "settings.notifications.mention.label": "Mention",
+  "settings.notifications.mention.helper": "When someone mentions you",
   "settings.notifications.reaction.label": "Reaction",
   "settings.notifications.reaction.helper": "When someone reacts on your post or comment",
   "settings.notifications.post.label": "Post",
