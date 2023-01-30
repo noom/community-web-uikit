@@ -32,5 +32,6 @@ export const settings: NotificationSettings = {
     comment: false,
     reaction: false,
     post: true,
+    mention: false,
   },
 };
