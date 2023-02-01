@@ -3,11 +3,11 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { Lock } from '~/icons';
 
 export const FeedScrollContainer = styled(InfiniteScroll)`
-  > :not(:first-child) {
-    margin-top: 0.5rem;
+  & > .post-creator {
+    margin-bottom: 0.5rem;
 
     @media (min-width: 960px) {
-      margin-top: 1rem;
+      margin-bottom: 1rem;
     }
   }
 

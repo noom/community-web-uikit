@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  ModalBody,
-  ModalFooter,
-  ModalContent,
-  Box,
-  H3,
-  ModalHeader,
-} from '@noom/wax-component-library';
+import { ModalBody, ModalFooter, ModalContent, H3, ModalHeader } from '@noom/wax-component-library';
 import { FormattedMessage } from 'react-intl';
 
 import { PrimaryButton } from '~/core/components/Button';
