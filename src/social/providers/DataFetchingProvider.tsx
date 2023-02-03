@@ -3,6 +3,10 @@ import { stripUndefinedValues } from '~/helpers/utils';
 
 export type DataFetchingHandlers = {
   getUserMetadata?: (userAccessCode: string) => Promise<{ data: Record<string, unknown> }>;
+  updateUserMetadata?: (
+    userAccessCode: string,
+    data: Record<string, any>,
+  ) => Promise<{ data: Record<string, unknown> }>;
 };
 
 const ConfigContext = createContext<DataFetchingHandlers>({});

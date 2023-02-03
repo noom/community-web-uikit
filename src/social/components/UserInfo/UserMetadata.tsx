@@ -46,17 +46,20 @@ type NoomMetadata = {
 };
 
 type MetadataEditModalProps = {
+  user: User;
   isOpen: boolean;
   metadata: User['metadata'];
   onClose: () => void;
-  onSave: (metadata: User['metadata']) => void;
+  onSave: (userAccessCode: string, metadata: User['metadata']) => void;
 };
 
-const MetadataEditModal = ({ onClose, isOpen, metadata }: MetadataEditModalProps) => {
+const MetadataEditModal = ({ user, onClose, isOpen, metadata, onSave }: MetadataEditModalProps) => {
   const { formatMessage } = useIntl();
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: User['metadata']) => console.log(data, UserRepository);
+  const onSubmit = (data: User['metadata']) => {
+    onSave(user.userId, data), onClose();
+  };
 
   return (
     <Modal
@@ -115,9 +118,11 @@ const MetadataEditModal = ({ onClose, isOpen, metadata }: MetadataEditModalProps
 export const UIUserMetadata = ({
   user,
   noomMetadata,
+  onUpdate,
 }: {
   user: User;
   noomMetadata: NoomMetadata;
+  onUpdate: MetadataEditModalProps['onSave'];
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -212,9 +217,10 @@ export const UIUserMetadata = ({
         </Table>
       </TableContainer>
       <MetadataEditModal
+        user={user}
         isOpen={isOpen}
         onClose={onClose}
-        onSave={onClose}
+        onSave={onUpdate}
         metadata={user.metadata}
       />
     </>
@@ -222,6 +228,16 @@ export const UIUserMetadata = ({
 };
 
 export const UserMetadata = ({ user }: { user: User }) => {
-  const noomMetadata = useNoomUserMetadata(user.userId) as NoomMetadata;
-  return <UIUserMetadata user={user} noomMetadata={noomMetadata} />;
+  const { metadata, updateMetadata } = useNoomUserMetadata(user.userId);
+
+  const handleUpdate = (userAccessCode: string, metadata: any) => {
+    updateMetadata(userAccessCode, metadata, () => {
+      //TODO: Replace this with actual fetch from Amity
+      location.reload();
+    });
+  };
+
+  return (
+    <UIUserMetadata user={user} noomMetadata={metadata as NoomMetadata} onUpdate={handleUpdate} />
+  );
 };
