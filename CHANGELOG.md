@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.34.0](https://github.com/noom/community-web-uikit/compare/2.33.1...2.34.0) (2023-02-03)
+
+
+### Features
+
+* Edit metadata ([#24](https://github.com/noom/community-web-uikit/issues/24)) ([892158d](https://github.com/noom/community-web-uikit/commit/892158dd1d5b772a932c74e895fc2c971df57020))
+
 ### [2.33.1](https://github.com/noom/community-web-uikit/compare/2.33.0...2.33.1) (2023-01-30)
 
 ## [2.33.0](https://github.com/noom/community-web-uikit/compare/2.32.0...2.33.0) (2023-01-18)
