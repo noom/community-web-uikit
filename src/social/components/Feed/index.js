@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { PostTargetType, FeedType, CommunityFilter } from '@amityco/js-sdk';
 
@@ -32,6 +32,11 @@ function getAdjustedPostTarget(
   }
 
   return { targetType, targetId };
+}
+
+function reloadPage() {
+  // TODO: Replace with proper feed replace
+  location.reload();
 }
 
 const Feed = ({
@@ -80,6 +85,7 @@ const Feed = ({
         <>
           {showPostCreator && postCreatorTargetId && (
             <PostCreator
+              className="post-creator"
               data-qa-anchor="feed-post-creator-textarea"
               targetType={postCreatorTargetType}
               targetId={postCreatorTargetId}
@@ -123,6 +129,7 @@ const Feed = ({
             <EmptyFeed
               targetType={targetType}
               goToExplore={goToExplore}
+              onReload={reloadPage}
               canPost={showPostCreator}
               feedType={feedType}
             />

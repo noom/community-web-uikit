@@ -135,7 +135,7 @@ export function NotificationRecordList({
         loader={<NotificationRecordSkeleton />}
         useWindow={false}
       >
-        <Stack key={0} spacing="-1px" mb={hasMore ? '-1px' : ''}>
+        <Stack key="infinite-stack" spacing="-1px" mb={hasMore ? '-1px' : ''}>
           {notificationRecords.map((record) => (
             <NotificationRecordItem
               key={record.targetGroup}

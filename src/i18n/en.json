@@ -75,7 +75,7 @@
   "community.name": "Community name",
   "community.about": "About",
   "community.category": "Category",
-  "community.onlyadmincanpost": ">Only admin can post",
+  "community.onlyadmincanpost": "Only admin can post",
   "community.onlyadmins": "Choose to allow Only Admins to create posts in this community.",
   "community.categorypermission": "Community permission",
   "community.addmembers": "Add members",
@@ -259,6 +259,7 @@
   "feed.emptyJoinedCommunityPublicFeed": "Community feed is empty. Start your first post",
   "feed.emptyUserFeed": "No posts yet",
   "feed.emptyMyFeed": "Your feed is empty",
+  "feed.reload": "Reload Feed",
   "chat.groupSetting": "Group settings",
   "chat.message.deleted": "Message was deleted",
   "chat.message.unsupported": "Unsupported message type",
@@ -407,5 +408,6 @@
   "userMetadata.accessCode": "Access code",
   "userMetadata.userType": "User type",
   "userMetadata.hasFinishedInitialProfileSync": "Finished onboarding",
-  "userMetadata.isMigratedFromCircles": "Migrated from Circles v1"
+  "userMetadata.isMigratedFromCircles": "Migrated from Circles v1",
+  "userMetadata.edit.title": "Edit user metadata"
 }

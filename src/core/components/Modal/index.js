@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Modal as WaxModal,
@@ -56,6 +57,20 @@ const Modal = ({
       </ModalContent>
     </WaxModal>
   );
+};
+
+Modal.propTypes = {
+  size: PropTypes.string,
+  isCentered: PropTypes.bool,
+  className: PropTypes.string,
+  onOverlayClick: PropTypes.bool,
+  onCancel: PropTypes.func,
+  title: PropTypes.string,
+  footer: PropTypes.any,
+  isOpen: PropTypes.bool,
+  children: PropTypes.any,
+  scrollBehavior: PropTypes.string,
+  'data-qa-anchor': PropTypes.string,
 };
 
 export default Modal;
