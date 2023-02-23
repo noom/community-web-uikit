@@ -86,7 +86,7 @@ export function NotificationRecordItem({
   record,
   ...style
 }: NotificationRecordItemProps) {
-  const { targetType, description, imageUrl, lastUpdate, hasRead, verb } = record;
+  const { sourceType, description, imageUrl, serverTimeUpdated, read } = record;
 
   const handleClick = () => {
     onClick?.(record);
@@ -106,7 +106,7 @@ export function NotificationRecordItem({
         <Avatar
           avatar={imageUrl}
           displayName={record.actors?.[0]?.name}
-          isCommunity={targetType === 'community'}
+          isCommunity={sourceType === 'COMMUNITY'}
         />
       }
       title={
@@ -120,10 +120,10 @@ export function NotificationRecordItem({
       }
       subTitle={
         <Text size="xs" color="gray">
-          <Time date={Number(lastUpdate)} className="" />
+          <Time date={Number(serverTimeUpdated)} className="" />
         </Text>
       }
-      badge={!hasRead && <Badge size="xs" onClick={handleBadgeClick} />}
+      badge={!read && <Badge size="xs" onClick={handleBadgeClick} />}
       {...style}
     />
   );
