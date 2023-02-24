@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.34.2](https://github.com/noom/community-web-uikit/compare/2.34.1...2.34.2) (2023-02-24)
+
+
+### Bug Fixes
+
+* Add mark all as read option to display in Storybook ([#26](https://github.com/noom/community-web-uikit/issues/26)) ([120f63f](https://github.com/noom/community-web-uikit/commit/120f63f81e03640132657a81da73eb3430dc4356))
+
 ### [2.34.1](https://github.com/noom/community-web-uikit/compare/2.34.0...2.34.1) (2023-02-24)
 
 ## [2.34.0](https://github.com/noom/community-web-uikit/compare/2.33.1...2.34.0) (2023-02-03)
