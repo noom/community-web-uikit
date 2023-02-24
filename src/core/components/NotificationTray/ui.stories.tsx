@@ -34,6 +34,7 @@ export const NotificationRecordPopover = ({ notificationRecords, isLoading, erro
 const argTypes = {
   isLoading: { control: { type: 'boolean' } },
   hasMore: { control: { type: 'boolean' } },
+  showMarkAll: { control: { type: 'boolean' } },
   error: { control: { type: 'text' } },
   loadMore: { action: 'loadMore()' },
   onClick: { action: 'onClick' },
@@ -48,6 +49,7 @@ const args = {
 
   isLoading: false,
   hasMore: false,
+  showMarkAll: true,
 };
 
 NotificationRecordList.argTypes = argTypes;
@@ -56,8 +58,14 @@ NotificationRecordList.args = args;
 NotificationRecordPopover.argTypes = {
   ...argTypes,
   maxH: { control: { type: 'number' } },
+  showMarkAllButton: { control: { type: 'boolean' } },
   showUnreadBadge: { control: { type: 'boolean' } },
   onMarkAllClick: { action: 'onMarkAllClick()' },
   onViewAllClick: { action: 'onViewAllClick()' },
 };
-NotificationRecordPopover.args = { ...args, maxH: 320, showUnreadBadge: true };
+NotificationRecordPopover.args = {
+  ...args,
+  maxH: 320,
+  showUnreadBadge: true,
+  showMarkAllButton: true,
+};
