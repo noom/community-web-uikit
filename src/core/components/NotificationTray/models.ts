@@ -1,12 +1,12 @@
 export type NotificationRecord = {
+  id: string;
   description: string;
-  userId: string;
-  verb: string;
-  targetId: string;
-  targetGroup: string;
-  targetType: string;
-  imageUrl?: string;
-  hasRead?: boolean;
-  lastUpdate: string;
-  actors?: { id: string; name: string }[];
+  userAccessCode: string;
+  imageUrl: string;
+  read: boolean;
+  path: string;
+  actors?: { userAccessCode: string; name: string; avatarUrl: string }[];
+  sourceId: string;
+  sourceType: string;
+  serverTimeUpdated: string;
 };

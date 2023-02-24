@@ -138,7 +138,7 @@ export function NotificationRecordList({
         <Stack key="infinite-stack" spacing="-1px" mb={hasMore ? '-1px' : ''}>
           {notificationRecords.map((record) => (
             <NotificationRecordItem
-              key={record.targetGroup}
+              key={record.id}
               record={record}
               onClick={onClick}
               onBadgeClick={onBadgeClick}
