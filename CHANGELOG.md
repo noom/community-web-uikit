@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.34.3](https://github.com/noom/community-web-uikit/compare/2.34.2...2.34.3) (2023-02-27)
+
+
+### Bug Fixes
+
+* Parsing the new datestring formats correctly ([#27](https://github.com/noom/community-web-uikit/issues/27)) ([a25c005](https://github.com/noom/community-web-uikit/commit/a25c005a415d4d5106bc4172299ade0cba1754ed))
+
 ### [2.34.2](https://github.com/noom/community-web-uikit/compare/2.34.1...2.34.2) (2023-02-24)
 
 
