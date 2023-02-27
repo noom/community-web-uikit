@@ -19,7 +19,7 @@ export const mockNotificationRecordPost = {
   ],
   sourceId: '634678647e482b00d99e9fe3',
   sourceType: 'COMMUNITY',
-  serverTimeUpdated: Date.now() - 20 * 1000,
+  serverTimeUpdated: new Date(Date.now() - 20 * 1000).toISOString(),
 };
 
 export const mockNotificationRecordLike = {
@@ -38,7 +38,7 @@ export const mockNotificationRecordLike = {
   ],
   sourceId: '634678647e482b00d43e9fe3',
   sourceType: 'COMMUNITY',
-  serverTimeUpdated: Date.now() - 58 * 1000,
+  serverTimeUpdated: new Date(Date.now() - 58 * 1000).toISOString(),
 };
 
 export const mockNotificationRecordComment = {
@@ -57,5 +57,5 @@ export const mockNotificationRecordComment = {
   ],
   sourceId: '634678647e482re0d43e9fe3',
   sourceType: 'COMMUNITY',
-  serverTimeUpdated: Date.now() - 300 * 1000,
+  serverTimeUpdated: new Date(Date.now() - 300 * 1000).toISOString(),
 };

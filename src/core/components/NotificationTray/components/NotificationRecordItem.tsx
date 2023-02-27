@@ -120,7 +120,7 @@ export function NotificationRecordItem({
       }
       subTitle={
         <Text size="xs" color="gray">
-          <Time date={Number(serverTimeUpdated)} className="" />
+          <Time date={Date.parse(serverTimeUpdated)} className="" />
         </Text>
       }
       badge={!read && <Badge size="xs" onClick={handleBadgeClick} />}
