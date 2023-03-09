@@ -241,11 +241,11 @@ const CommunityForm = ({
               <Label htmlFor="description">
                 <FormattedMessage id="community.about" />
               </Label>
-              <Counter>{description.length}/180</Counter>
+              <Counter>{description.length}/5000</Counter>
             </LabelCounterWrapper>
             <AboutTextarea
               {...register('description', {
-                maxLength: { value: 180, message: 'Description text is too long' },
+                maxLength: { value: 5000, message: 'Description text is too long' },
               })}
               data-qa-anchor={`${dataQaAnchor}-community-description-textarea`}
               placeholder="Enter description"

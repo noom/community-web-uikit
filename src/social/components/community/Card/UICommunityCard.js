@@ -56,11 +56,7 @@ const UICommunityCard = ({
 
           {loading && <Skeleton count={2} style={{ fontSize: 8 }} />}
 
-          {!loading && (
-            <Truncate lines={2}>
-              <Description title={description}>{description}</Description>
-            </Truncate>
-          )}
+          {!loading && <Description title={description}>{description}</Description>}
 
           {!loading && showMemberCount && (
             <Count>
