@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Stack, Icon } from '@noom/wax-component-library';
 import { FormattedMessage } from 'react-intl';
-import Truncate from 'react-truncate-markup';
 
 import { toHumanString } from '~/helpers/toHumanString';
 import Skeleton from '~/core/components/Skeleton';
