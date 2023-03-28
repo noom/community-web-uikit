@@ -7,6 +7,12 @@ export type DataFetchingHandlers = {
     userAccessCode: string,
     data: Record<string, any>,
   ) => Promise<{ data: Record<string, unknown> }>;
+
+  getCategoryMetadata?: (categoryId: string) => Promise<{ data: Record<string, unknown> }>;
+  updateCategoryMetadata?: (
+    categoryId: string,
+    data: Record<string, any>,
+  ) => Promise<{ data: Record<string, unknown> }>;
 };
 
 const ConfigContext = createContext<DataFetchingHandlers>({});

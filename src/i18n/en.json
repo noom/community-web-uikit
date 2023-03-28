@@ -409,5 +409,11 @@
   "userMetadata.userType": "User type",
   "userMetadata.hasFinishedInitialProfileSync": "Finished onboarding",
   "userMetadata.isMigratedFromCircles": "Migrated from Circles v1",
-  "userMetadata.edit.title": "Edit user metadata"
+  "userMetadata.edit.title": "Edit user metadata",
+
+  "categoryMetadata.title": "Category metadata",
+  "categoryMetadata.helper": "Only visible to Noom employees",
+  "categoryMetadata.locale": "Locale",
+  "categoryMetadata.partner": "B2B Partner",
+  "categoryMetadata.edit.title": "Edit category metadata"
 }
