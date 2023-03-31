@@ -2,11 +2,13 @@ import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { FormattedMessage } from 'react-intl';
 
+import withSDK from '~/core/hocs/withSDK';
 import Switch from '~/core/components/Switch';
 import Button from '~/core/components/Button';
 import Radios from '~/core/components/Radio';
 import { useAsyncCallback } from '~/core/hooks/useAsyncCallback';
 import useElement from '~/core/hooks/useElement';
+import useUserFilters from '~/core/hooks/useUserFilters';
 import customizableComponent from '~/core/hocs/customization';
 import AvatarUploader from './AvatarUploader';
 import { isEqual } from '~/helpers';
@@ -103,6 +105,7 @@ const CommunityForm = ({
   className,
   onCancel,
   canCreatePublic,
+  currentUserId,
 }) => {
   const defaultValues = useMemo(
     () => ({
@@ -121,6 +124,8 @@ const CommunityForm = ({
   const { register, handleSubmit, setError, watch, control, formState } = useForm({
     defaultValues,
   });
+
+  const { localeLanguage, businessType } = useUserFilters(currentUserId);
 
   const { errors } = formState;
   const displayName = watch('displayName', '');
@@ -170,6 +175,7 @@ const CommunityForm = ({
         tags: [],
         userIds: data.userIds,
         isPublic,
+        metadata: { localeLanguage, businessType },
 
         // Currently we support only one category per community.
         categoryIds: data?.categoryId?.length ? [data.categoryId] : undefined,
@@ -357,4 +363,4 @@ const CommunityForm = ({
   );
 };
 
-export default memo(customizableComponent('CommunityForm', CommunityForm));
+export default memo(withSDK(customizableComponent('CommunityForm', CommunityForm)));

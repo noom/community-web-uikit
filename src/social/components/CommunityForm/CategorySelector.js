@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
+import withSDK from '~/core/hocs/withSDK';
+import useUserFilters from '~/core/hooks/useUserFilters';
 import customizableComponent from '~/core/hocs/customization';
 import Select from '~/core/components/Select';
 import useCategories from '~/social/hooks/useCategories';
@@ -14,16 +16,27 @@ const CategorySelector = ({
   value: categoryId,
   onChange,
   parentContainer = null,
+  currentUserId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const close = () => setIsOpen(false);
+  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
 
   const [categories] = useCategories({ isDeleted: false });
-  const options = categories.map((category) => ({
-    name: category.name,
-    value: category.categoryId,
-  }));
+  const options = categories
+    .filter(
+      (cat) =>
+        (cat.metadata?.['localeLanguage']
+          ? localeLanguage === cat.metadata?.['localeLanguage']
+          : true) &&
+        (cat.metadata?.['businessType'] ? businessType === cat.metadata?.['businessType'] : true) &&
+        (cat.metadata?.['partnerId'] ? partnerId === cat.metadata?.['partnerId'] : true),
+    )
+    .map((category) => ({
+      name: category.name,
+      value: category.categoryId,
+    }));
 
   const itemRenderer = ({ value }) => <CategoryHeader categoryId={value} />;
 
@@ -61,6 +74,7 @@ CategorySelector.propTypes = {
   value: PropTypes.string,
   parentContainer: PropTypes.instanceOf(Element),
   onChange: PropTypes.func,
+  currentUserId: PropTypes.string.isRequired,
 };
 
-export default customizableComponent('CategorySelector', CategorySelector);
+export default withSDK(customizableComponent('CategorySelector', CategorySelector));

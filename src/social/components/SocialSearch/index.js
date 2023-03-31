@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { CommunityFilter, CommunitySortingMethod } from '@amityco/js-sdk';
 
+import withSDK from '~/core/hocs/withSDK';
 import CommunityHeader from '~/social/components/community/Header';
 import UserHeader from '~/social/components/UserHeader';
 import customizableComponent from '~/core/hocs/customization';
+import useUserFilters from '~/core/hooks/useUserFilters';
 import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import {
@@ -28,7 +30,8 @@ const userRenderer = (users) => (userName) => {
   return !!userId && <UserHeader userId={userId} isBanned={isGlobalBan} />;
 };
 
-const SocialSearch = ({ className, sticky = false, searchBy }) => {
+const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) => {
+  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
   const { onClickCommunity, onClickUser } = useNavigation();
   const [value, setValue] = useState('');
   const [users = [], hasMoreUsers, loadMoreUsers] = useUserQuery(value);
@@ -41,6 +44,19 @@ const SocialSearch = ({ className, sticky = false, searchBy }) => {
     setValue(newVal);
   };
 
+  const filteredUsers = users.filter((user) => {
+    const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } = user.metadata;
+    return localeLanguage === otherLocaleLanguage && businessType === otherBusinessType;
+  });
+  const filteredCommunities = communities.filter(
+    (com) =>
+      (com.metadata?.['localeLanguage']
+        ? localeLanguage === com.metadata?.['localeLanguage']
+        : true) &&
+      (com.metadata?.['businessType'] ? businessType === com.metadata?.['businessType'] : true) &&
+      (com.metadata?.['partnerId'] ? partnerId === com.metadata?.['partnerId'] : true),
+  );
+
   const getPagination = (activeTab) => {
     const hasMore = activeTab === 'communities' ? hasMoreCommunities : hasMoreUsers;
     const loadMore = activeTab === 'communities' ? loadMoreCommunities : loadMoreUsers;
@@ -50,28 +66,28 @@ const SocialSearch = ({ className, sticky = false, searchBy }) => {
 
   const handlePick = (name, activeTab) => {
     if (activeTab === 'communities') {
-      const { communityId } = communities.find((item) => item.displayName === name) ?? {};
+      const { communityId } = filteredCommunities.find((item) => item.displayName === name) ?? {};
       communityId && onClickCommunity(communityId);
     } else if (activeTab === 'accounts') {
-      const { userId } = users.find((item) => item.displayName === name) ?? {};
+      const { userId } = filteredUsers.find((item) => item.displayName === name) ?? {};
       userId && onClickUser(userId);
     }
   };
 
   const rendererMap = useMemo(
     () => ({
-      communities: communityRenderer(communities),
-      accounts: userRenderer(users),
+      communities: communityRenderer(filteredCommunities),
+      accounts: userRenderer(filteredUsers),
     }),
-    [communities, users],
+    [filteredCommunities, filteredUsers],
   );
 
   const allItems = useMemo(
     () => ({
-      communities: communities.map((community) => community.displayName),
-      accounts: users.map((community) => community.displayName),
+      communities: filteredCommunities.map((community) => community.displayName),
+      accounts: filteredUsers.map((user) => user.displayName),
     }),
-    [communities, users],
+    [filteredCommunities, filteredUsers],
   );
 
   const items = useMemo(() => {
@@ -117,6 +133,7 @@ SocialSearch.propTypes = {
   className: PropTypes.string,
   sticky: PropTypes.bool,
   searchBy: PropTypes.arrayOf(PropTypes.string),
+  currentUserId: PropTypes.string.isRequired,
 };
 
 SocialSearch.defaultProps = {
@@ -124,4 +141,4 @@ SocialSearch.defaultProps = {
   searchBy: ['communities', 'accounts'],
 };
 
-export default customizableComponent('SocialSearch', SocialSearch);
+export default withSDK(customizableComponent('SocialSearch', SocialSearch));

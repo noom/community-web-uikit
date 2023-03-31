@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Box } from '@noom/wax-component-library';
 
 import useCategories from '~/social/hooks/useCategories';
@@ -7,6 +8,9 @@ import RecommendedList, {
 } from '~/social/components/community/RecommendedList';
 
 import { PageContainer } from './styles';
+import withSDK from '~/core/hocs/withSDK';
+import useUserFilters from '~/core/hooks/useUserFilters';
+import useUser from '~/core/hooks/useUser';
 
 const NUMBER_OF_COMMUNITIES_PER_CATEGORY = 5;
 
@@ -48,18 +52,35 @@ const List = ({
   );
 };
 
-const ExplorePage = () => {
+const ExplorePage = ({ currentUserId }) => {
+  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
   const [categories = [], , , loading] = useCategories({
     isDeleted: false,
   }) as [Array<Category>, boolean, () => void, boolean, boolean];
 
+  const user = useUser(currentUserId);
+  console.log(user);
+
+  const filteredCategories = categories.filter(
+    (cat) =>
+      (cat.metadata?.['localeLanguage']
+        ? localeLanguage === cat.metadata?.['localeLanguage']
+        : true) &&
+      (cat.metadata?.['businessType'] ? businessType === cat.metadata?.['businessType'] : true) &&
+      (cat.metadata?.['partnerId'] ? partnerId === cat.metadata?.['partnerId'] : true),
+  );
+
   return (
     <PageContainer>
       <Box mb={2}>
-        <List categories={categories} isLoading={loading} />
+        <List categories={filteredCategories} isLoading={loading} />
       </Box>
     </PageContainer>
   );
 };
 
-export default ExplorePage;
+ExplorePage.propTypes = {
+  currentUserId: PropTypes.string.isRequired,
+};
+
+export default withSDK(ExplorePage);
