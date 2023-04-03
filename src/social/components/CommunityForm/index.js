@@ -168,6 +168,11 @@ const CommunityForm = ({
         return;
       }
 
+      // TODO: A user can have multiple languages, so at some point we should add UI to allow these
+      //  users specifically to choose what language their community is being created in.
+      //  For now, this is going to be an under-supported feature and communities will default
+      //  to the user's primary language, which is presumed to be the first language in their
+      //  locale array.
       const payload = {
         displayName: data.displayName,
         description: data.description?.length ? data.description : undefined,

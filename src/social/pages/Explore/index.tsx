@@ -59,9 +59,6 @@ const ExplorePage = ({ currentUserId }) => {
     isDeleted: false,
   }) as [Array<Category>, boolean, () => void, boolean, boolean];
 
-  const user = useUser(currentUserId);
-  console.log(user);
-
   const filteredCategories = categories.filter((cat) =>
     userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, cat),
   );
