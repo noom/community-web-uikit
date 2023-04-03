@@ -48,6 +48,22 @@ const global = {
           title: process.env.STORYBOOK_USER2.split(',')[1],
         },
         {
+          value: process.env.STORYBOOK_USER3,
+          title: process.env.STORYBOOK_USER3.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER4,
+          title: process.env.STORYBOOK_USER4.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER5,
+          title: process.env.STORYBOOK_USER5.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER6,
+          title: process.env.STORYBOOK_USER6.split(',')[1],
+        },
+        {
           value: 'reconnect',
           title: '⚠️ Reconnect ⚠️',
         },

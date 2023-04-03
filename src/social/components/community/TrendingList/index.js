@@ -4,10 +4,13 @@ import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import Skeleton from '~/core/components/Skeleton';
 
+import withSDK from '~/core/hocs/withSDK';
+import useUserFilters from '~/core/hooks/useUserFilters';
 import useTrendingCommunitiesList from '~/social/hooks/useTrendingCommunitiesList';
 import TrendingItem from '~/social/components/community/TrendingItem';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import Title from '~/social/components/community/Title';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const CommunitiesList = styled.ul`
   list-style: none;
@@ -24,10 +27,15 @@ const CommunitiesList = styled.ul`
   }
 `;
 
-const TrendingList = () => {
+const TrendingList = ({ currentUserId }) => {
   const { onClickCommunity } = useNavigation();
 
   const [communities, , , loading] = useTrendingCommunitiesList();
+  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+
+  const filteredCommunities = communities.filter((com) =>
+    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
+  );
 
   const title = loading ? (
     <Skeleton style={{ fontSize: 12, maxWidth: 156 }} />
@@ -41,7 +49,7 @@ const TrendingList = () => {
           <TrendingItem loading />
         </li>
       ))
-    : communities.slice(0, 5).map(({ communityId }) => (
+    : filteredCommunities.slice(0, 5).map(({ communityId }) => (
         <li key={communityId}>
           <TrendingItem communityId={communityId} onClick={onClickCommunity} />
         </li>
@@ -55,4 +63,4 @@ const TrendingList = () => {
   );
 };
 
-export default TrendingList;
+export default withSDK(TrendingList);

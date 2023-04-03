@@ -10,6 +10,7 @@ import useCategories from '~/social/hooks/useCategories';
 import CategoryHeader from '~/social/components/category/Header';
 
 import { Selector, SelectIcon, InputPlaceholder } from './styles';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const CategorySelector = ({
   'data-qa-anchor': dataQaAnchor = '',
@@ -25,13 +26,8 @@ const CategorySelector = ({
 
   const [categories] = useCategories({ isDeleted: false });
   const options = categories
-    .filter(
-      (cat) =>
-        (cat.metadata?.['localeLanguage']
-          ? localeLanguage === cat.metadata?.['localeLanguage']
-          : true) &&
-        (cat.metadata?.['businessType'] ? businessType === cat.metadata?.['businessType'] : true) &&
-        (cat.metadata?.['partnerId'] ? partnerId === cat.metadata?.['partnerId'] : true),
+    .filter((cat) =>
+      userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, cat),
     )
     .map((category) => ({
       name: category.name,

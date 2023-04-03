@@ -17,6 +17,7 @@ import {
   SearchIconContainer,
 } from './styles';
 import useUserQuery from '~/core/hooks/useUserQuery';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const communityRenderer = (communities) => (communityName) => {
   const { communityId } = communities.find((item) => item.displayName === communityName) ?? {};
@@ -46,15 +47,13 @@ const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) =>
 
   const filteredUsers = users.filter((user) => {
     const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } = user.metadata;
-    return localeLanguage === otherLocaleLanguage && businessType === otherBusinessType;
+    return (
+      localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
+      businessType === otherBusinessType
+    );
   });
-  const filteredCommunities = communities.filter(
-    (com) =>
-      (com.metadata?.['localeLanguage']
-        ? localeLanguage === com.metadata?.['localeLanguage']
-        : true) &&
-      (com.metadata?.['businessType'] ? businessType === com.metadata?.['businessType'] : true) &&
-      (com.metadata?.['partnerId'] ? partnerId === com.metadata?.['partnerId'] : true),
+  const filteredCommunities = communities.filter((com) =>
+    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
   );
 
   const getPagination = (activeTab) => {
@@ -134,11 +133,6 @@ SocialSearch.propTypes = {
   sticky: PropTypes.bool,
   searchBy: PropTypes.arrayOf(PropTypes.string),
   currentUserId: PropTypes.string.isRequired,
-};
-
-SocialSearch.defaultProps = {
-  sticky: false,
-  searchBy: ['communities', 'accounts'],
 };
 
 export default withSDK(customizableComponent('SocialSearch', SocialSearch));

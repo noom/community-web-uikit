@@ -175,7 +175,7 @@ const CommunityForm = ({
         tags: [],
         userIds: data.userIds,
         isPublic,
-        metadata: { localeLanguage, businessType },
+        metadata: { localeLanguage: localeLanguage[0], businessType },
 
         // Currently we support only one category per community.
         categoryIds: data?.categoryId?.length ? [data.categoryId] : undefined,

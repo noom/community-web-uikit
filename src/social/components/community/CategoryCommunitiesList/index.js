@@ -12,6 +12,7 @@ import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import PaginatedList from '~/core/components/PaginatedList';
 import EmptyFeedIcon from '~/icons/EmptyFeed';
 import CommunityCard from '~/social/components/community/Card';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const CategoryCommunitiesList = ({ categoryId, currentUserId }) => {
   const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
@@ -24,13 +25,8 @@ const CategoryCommunitiesList = ({ categoryId, currentUserId }) => {
   // A user /shouldn't/ be seeing the community list page communities they aren't matching filters on
   // because we should filter out the categories those communities belong to on the Explore page,
   // but this is being done just in case.
-  const filteredCommunities = communities.filter(
-    (com) =>
-      (com.metadata?.['localeLanguage']
-        ? localeLanguage === com.metadata?.['localeLanguage']
-        : true) &&
-      (com.metadata?.['businessType'] ? businessType === com.metadata?.['businessType'] : true) &&
-      (com.metadata?.['partnerId'] ? partnerId === com.metadata?.['partnerId'] : true),
+  const filteredCommunities = communities.filter((com) =>
+    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
   );
 
   const items = useMemo(() => {

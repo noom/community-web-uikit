@@ -11,6 +11,7 @@ import { PageContainer } from './styles';
 import withSDK from '~/core/hocs/withSDK';
 import useUserFilters from '~/core/hooks/useUserFilters';
 import useUser from '~/core/hooks/useUser';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const NUMBER_OF_COMMUNITIES_PER_CATEGORY = 5;
 
@@ -61,13 +62,8 @@ const ExplorePage = ({ currentUserId }) => {
   const user = useUser(currentUserId);
   console.log(user);
 
-  const filteredCategories = categories.filter(
-    (cat) =>
-      (cat.metadata?.['localeLanguage']
-        ? localeLanguage === cat.metadata?.['localeLanguage']
-        : true) &&
-      (cat.metadata?.['businessType'] ? businessType === cat.metadata?.['businessType'] : true) &&
-      (cat.metadata?.['partnerId'] ? partnerId === cat.metadata?.['partnerId'] : true),
+  const filteredCategories = categories.filter((cat) =>
+    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, cat),
   );
 
   return (

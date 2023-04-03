@@ -10,6 +10,7 @@ import UserHeader from '~/social/components/UserHeader';
 import UserChip from '~/core/components/UserChip';
 import withSDK from '~/core/hocs/withSDK';
 
+import { LANGUAGE_METADATA, BUSINESS_TYPE_METADATA } from '~/social/constants';
 import { Selector, UserSelectorInput } from './styles';
 import useUserFilters from '~/core/hooks/useUserFilters';
 
@@ -24,14 +25,14 @@ const UserSelector = ({
   const [query, setQuery] = useState('');
   const [queriedUsers = []] = useUserQuery(query);
   const { formatMessage } = useIntl();
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const { localeLanguage, businessType } = useUserFilters(currentUserId);
 
   const queriedUsersFilters = queriedUsers.reduce(
     (acc, user) => ({
       ...acc,
       [user.userId]: {
-        localeLanguage: user.metadata?.['localeLanguage'],
-        businessType: user.metadata?.['businessType'],
+        localeLanguage: user.metadata?.[LANGUAGE_METADATA] ?? [],
+        businessType: user.metadata?.[BUSINESS_TYPE_METADATA],
       },
     }),
     {},
@@ -48,7 +49,10 @@ const UserSelector = ({
     .filter(({ userId }) => {
       const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } =
         queriedUsersFilters[userId];
-      return localeLanguage === otherLocaleLanguage && businessType === otherBusinessType;
+      return (
+        localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
+        businessType === otherBusinessType
+      );
     })
     .map(({ displayName, userId }) => ({
       name: displayName,
