@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { UserRepository } from '@amityco/js-sdk';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Box,

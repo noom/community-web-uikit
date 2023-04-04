@@ -4,19 +4,30 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import InfiniteScroll from 'react-infinite-scroller';
 
+import withSDK from '~/core/hocs/withSDK';
+import useUserFilters from '~/core/hooks/useUserFilters';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import { Grid, ListEmptyState } from './styles';
 import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import PaginatedList from '~/core/components/PaginatedList';
 import EmptyFeedIcon from '~/icons/EmptyFeed';
 import CommunityCard from '~/social/components/community/Card';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
-const CategoryCommunitiesList = ({ categoryId }) => {
+const CategoryCommunitiesList = ({ categoryId, currentUserId }) => {
+  const userFilters = useUserFilters(currentUserId);
   const { onClickCommunity } = useNavigation();
   const [communities, hasMore, loadMore, loading, loadingMore] = useCommunitiesList({
     categoryId,
     sortBy: CommunitySortingMethod.DisplayName,
   });
+
+  // A user /shouldn't/ be seeing the community list page communities they aren't matching filters on
+  // because we should filter out the categories those communities belong to on the Explore page,
+  // but this is being done just in case.
+  const filteredCommunities = communities.filter((com) =>
+    userMatchesCommunityCategorySegment(userFilters, com),
+  );
 
   const items = useMemo(() => {
     function getLoadingItems() {
@@ -28,11 +39,11 @@ const CategoryCommunitiesList = ({ categoryId }) => {
     }
 
     if (!loadingMore) {
-      return communities;
+      return filteredCommunities;
     }
 
-    return [...communities, ...getLoadingItems()];
-  }, [communities, loading, loadingMore]);
+    return [...filteredCommunities, ...getLoadingItems()];
+  }, [filteredCommunities, loading, loadingMore]);
 
   return (
     <InfiniteScroll useWindow loadMore={loadMore} hasMore={hasMore}>
@@ -66,6 +77,7 @@ const CategoryCommunitiesList = ({ categoryId }) => {
 
 CategoryCommunitiesList.propTypes = {
   categoryId: PropTypes.string.isRequired,
+  currentUserId: PropTypes.string.isRequired,
 };
 
-export default memo(CategoryCommunitiesList);
+export default memo(withSDK(CategoryCommunitiesList));

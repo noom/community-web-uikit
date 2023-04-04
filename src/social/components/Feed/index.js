@@ -54,6 +54,7 @@ const Feed = ({
 }) => {
   const enablePostTargetPicker = targetType === PostTargetType.GlobalFeed;
 
+  // No segmentation filtering done here since this only displays communities a user is already in anyway.
   const [communities, hasMoreCommunities, loadMoreCommunities] = useCommunitiesList(
     queryParams,
     false,

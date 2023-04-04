@@ -5,11 +5,14 @@ import { CommunitySortingMethod } from '@amityco/js-sdk';
 import { FormattedMessage } from 'react-intl';
 import { Box, Link, Icon, Skeleton as UISkeleton } from '@noom/wax-component-library';
 
+import withSDK from '~/core/hocs/withSDK';
 import HorizontalList from '~/core/components/HorizontalList';
 import CommunityCard from '~/social/components/community/Card';
 
+import useUserFilters from '~/core/hooks/useUserFilters';
 import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import { useNavigation } from '~/social/providers/NavigationProvider';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const COMMUNITY_FETCH_NUM = 20;
 const COLUMN_CONFIG = { 1024: 2, 1280: 3, 1440: 3, 1800: 3 };
@@ -17,7 +20,8 @@ const COLUMN_CONFIG = { 1024: 2, 1280: 3, 1440: 3, 1800: 3 };
 const Skeleton = ({ size = 4 }) =>
   new Array(size).fill(1).map((x, index) => <CommunityCard key={index} loading />);
 
-const RecommendedList = ({ category, communityLimit = 5 }) => {
+const RecommendedList = ({ category, currentUserId, communityLimit = 5 }) => {
+  const userFilters = useUserFilters(currentUserId);
   const { onClickCommunity, onClickCategory } = useNavigation();
 
   const [communities = [], , , loading] = useCommunitiesList({
@@ -27,17 +31,24 @@ const RecommendedList = ({ category, communityLimit = 5 }) => {
     filter: 'notMember',
   });
 
+  // A user /shouldn't/ be seeing the community list page communities they aren't matching filters on
+  // because we should filter out the categories those communities belong to on the Explore page,
+  // but this is being done just in case.
+  const filteredCommunities = communities.filter((com) =>
+    userMatchesCommunityCategorySegment(userFilters, com),
+  );
+
   /*
    * To not remove the newly joined communities from the list we cache the first result
    */
   const formattedCommunities = useMemo(() => {
-    const notJoinedCommunities = communities.filter((c) => !c.isJoined);
+    const notJoinedCommunities = filteredCommunities.filter((c) => !c.isJoined);
     return notJoinedCommunities.slice(0, communityLimit);
-  }, [communities.length > 0]);
+  }, [filteredCommunities.length > 0]);
 
   const title = category.name;
 
-  if (!loading && communities.length === 0) {
+  if (!loading && filteredCommunities.length === 0) {
     return null;
   }
 
@@ -78,4 +89,4 @@ export const RecommendedListSkeleton = ({ size = 4 }) => (
   </HorizontalList>
 );
 
-export default memo(RecommendedList);
+export default memo(withSDK(RecommendedList));

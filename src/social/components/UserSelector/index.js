@@ -10,7 +10,9 @@ import UserHeader from '~/social/components/UserHeader';
 import UserChip from '~/core/components/UserChip';
 import withSDK from '~/core/hocs/withSDK';
 
+import { LANGUAGE_METADATA, BUSINESS_TYPE_METADATA } from '~/social/constants';
 import { Selector, UserSelectorInput } from './styles';
+import useUserFilters from '~/core/hooks/useUserFilters';
 
 const UserSelector = ({
   value: userIds = [],
@@ -23,13 +25,35 @@ const UserSelector = ({
   const [query, setQuery] = useState('');
   const [queriedUsers = []] = useUserQuery(query);
   const { formatMessage } = useIntl();
+  const { localeLanguage, businessType } = useUserFilters(currentUserId);
+
+  const queriedUsersFilters = queriedUsers.reduce(
+    (acc, user) => ({
+      ...acc,
+      [user.userId]: {
+        localeLanguage: user.metadata?.[LANGUAGE_METADATA] ?? [],
+        businessType: user.metadata?.[BUSINESS_TYPE_METADATA],
+      },
+    }),
+    {},
+  );
+
+  const usersToOmitSet = new Set(usersToOmit.map((u) => u.userId));
 
   const options = queriedUsers
     .filter(
       ({ displayName, userId }) =>
         displayName?.toLowerCase().includes(query?.toLowerCase()) && userId !== currentUserId,
     )
-    .filter(({ userId }) => !usersToOmit.map((u) => u.userId).includes(userId))
+    .filter(({ userId }) => !usersToOmitSet.has(userId))
+    .filter(({ userId }) => {
+      const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } =
+        queriedUsersFilters[userId];
+      return (
+        localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
+        businessType === otherBusinessType
+      );
+    })
     .map(({ displayName, userId }) => ({
       name: displayName,
       value: userId,
@@ -102,7 +126,7 @@ const UserSelector = ({
 UserSelector.propTypes = {
   value: PropTypes.arrayOf(PropTypes.string),
   parentContainer: PropTypes.element,
-  currentUserId: PropTypes.string,
+  currentUserId: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
 

@@ -40,12 +40,28 @@ const global = {
           title: 'Web-Test',
         },
         {
-          value: process.env.STORYBOOK_USER1,
-          title: process.env.STORYBOOK_USER1.split(',')[1],
+          value: process.env.STORYBOOK_USER1 ?? 'N/A',
+          title: process.env.STORYBOOK_USER1?.split(',')[1],
         },
         {
-          value: process.env.STORYBOOK_USER2,
-          title: process.env.STORYBOOK_USER2.split(',')[1],
+          value: process.env.STORYBOOK_USER2 ?? 'N/A',
+          title: process.env.STORYBOOK_USER2?.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER3 ?? 'N/A',
+          title: process.env.STORYBOOK_USER3?.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER4 ?? 'N/A',
+          title: process.env.STORYBOOK_USER4?.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER5 ?? 'N/A',
+          title: process.env.STORYBOOK_USER5?.split(',')[1],
+        },
+        {
+          value: process.env.STORYBOOK_USER6 ?? 'N/A',
+          title: process.env.STORYBOOK_USER6?.split(',')[1],
         },
         {
           value: 'reconnect',

@@ -3,10 +3,13 @@ import styled from 'styled-components';
 
 import { FormattedMessage } from 'react-intl';
 
+import withSDK from '~/core/hocs/withSDK';
+import useUserFilters from '~/core/hooks/useUserFilters';
 import useCategories from '~/social/hooks/useCategories';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import HorizontalList from '~/core/components/HorizontalList';
 import CommunityCategoryCard from '~/social/components/community/CategoryCard';
+import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const StyledCommunityCategoryCard = styled(CommunityCategoryCard)`
   &:first-child {
@@ -23,9 +26,14 @@ const StyledCommunityCategoryCard = styled(CommunityCategoryCard)`
   padding-right: 1rem;
 `;
 
-const List = () => {
+const List = ({ currentUserId }) => {
   const { onClickCategory } = useNavigation();
   const [categories, hasMore, loadMore, loading, loadingMore] = useCategories({ isDeleted: false });
+  const userFilters = useUserFilters(currentUserId);
+
+  const filteredCategories = categories.filter((cat) =>
+    userMatchesCommunityCategorySegment(userFilters, cat),
+  );
 
   const items = useMemo(() => {
     function getLoadingItems() {
@@ -37,11 +45,11 @@ const List = () => {
     }
 
     if (!loadingMore) {
-      return categories;
+      return filteredCategories;
     }
 
-    return [...categories, ...getLoadingItems()];
-  }, [categories, loading, loadingMore]);
+    return [...filteredCategories, ...getLoadingItems()];
+  }, [filteredCategories, loading, loadingMore]);
 
   return (
     <HorizontalList
@@ -70,4 +78,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default withSDK(List);
