@@ -21,7 +21,7 @@ const Skeleton = ({ size = 4 }) =>
   new Array(size).fill(1).map((x, index) => <CommunityCard key={index} loading />);
 
 const RecommendedList = ({ category, currentUserId, communityLimit = 5 }) => {
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
   const { onClickCommunity, onClickCategory } = useNavigation();
 
   const [communities = [], , , loading] = useCommunitiesList({
@@ -35,7 +35,7 @@ const RecommendedList = ({ category, currentUserId, communityLimit = 5 }) => {
   // because we should filter out the categories those communities belong to on the Explore page,
   // but this is being done just in case.
   const filteredCommunities = communities.filter((com) =>
-    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
+    userMatchesCommunityCategorySegment(userFilters, com),
   );
 
   /*

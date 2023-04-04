@@ -29,10 +29,10 @@ const StyledCommunityCategoryCard = styled(CommunityCategoryCard)`
 const List = ({ currentUserId }) => {
   const { onClickCategory } = useNavigation();
   const [categories, hasMore, loadMore, loading, loadingMore] = useCategories({ isDeleted: false });
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
 
   const filteredCategories = categories.filter((cat) =>
-    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, cat),
+    userMatchesCommunityCategorySegment(userFilters, cat),
   );
 
   const items = useMemo(() => {

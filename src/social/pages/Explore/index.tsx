@@ -54,13 +54,13 @@ const List = ({
 };
 
 const ExplorePage = ({ currentUserId }) => {
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
   const [categories = [], , , loading] = useCategories({
     isDeleted: false,
   }) as [Array<Category>, boolean, () => void, boolean, boolean];
 
   const filteredCategories = categories.filter((cat) =>
-    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, cat),
+    userMatchesCommunityCategorySegment(userFilters, cat),
   );
 
   return (

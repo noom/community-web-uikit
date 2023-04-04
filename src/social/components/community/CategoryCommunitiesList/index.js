@@ -15,7 +15,7 @@ import CommunityCard from '~/social/components/community/Card';
 import userMatchesCommunityCategorySegment from '~/helpers/userMatchesCommunityCategorySegment';
 
 const CategoryCommunitiesList = ({ categoryId, currentUserId }) => {
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
   const { onClickCommunity } = useNavigation();
   const [communities, hasMore, loadMore, loading, loadingMore] = useCommunitiesList({
     categoryId,
@@ -26,7 +26,7 @@ const CategoryCommunitiesList = ({ categoryId, currentUserId }) => {
   // because we should filter out the categories those communities belong to on the Explore page,
   // but this is being done just in case.
   const filteredCommunities = communities.filter((com) =>
-    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
+    userMatchesCommunityCategorySegment(userFilters, com),
   );
 
   const items = useMemo(() => {

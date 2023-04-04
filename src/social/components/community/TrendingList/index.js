@@ -31,10 +31,10 @@ const TrendingList = ({ currentUserId }) => {
   const { onClickCommunity } = useNavigation();
 
   const [communities, , , loading] = useTrendingCommunitiesList();
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
 
   const filteredCommunities = communities.filter((com) =>
-    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
+    userMatchesCommunityCategorySegment(userFilters, com),
   );
 
   const title = loading ? (

@@ -22,13 +22,11 @@ const CategorySelector = ({
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const close = () => setIsOpen(false);
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
 
   const [categories] = useCategories({ isDeleted: false });
   const options = categories
-    .filter((cat) =>
-      userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, cat),
-    )
+    .filter((cat) => userMatchesCommunityCategorySegment(userFilters, cat))
     .map((category) => ({
       name: category.name,
       value: category.categoryId,

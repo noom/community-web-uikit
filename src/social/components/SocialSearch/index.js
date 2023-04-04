@@ -32,7 +32,7 @@ const userRenderer = (users) => (userName) => {
 };
 
 const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) => {
-  const { localeLanguage, businessType, partnerId } = useUserFilters(currentUserId);
+  const userFilters = useUserFilters(currentUserId);
   const { onClickCommunity, onClickUser } = useNavigation();
   const [value, setValue] = useState('');
   const [users = [], hasMoreUsers, loadMoreUsers] = useUserQuery(value);
@@ -48,12 +48,12 @@ const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) =>
   const filteredUsers = users.filter((user) => {
     const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } = user.metadata;
     return (
-      localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
-      businessType === otherBusinessType
+      userFilters.localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
+      userFilters.businessType === otherBusinessType
     );
   });
   const filteredCommunities = communities.filter((com) =>
-    userMatchesCommunityCategorySegment(localeLanguage, businessType, partnerId, com),
+    userMatchesCommunityCategorySegment(userFilters, com),
   );
 
   const getPagination = (activeTab) => {
@@ -133,6 +133,11 @@ SocialSearch.propTypes = {
   sticky: PropTypes.bool,
   searchBy: PropTypes.arrayOf(PropTypes.string),
   currentUserId: PropTypes.string.isRequired,
+};
+
+SocialSearch.defaultProps = {
+  sticky: false,
+  searchBy: ['communities', 'accounts'],
 };
 
 export default withSDK(customizableComponent('SocialSearch', SocialSearch));
