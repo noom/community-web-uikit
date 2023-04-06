@@ -46,11 +46,11 @@ const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) =>
   };
 
   const filteredUsers = users.filter((user) => {
-    const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } = user.metadata;
+    const otherLocaleLanguage = user.metadata?.localeLanguage ?? ['en'];
+    const otherBusinessType = user.metadata?.businessType ?? 'B2C';
     return (
-      (!otherLocaleLanguage ||
-        userFilters.localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang))) &&
-      (!otherBusinessType || userFilters.businessType === otherBusinessType)
+      userFilters.localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
+      userFilters.businessType === otherBusinessType
     );
   });
   const filteredCommunities = communities.filter((com) =>
