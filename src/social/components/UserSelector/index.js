@@ -31,8 +31,8 @@ const UserSelector = ({
     (acc, user) => ({
       ...acc,
       [user.userId]: {
-        localeLanguage: user.metadata?.[LANGUAGE_METADATA] ?? [],
-        businessType: user.metadata?.[BUSINESS_TYPE_METADATA],
+        localeLanguage: user.metadata?.[LANGUAGE_METADATA] ?? ['en'],
+        businessType: user.metadata?.[BUSINESS_TYPE_METADATA] ?? 'B2C',
       },
     }),
     {},
