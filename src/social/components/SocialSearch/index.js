@@ -48,8 +48,9 @@ const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) =>
   const filteredUsers = users.filter((user) => {
     const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } = user.metadata;
     return (
-      userFilters.localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
-      userFilters.businessType === otherBusinessType
+      (!otherLocaleLanguage ||
+        userFilters.localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang))) &&
+      (!otherBusinessType || userFilters.businessType === otherBusinessType)
     );
   });
   const filteredCommunities = communities.filter((com) =>
