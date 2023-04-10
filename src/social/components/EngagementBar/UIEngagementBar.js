@@ -71,6 +71,15 @@ const UIEngagementBar = ({
           </NoInteractionMessage>
         )}
 
+        {isComposeBarDisplayed && (
+          <CommentComposeBar
+            postId={postId}
+            postType={targetType}
+            onSubmit={handleAddComment}
+            onCancel={onClickComment}
+          />
+        )}
+
         {showComments && (
           <LazyRender
             idleTimeout={0}
@@ -88,14 +97,6 @@ const UIEngagementBar = ({
               isCommentingEnabled={isCommentingEnabled}
             />
           </LazyRender>
-        )}
-        {isComposeBarDisplayed && (
-          <CommentComposeBar
-            postId={postId}
-            postType={targetType}
-            onSubmit={handleAddComment}
-            onCancel={onClickComment}
-          />
         )}
       </>
       <>

@@ -246,14 +246,6 @@ const Comment = ({
         {renderedComment}
       </CommentContainer>
 
-      <CommentList
-        parentId={commentId}
-        referenceId={comment.referenceId}
-        last={REPLIES_PER_PAGE}
-        readonly={readonly}
-        isExpanded={isExpanded}
-      />
-
       {isReplying && (
         <CommentComposeBar
           postId={comment?.referenceId}
@@ -267,6 +259,14 @@ const Comment = ({
           onCancel={onClickReply}
         />
       )}
+
+      <CommentList
+        parentId={commentId}
+        referenceId={comment.referenceId}
+        last={REPLIES_PER_PAGE}
+        readonly={readonly}
+        isExpanded={isExpanded}
+      />
     </CommentBlock>
   );
 };
