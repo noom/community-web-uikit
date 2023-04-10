@@ -46,7 +46,8 @@ const SocialSearch = ({ className, sticky = false, searchBy, currentUserId }) =>
   };
 
   const filteredUsers = users.filter((user) => {
-    const { localeLanguage: otherLocaleLanguage, businessType: otherBusinessType } = user.metadata;
+    const otherLocaleLanguage = user.metadata?.localeLanguage ?? ['en'];
+    const otherBusinessType = user.metadata?.businessType ?? 'B2C';
     return (
       userFilters.localeLanguage.some((lang) => otherLocaleLanguage?.includes(lang)) &&
       userFilters.businessType === otherBusinessType
