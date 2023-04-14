@@ -43,6 +43,7 @@ const UICommunityInfo = ({
   onClickLeaveCommunity,
   canLeaveCommunity,
   canReviewPosts,
+  isAnonymous,
   name,
   postSetting,
 }) => {
@@ -73,13 +74,17 @@ const UICommunityInfo = ({
                 <FormattedMessage id="community.posts" />
               </div>
             </Count>
-            <Divider />
-            <Count>
-              <div className="countNumber">{toHumanString(membersCount || 0)}</div>
-              <div className="countType">
-                <FormattedMessage id="community.members" />
-              </div>
-            </Count>
+            {!isAnonymous && (
+              <>
+                <Divider />
+                <Count>
+                  <div className="countNumber">{toHumanString(membersCount || 0)}</div>
+                  <div className="countType">
+                    <FormattedMessage id="community.members" />
+                  </div>
+                </Count>
+              </>
+            )}
           </CountsContainer>
 
           {isJoined && (
@@ -148,6 +153,7 @@ UICommunityInfo.propTypes = {
   joinCommunity: PropTypes.func,
   canLeaveCommunity: PropTypes.bool,
   canReviewPosts: PropTypes.bool,
+  isAnonymous: PropTypes.bool,
   name: PropTypes.string,
   postSetting: PropTypes.string,
   onClickLeaveCommunity: PropTypes.func,

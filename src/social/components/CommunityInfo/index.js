@@ -7,6 +7,7 @@ import { useNavigation } from '~/social/providers/NavigationProvider';
 import useCommunityOneMember from '~/social/hooks/useCommunityOneMember';
 import UICommunityInfo from './UICommunityInfo';
 import { leaveCommunityConfirmModal } from './leaveScenarioModals';
+import { ANONYMOUS_METADATA } from '~/social/constants';
 
 function usePendingPostCount(
   isReady,
@@ -52,6 +53,7 @@ const CommunityInfo = ({ communityId, currentUserId }) => {
 
   const canLeaveCommunity = isJoined;
   const categoryNames = communityCategories.map(({ name }) => name);
+  const isAnonymous = community.metadata?.[ANONYMOUS_METADATA] ?? false;
 
   const pendingPostsCount = usePendingPostCount(
     isCurrentMemberReady,
@@ -77,6 +79,7 @@ const CommunityInfo = ({ communityId, currentUserId }) => {
       canEditCommunity={canEditCommunity}
       canLeaveCommunity={canLeaveCommunity}
       canReviewPosts={canReviewCommunityPosts}
+      isAnonymous={isAnonymous}
       name={community.displayName}
       postSetting={community.postSetting}
       onEditCommunity={onEditCommunity}

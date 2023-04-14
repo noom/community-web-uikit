@@ -18,6 +18,7 @@ import FeedHeaderTabs from '~/social/components/FeedHeaderTabs';
 import { CommunityFeedTabs } from './constants';
 import { getTabs } from './utils';
 import { DeclineBanner, Wrapper } from './styles';
+import { ANONYMOUS_METADATA } from '~/social/constants';
 
 const ADMIN_ONLY_POST_SETTING = 'ONLY_ADMIN_CAN_POST';
 
@@ -46,9 +47,16 @@ const CommunityFeed = ({
         community?.postSetting,
         community?.isJoined,
         canReviewCommunityPosts,
+        community?.metadata?.[ANONYMOUS_METADATA] ?? false,
         pendingPostCount,
       ),
-    [community?.postSetting, community?.isJoined, canReviewCommunityPosts, pendingPostCount],
+    [
+      community?.postSetting,
+      community?.isJoined,
+      canReviewCommunityPosts,
+      community?.metadata?.[ANONYMOUS_METADATA],
+      pendingPostCount,
+    ],
   );
 
   const [activeTab, setActiveTab] = useState(CommunityFeedTabs.TIMELINE);
