@@ -11,6 +11,10 @@ import CommunityCreationModal from '~/social/components/CommunityCreationModal';
 import { useConfig } from '~/social/providers/ConfigProvider';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import { useSDK } from '~/core/hooks/useSDK';
+import withSDK from '~/core/hocs/withSDK';
+import useUser from '~/core/hooks/useUser';
+import { getUserType } from '~/helpers/userTypes';
+import { BUSINESS_TYPE_METADATA } from '~/social/constants';
 
 const CommunityCount = ({ count = 0, ...styles }) => <Box {...styles}>{count}</Box>;
 
@@ -19,11 +23,14 @@ const SideSectionMyCommunity = ({
   activeCommunity,
   communityListProps,
   canCreatePublicCommunity,
+  currentUserId,
 }) => {
   const { connected } = useSDK();
   const { socialCommunityCreationButtonVisible } = useConfig();
   const { onCommunityCreated } = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUser(currentUserId, [currentUserId]);
+  const userType = getUserType(user);
 
   const open = () => setIsOpen(true);
 
@@ -31,6 +38,10 @@ const SideSectionMyCommunity = ({
     setIsOpen(false);
     communityId && onCommunityCreated(communityId);
   };
+
+  const canCreateCommunity =
+    socialCommunityCreationButtonVisible &&
+    (userType !== 'user' || user?.metadata?.[BUSINESS_TYPE_METADATA] !== 'B2B');
 
   return (
     <Box bg="white" h="100%" pb={2} pt={1}>
@@ -43,7 +54,7 @@ const SideSectionMyCommunity = ({
         <CommunityCount ml="auto" count={communityListProps?.communities?.length} />
       </ListHeading>
       <Box h="calc(100% - 50px)" minH={0} overflow="auto">
-        {socialCommunityCreationButtonVisible && (
+        {canCreateCommunity && (
           <SideMenuActionItem
             icon={<Plus height={20} />}
             element="button"
@@ -75,6 +86,7 @@ SideSectionMyCommunity.propTypes = {
   className: PropTypes.string,
   activeCommunity: PropTypes.string,
   canCreatePublicCommunity: PropTypes.bool,
+  currentUserId: PropTypes.string.isRequired,
 };
 
-export default memo(SideSectionMyCommunity);
+export default memo(withSDK(SideSectionMyCommunity));
