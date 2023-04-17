@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.35.0](https://github.com/noom/community-web-uikit/compare/2.34.10...2.35.0) (2023-04-17)
+
+
+### Features
+
+* Enable anonymous communities ([#34](https://github.com/noom/community-web-uikit/issues/34)) ([67d319f](https://github.com/noom/community-web-uikit/commit/67d319f275ea26e4c57ee33a0cae2603134043c5))
+
 ### [2.34.10](https://github.com/noom/community-web-uikit/compare/2.34.9...2.34.10) (2023-04-11)
 
 ### [2.34.9](https://github.com/noom/community-web-uikit/compare/2.34.8...2.34.9) (2023-04-10)
