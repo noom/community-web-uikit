@@ -86,13 +86,13 @@ const UserProfileForm = ({ user, onSubmit, className }) => {
               <Label htmlFor="description">
                 <FormattedMessage id="UserProfileForm.about" />
               </Label>
-              <Counter>{description.length}/180</Counter>
+              <Counter>{description.length}/500</Counter>
             </LabelCounterWrapper>
             <AboutTextarea
               {...register('description')}
               data-qa-anchor="user-profile-form-description-textarea"
               placeholder={formatMessage({ id: 'UserProfileForm.requiredDescription' })}
-              maxLength={180}
+              maxLength={500}
             />
             <ErrorMessage errors={errors} name="description" />
           </Field>

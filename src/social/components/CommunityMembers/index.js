@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { useIntl } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 import customizableComponent from '~/core/hocs/customization';
 
@@ -49,7 +49,9 @@ const CommunityMembers = ({ communityId, currentUserId }) => {
 
   return (
     <CommunityMembersContainer>
-      <CommunityMembersHeader>Community Members • {membersCount}</CommunityMembersHeader>
+      <CommunityMembersHeader>
+        <FormattedMessage id="community.members.list" /> • {membersCount}
+      </CommunityMembersHeader>
       <CommunityMembersTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {activeTab === MemberTabs.MEMBERS && (

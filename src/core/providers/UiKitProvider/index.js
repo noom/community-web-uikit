@@ -28,6 +28,7 @@ const UiKitProvider = forwardRef(
       apiRegion,
       apiEndpoint,
       authToken,
+      locale,
       userId,
       displayName,
       customComponents = {},
@@ -109,7 +110,7 @@ const UiKitProvider = forwardRef(
         <Helmet>
           <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         </Helmet>
-        <Localization locale="en">
+        <Localization locale={locale || 'es'}>
           <ThemeProvider theme={buildGlobalTheme(theme)}>
             <UIStyles>
               <SDKProvider {...SDKInfo}>
@@ -142,6 +143,7 @@ UiKitProvider.propTypes = {
   apiEndpoint: PropTypes.string,
   apiRegion: PropTypes.string.isRequired,
   authToken: PropTypes.string,
+  locale: PropTypes.string,
   userId: PropTypes.string.isRequired,
   displayName: PropTypes.string,
   customComponents: PropTypes.object,
