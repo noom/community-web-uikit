@@ -110,7 +110,7 @@ const UiKitProvider = forwardRef(
         <Helmet>
           <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         </Helmet>
-        <Localization locale={locale || 'es'}>
+        <Localization locale={locale || 'en'}>
           <ThemeProvider theme={buildGlobalTheme(theme)}>
             <UIStyles>
               <SDKProvider {...SDKInfo}>
