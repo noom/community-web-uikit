@@ -23,6 +23,8 @@ import {
   TextField,
 } from '~/social/components/CommunityForm/styles';
 
+const MaxProfileLength = 500;
+
 const ButtonContainer = styled.div`
   margin-top: 16px;
 `;
@@ -86,13 +88,15 @@ const UserProfileForm = ({ user, onSubmit, className }) => {
               <Label htmlFor="description">
                 <FormattedMessage id="UserProfileForm.about" />
               </Label>
-              <Counter>{description.length}/500</Counter>
+              <Counter>
+                {description.length}/{MaxProfileLength}
+              </Counter>
             </LabelCounterWrapper>
             <AboutTextarea
               {...register('description')}
               data-qa-anchor="user-profile-form-description-textarea"
               placeholder={formatMessage({ id: 'UserProfileForm.requiredDescription' })}
-              maxLength={500}
+              maxLength={MaxProfileLength}
             />
             <ErrorMessage errors={errors} name="description" />
           </Field>
