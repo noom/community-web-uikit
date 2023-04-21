@@ -12,6 +12,8 @@ import {
   Td,
   Icon,
   IconButton,
+  Input,
+  RadioGroup,
   Switch,
   Select,
   FormLabel,
@@ -29,6 +31,9 @@ type User = {
     userType?: string;
     hasFinishedInitialProfileSync?: boolean;
     isMigratedFromCircles?: boolean;
+    localeLanguage?: string[];
+    businessType?: string;
+    partnerId?: number;
   };
   createdAt: string;
 };
@@ -54,7 +59,7 @@ type MetadataEditModalProps = {
 
 const MetadataEditModal = ({ user, onClose, isOpen, metadata, onSave }: MetadataEditModalProps) => {
   const { formatMessage } = useIntl();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
 
   const onSubmit = (data: User['metadata']) => {
     onSave(user.userId, data), onClose();
@@ -101,6 +106,40 @@ const MetadataEditModal = ({ user, onClose, isOpen, metadata, onSave }: Metadata
               defaultChecked={metadata?.isMigratedFromCircles}
               {...register('isMigratedFromCircles')}
             />
+          </Box>
+          <Box display="flex" flexDir="row" justifyContent="space-between">
+            <FormLabel>
+              <FormattedMessage id="userMetadata.localeLanguage" />
+            </FormLabel>
+            <RadioGroup
+              value={metadata?.localeLanguage?.[0]}
+              isInline={true}
+              colorScheme="primary"
+              onChange={(val) => setValue('localeLanguage.0', val as string)}
+              options={['en', 'de', 'es'].map((key) => ({
+                label: key,
+                value: key,
+              }))}
+            />
+          </Box>
+          <Box display="flex" flexDir="row" justifyContent="space-between">
+            <FormLabel>
+              <FormattedMessage id="userMetadata.businessType" />
+            </FormLabel>
+            <Select
+              options={['B2C', 'B2B'].map((key) => ({
+                label: key,
+                value: key,
+              }))}
+              defaultValue={metadata?.businessType}
+              {...register('businessType')}
+            />
+          </Box>
+          <Box display="flex" flexDir="row" justifyContent="space-between">
+            <FormLabel>
+              <FormattedMessage id="userMetadata.partnerId" />
+            </FormLabel>
+            <Input value={metadata?.partnerId?.toString()} {...register('partnerId')} />
           </Box>
 
           <ButtonGroup w="100%" justifyContent="center">
@@ -172,12 +211,6 @@ export const UIUserMetadata = ({
             </Tr>
             <Tr>
               <Td>
-                <FormattedMessage id="userMetadata.language" />
-              </Td>
-              <Td>{noomMetadata?.localeInformation?.language ?? '-'}</Td>
-            </Tr>
-            <Tr>
-              <Td>
                 <FormattedMessage id="userMetadata.timezone" />
               </Td>
               <Td>{noomMetadata?.localeInformation?.timezone ?? '-'}</Td>
@@ -211,6 +244,24 @@ export const UIUserMetadata = ({
                   <Icon icon="close" />
                 )}
               </Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <FormattedMessage id="userMetadata.localeLanguage" />
+              </Td>
+              <Td>{user.metadata?.localeLanguage?.join(', ')}</Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <FormattedMessage id="userMetadata.businessType" />
+              </Td>
+              <Td>{user.metadata?.businessType}</Td>
+            </Tr>
+            <Tr>
+              <Td>
+                <FormattedMessage id="userMetadata.partnerId" />
+              </Td>
+              <Td>{user.metadata?.partnerId}</Td>
             </Tr>
           </Tbody>
         </Table>

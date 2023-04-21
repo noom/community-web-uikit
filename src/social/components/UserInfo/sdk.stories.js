@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { HashRouter as Router, Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, useNavigate, useMatch } from 'react-router-dom';
 
 import useOneUser from '~/mock/useOneUser';
 import ProfileSettings from '~/social/components/ProfileSettings';
@@ -14,11 +14,11 @@ export default {
 const SdkUserInfo = () => {
   const user = useOneUser();
 
-  const history = useHistory();
-  const { params = {} } = useRouteMatch('/profile/:userId') || {};
+  const navigate = useNavigate();
+  const { params = {} } = useMatch('/profile/:userId') || {};
   const { userId } = params;
 
-  const editProfile = (id) => history.push(`/profile/${id}/edit`);
+  const editProfile = (id) => navigate(`/profile/${id}/edit`);
 
   if (!user) {
     return (
@@ -51,8 +51,8 @@ export const SdkUserInfoApp = () => {
 SdkUserInfoApp.storyName = 'My User Info';
 
 export const AnotherUserInfo = () => {
-  const [user, loading] = useOneUser();
-  if (!loading)
+  const user = useOneUser();
+  if (!user)
     return (
       <p>
         <FormattedMessage id="loading" />
