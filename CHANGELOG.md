@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.35.5](https://github.com/noom/community-web-uikit/compare/2.35.4...2.35.5) (2023-04-24)
+
+
+### Bug Fixes
+
+* ASC-11360 - icon size ([0eee9b4](https://github.com/noom/community-web-uikit/commit/0eee9b4988dc1d69a1919d1888251ae775dcf067))
+* ASC-7914 - added subscription for community RTE events ([#76](https://github.com/noom/community-web-uikit/issues/76)) ([ee773cd](https://github.com/noom/community-web-uikit/commit/ee773cde432682936ef49effe81355974ae07aae))
+
 ### [2.35.4](https://github.com/noom/community-web-uikit/compare/2.35.3...2.35.4) (2023-04-24)
 
 ### [2.35.3](https://github.com/noom/community-web-uikit/compare/2.35.2...2.35.3) (2023-04-24)
