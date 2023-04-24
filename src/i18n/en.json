@@ -410,5 +410,8 @@
   "userMetadata.userType": "User type",
   "userMetadata.hasFinishedInitialProfileSync": "Finished onboarding",
   "userMetadata.isMigratedFromCircles": "Migrated from Circles v1",
+  "userMetadata.localeLanguage": "Language",
+  "userMetadata.businessType": "Business Type",
+  "userMetadata.partnerId": "Partner ID",
   "userMetadata.edit.title": "Edit user metadata"
 }
