@@ -104,6 +104,9 @@
   "community.review.declinePendingPosts": "Das Ablehnen eines ausstehenden Beitrags wird ihn dauerhaft aus der Community löschen.",
   "community.permissions.disableComments": "Kommentare deaktivieren",
   "community.permissions.disableComments.prompt": "Kommentare zu allen Beiträgen in dieser Community werden ausgeblendet und das Kommentieren wird deaktiviert",
+  "community.permissions.anonymity": "Anonymität",
+  "community.permissions.anonymous": "Machen Sie die Community anonym",
+  "community.permissions.anonymous.prompt": "Anonyme Communitys hindern Benutzer daran, die Mitgliederliste anzuzeigen.",
 
   "community.pendingPostsBanner.title": "Ausstehende Beiträge",
   "community.pendingPostsBanner.pendingForReview": "Deine Beiträge müssen noch überprüft werden",

@@ -4,6 +4,7 @@ import withSDK from '~/core/hocs/withSDK';
 import UICommunityPermissions from './CommunityPermissions';
 import { usePermission } from './utils';
 import useCommunity from '~/social/hooks/useCommunity';
+import { ANONYMOUS_METADATA } from '~/social/constants';
 
 function shouldCommentsBeDisabled(communityMetadata) {
   return communityMetadata?.areCommentsHidden && communityMetadata?.isCommentingDisabled;
@@ -14,7 +15,7 @@ const CommunityPermissions = ({ communityId }) => {
     communityId,
     'needApprovalOnPostCreation',
   );
-  const { community, handleCommentingToggle } = useCommunity(communityId);
+  const { community, handleCommentingToggle, handleAnonymousToggle } = useCommunity(communityId);
 
   return (
     <UICommunityPermissions
@@ -22,6 +23,8 @@ const CommunityPermissions = ({ communityId }) => {
       onNeedApprovalOnPostCreationChange={updateNeedApprovalOnPostCreation}
       areCommentsDisabled={shouldCommentsBeDisabled(community?.metadata)}
       onDisableComments={handleCommentingToggle}
+      isAnonymous={community?.metadata?.[ANONYMOUS_METADATA]}
+      onToggleAnonymous={handleAnonymousToggle}
     />
   );
 };

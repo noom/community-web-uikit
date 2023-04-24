@@ -104,6 +104,9 @@
   "community.review.declinePendingPosts": "Decline pending post will permanently delete the selected post from community.",
   "community.permissions.disableComments": "Disable comments",
   "community.permissions.disableComments.prompt": "Comments on all posts in this community will be hidden and commenting will be disabled",
+  "community.permissions.anonymity": "Anonymity",
+  "community.permissions.anonymous": "Make community anonymous",
+  "community.permissions.anonymous.prompt": "Anonymous communities prevent users from viewing the list of members.",
 
   "community.pendingPostsBanner.title": "Pending posts",
   "community.pendingPostsBanner.pendingForReview": "Your posts are pending for review",

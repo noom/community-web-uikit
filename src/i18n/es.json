@@ -104,6 +104,9 @@
   "community.review.declinePendingPosts": "Rechazar la publicación pendiente eliminará permanentemente la publicación seleccionada de la comunidad.",
   "community.permissions.disableComments": "Deshabilitar comentarios",
   "community.permissions.disableComments.prompt": "Se ocultarán los comentarios en todas las publicaciones de esta comunidad y se deshabilitarán los comentarios",
+  "community.permissions.anonymity": "Anonimato",
+  "community.permissions.anonymous": "Hacer anónimo a la comunidad",
+  "community.permissions.anonymous.prompt": "Las comunidades anónimas impiden que los usuarios vean la lista de miembros.",
 
   "community.pendingPostsBanner.title": "Publicaciones pendientes",
   "community.pendingPostsBanner.pendingForReview": "Tus publicaciones están en espera de revisión",
