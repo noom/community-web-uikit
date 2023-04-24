@@ -3,6 +3,7 @@ import { CommunityRepository } from '@amityco/js-sdk';
 import useLiveObject from '~/core/hooks/useLiveObject';
 import useFile from '~/core/hooks/useFile';
 import { useActionEvents } from '~/core/providers/ActionProvider';
+import { ANONYMOUS_METADATA } from '~/social/constants';
 
 const useCommunity = (communityId, resolver) => {
   const community = useLiveObject(
@@ -69,6 +70,19 @@ const useCommunity = (communityId, resolver) => {
     });
   };
 
+  const handleAnonymousToggle = () => {
+    updateCommunity({
+      metadata: {
+        ...community.metadata,
+        [ANONYMOUS_METADATA]: !community.metadata[ANONYMOUS_METADATA],
+      },
+    });
+
+    actionEvents.onAnonymousToggled?.({
+      value: community.metadata[ANONYMOUS_METADATA] ? 'on' : 'off',
+    });
+  };
+
   return {
     community,
     file,
@@ -78,6 +92,7 @@ const useCommunity = (communityId, resolver) => {
     updateCommunity,
     closeCommunity,
     handleCommentingToggle,
+    handleAnonymousToggle,
   };
 };
 

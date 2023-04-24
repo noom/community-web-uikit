@@ -9,6 +9,7 @@ export type ActionEvents = {
   onPostImpression: (params: { postId: string }) => void;
   onCommentCreate: (params: { isReply: boolean; isDisabled: boolean }) => void;
   onCommentsToggled: (params: { target: 'post' | 'community'; value: 'on' | 'off' }) => void;
+  onAnonymousToggled: (params: { value: 'on' | 'off' }) => void;
 };
 
 export type ActionContextProps = {
