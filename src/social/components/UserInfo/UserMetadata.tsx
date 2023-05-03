@@ -13,7 +13,6 @@ import {
   Icon,
   IconButton,
   Input,
-  RadioGroup,
   Switch,
   Select,
   FormLabel,
@@ -111,15 +110,13 @@ const MetadataEditModal = ({ user, onClose, isOpen, metadata, onSave }: Metadata
             <FormLabel>
               <FormattedMessage id="userMetadata.localeLanguage" />
             </FormLabel>
-            <RadioGroup
-              value={metadata?.localeLanguage?.[0]}
-              isInline={true}
-              colorScheme="primary"
-              onChange={(val) => setValue('localeLanguage.0', val as string)}
+            <Select
               options={['en', 'de', 'es'].map((key) => ({
                 label: key,
                 value: key,
               }))}
+              defaultValue={metadata?.localeLanguage?.[0]}
+              {...register('localeLanguage.0')}
             />
           </Box>
           <Box display="flex" flexDir="row" justifyContent="space-between">
