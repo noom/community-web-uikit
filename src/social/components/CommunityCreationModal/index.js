@@ -39,7 +39,7 @@ const CommunityCreationModal = ({ isOpen, onClose, canCreatePublic }) => {
   return (
     <Modal
       isOpen
-      title="Create community"
+      title={formatMessage({ id: 'createCommunity' })}
       onCancel={closeConfirm}
       data-qa-anchor="community-creation-modal"
     >

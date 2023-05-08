@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { UserRepository, CommunityRepository, PostTargetType, FileType } from '@amityco/js-sdk';
 import { Box } from '@noom/wax-component-library';
 
@@ -78,12 +78,12 @@ const PostCreatorBar = ({
   canTargetUser,
   enablePostTargetPicker,
   communities = [],
-  placeholder = "What's going on...",
   hasMoreCommunities,
   loadMoreCommunities,
   onCreateSuccess = () => {},
   maxFiles = MAX_FILES_PER_POST,
 }) => {
+  const { formatMessage } = useIntl();
   const { setNavigationBlocker } = useNavigation();
   const { user } = useUser(currentUserId);
   const actionEvents = useActionEvents();
@@ -295,7 +295,7 @@ const PostCreatorBar = ({
           data-qa-anchor="post-creator-textarea"
           multiline
           value={postText}
-          placeholder={placeholder}
+          placeholder={formatMessage({ id: 'whatsGoingOnPlaceholder' })}
           mentionAllowed
           queryMentionees={queryMentionees}
           loadMoreMentionees={() => queryMentionees(mentionText)}

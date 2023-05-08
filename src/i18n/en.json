@@ -416,5 +416,18 @@
   "userMetadata.localeLanguage": "Language",
   "userMetadata.businessType": "Business Type",
   "userMetadata.partnerId": "Partner ID",
-  "userMetadata.edit.title": "Edit user metadata"
+  "userMetadata.edit.title": "Edit user metadata",
+
+  "uploadImage": "Upload Image",
+  "nameRequired": "Name is required",
+  "nameTooLong": "Name is too long",
+  "descriptionTooLong": "Description is too long",
+  "categoryRequired": "Category is required",
+  "createCommunityNamePlaceholder": "Enter community name",
+  "enterDescriptionPlaceholder": "Enter description",
+  "private": "Private",
+  "privateDescription": "Only members invited by the moderators can join, view, and search the posts in this page.",
+  "public": "Public",
+  "publicDescription": "Anyone can join, view and search the posts in this page.",
+  "whatsGoingOnPlaceholder": "What's going on..."
 }
