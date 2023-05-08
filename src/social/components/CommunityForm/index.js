@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import withSDK from '~/core/hocs/withSDK';
 import Switch from '~/core/components/Switch';
@@ -58,28 +58,6 @@ const CommunityTypeItem = ({ type, description, icon }) => (
   </PermissionControlContainer>
 );
 
-const communityTypeItems = [
-  {
-    key: 'public',
-    type: 'Public',
-    description: 'Anyone can join, view and search the posts in this page.',
-    icon: <WorldIcon />,
-    customRenderer: CommunityTypeItem,
-    value: true,
-    'data-qa-anchor': 'community-form-public-type',
-  },
-  {
-    key: 'private',
-    type: 'Private',
-    description:
-      'Only members invited by the moderators can join, view, and search the posts in this page.',
-    icon: <LockIcon />,
-    customRenderer: CommunityTypeItem,
-    value: false,
-    'data-qa-anchor': 'community-form-private-type',
-  },
-];
-
 function useKeepScrollBottom(ref, deps) {
   const scrollBottom =
     ref.current && ref.current.scrollHeight - ref.current.clientHeight - ref.current.scrollTop;
@@ -107,6 +85,8 @@ const CommunityForm = ({
   canCreatePublic,
   currentUserId,
 }) => {
+  const { formatMessage } = useIntl();
+
   const defaultValues = useMemo(
     () => ({
       avatarFileId: null,
@@ -158,13 +138,15 @@ const CommunityForm = ({
   const [validateAndSubmit, submitting] = useAsyncCallback(
     async (data) => {
       if (!data.displayName.trim()) {
-        setError('displayName', { message: 'Name cannot be empty' });
+        setError('displayName', { message: formatMessage({ id: 'nameRequired' }) });
         return;
       }
 
       // Cannot update community members with this endpoint.
       if (!edit && !isPublic && data.userIds?.length === 0) {
-        setError('userIds', { message: 'Please select at least one member' });
+        setError('userIds', {
+          message: formatMessage({ id: 'AddMemberModal.membersValidationError' }),
+        });
         return;
       }
 
@@ -205,6 +187,27 @@ const CommunityForm = ({
   const [formBodyRef, formBodyElement] = useElement();
   useKeepScrollBottom(formBodyRef, [formState]);
 
+  const communityTypeItems = [
+    {
+      key: 'public',
+      type: formatMessage({ id: 'public' }),
+      description: formatMessage({ id: 'publicDescription' }),
+      icon: <WorldIcon />,
+      customRenderer: CommunityTypeItem,
+      value: true,
+      'data-qa-anchor': 'community-form-public-type',
+    },
+    {
+      key: 'private',
+      type: formatMessage({ id: 'private' }),
+      description: formatMessage({ id: 'privateDescription' }),
+      icon: <LockIcon />,
+      customRenderer: CommunityTypeItem,
+      value: false,
+      'data-qa-anchor': 'community-form-private-type',
+    },
+  ];
+
   const formattedCommunityTypeItems = canCreatePublic
     ? communityTypeItems
     : communityTypeItems.filter((i) => i.key !== 'public');
@@ -236,14 +239,14 @@ const CommunityForm = ({
             </LabelCounterWrapper>
             <TextField
               {...register('displayName', {
-                required: 'Name is required',
+                required: formatMessage({ id: 'nameRequired' }),
                 maxLength: {
                   value: 30,
-                  message: 'Name is too long',
+                  message: formatMessage({ id: 'nameTooLong' }),
                 },
               })}
               data-qa-anchor={`${dataQaAnchor}-community-name-input`}
-              placeholder="Enter community name"
+              placeholder={formatMessage({ id: 'createCommunityNamePlaceholder' })}
             />
             <ErrorMessage errors={errors} name="displayName" />
           </Field>
@@ -256,10 +259,10 @@ const CommunityForm = ({
             </LabelCounterWrapper>
             <AboutTextarea
               {...register('description', {
-                maxLength: { value: 5000, message: 'Description text is too long' },
+                maxLength: { value: 5000, message: formatMessage({ id: 'descriptionTooLong' }) },
               })}
               data-qa-anchor={`${dataQaAnchor}-community-description-textarea`}
-              placeholder="Enter description"
+              placeholder={descPlaceholder}
             />
             <ErrorMessage errors={errors} name="description" />
           </Field>
@@ -268,7 +271,7 @@ const CommunityForm = ({
               <FormattedMessage id="community.category" />
             </Label>
             <Controller
-              rules={{ required: 'Category is required' }}
+              rules={{ required: formatMessage({ id: 'categoryRequired' }) }}
               name="categoryId"
               render={({ field: { ref, ...rest } }) => (
                 <CategorySelector

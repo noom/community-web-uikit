@@ -416,5 +416,18 @@
   "userMetadata.localeLanguage": "Sprache",
   "userMetadata.businessType": "Business Type",
   "userMetadata.partnerId": "Partner ID",
-  "userMetadata.edit.title": "Nutzermetadaten bearbeiten"
+  "userMetadata.edit.title": "Nutzermetadaten bearbeiten",
+
+  "uploadImage": "Bild hochladen",
+  "nameRequired": "Name ist erforderlich",
+  "nameTooLong": "Name ist zu lang",
+  "descriptionTooLong": "Beschreibung ist zu lang",
+  "categoryRequired": "Kategorie ist erforderlich",
+  "createCommunityNamePlaceholder": "Der Community einen Namen geben",
+  "enterDescriptionPlaceholder": "Beschreibung angeben",
+  "private": "Privat",
+  "privateDescription": "Nur vom Moderator eingeladene Mitglieder können der Community beitreten und die Beiträge in ihr ansehen und durchsuchen.",
+  "public": "Öffentlich",
+  "publicDescription": "Jeder kann dieser Community beitreten und die Beiträge in ihr ansehen und durchsuchen.",
+  "whatsGoingOnPlaceholder": "Was möchtest du schreiben?"
 }

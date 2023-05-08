@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { PostDataType, PostRepository } from '@amityco/js-sdk';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import usePost from '~/social/hooks/usePost';
 import useSocialMention from '~/social/hooks/useSocialMention';
@@ -9,7 +9,8 @@ import Content from './Content';
 import { PostEditorContainer, Footer, ContentContainer, PostButton } from './styles';
 import { extractMetadata, parseMentionsMarkup } from '~/helpers/utils';
 
-const PostEditor = ({ postId, onSave, className, placeholder }) => {
+const PostEditor = ({ postId, onSave, className }) => {
+  const { formatMessage } = useIntl();
   const { post, handleUpdatePost, childrenPosts = [] } = usePost(postId);
   const { data, dataType, targetId, targetType, metadata, mentionees: postMentionees } = post;
 
@@ -91,7 +92,7 @@ const PostEditor = ({ postId, onSave, className, placeholder }) => {
           data={{ text: markup, initialMentionees: postMentionees }}
           data-qa-anchor="post-editor-textarea"
           dataType={dataType}
-          placeholder={placeholder}
+          placeholder={formatMessage({ id: 'whatsGoingOnPlaceholder' })}
           queryMentionees={queryMentionees}
           onChange={onChange}
         />
@@ -135,13 +136,11 @@ const PostEditor = ({ postId, onSave, className, placeholder }) => {
 PostEditor.propTypes = {
   postId: PropTypes.string.isRequired,
   className: PropTypes.string,
-  placeholder: PropTypes.string,
   onSave: PropTypes.func,
 };
 
 PostEditor.defaultProps = {
   className: null,
-  placeholder: "What's going on...",
   onSave: () => {},
 };
 

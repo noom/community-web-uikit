@@ -378,7 +378,7 @@
   "onboarding.welcome.bullets.1": "<b>Aprende</b> nuevas estrategias y obtén consejos de coaches y otros usuarios de Noom como tú",
   "onboarding.welcome.bullets.2": "<b>Inspírate</b> con historias de éxito, ideas de comida y formas para activarte",
   "onboarding.welcome.bullets.3": "<b>Conecta</b> con otros usuarios de Noom para recibir apoyo, aliento y sentido de la responsabilidad",
-  "onboarding.welcome.bullets.4": "<b></b> ¡<Recuerda /b> que estamos contigo en este viaje!",
+  "onboarding.welcome.bullets.4": "<b>¡Recuerda</b> que estamos contigo en este viaje!",
   "onboarding.welcome.button": "¡Vamos!",
   "onboarding.interests.title": "Elige algunos intereses para personalizar tu feed ",
   "onboarding.interests.subTitle": "¡Podrás continuar explorando más tarde!",
@@ -416,5 +416,18 @@
   "userMetadata.localeLanguage": "Idioma",
   "userMetadata.businessType": "Business Type",
   "userMetadata.partnerId": "Partner ID",
-  "userMetadata.edit.title": "Editar metadata de usuario"
+  "userMetadata.edit.title": "Editar metadata de usuario",
+
+  "uploadImage": "Subir imagen",
+  "nameRequired": "Nombre obligatorio",
+  "nameTooLong": "El nombre es demasiado largo",
+  "descriptionTooLong": "La descripción es demasiado larga",
+  "categoryRequired": "Categoría obligatoria",
+  "createCommunityNamePlaceholder": "Nombra tu comunidad",
+  "enterDescriptionPlaceholder": "Introducir descripción",
+  "private": "Privada",
+  "privateDescription": "Solo los miembros invitados por los moderadores pueden unirse, ver y buscar las publicaciones en esta comunidad.",
+  "public": "Publicar",
+  "publicDescription": "Cualquiera puede unirse, ver y buscar las publicaciones en esta comunidad.",
+  "whatsGoingOnPlaceholder": "¿Qué está pasando?"
 }

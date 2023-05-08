@@ -7,6 +7,7 @@ import Uploader from '~/core/components/Uploaders/Uploader';
 import UploaderImage from '~/core/components/Uploaders/Image';
 import { backgroundImage as communityCoverPlaceholder } from '~/icons/CommunityCoverPicture';
 import CameraIcon from '~/icons/Camera';
+import { FormattedMessage } from 'react-intl';
 
 const StyledCameraIcon = styled(CameraIcon)`
   z-index: 3;
@@ -107,7 +108,7 @@ const AvatarUploader = ({
         onChange={(newAvatar) => setLoadedAvatar(newAvatar)}
       >
         <AvatarUploadButton>
-          <StyledCameraIcon width={20} height={20} /> &nbsp; Upload image
+          <StyledCameraIcon width={20} height={20} /> &nbsp; <FormattedMessage id="uploadImage" />
         </AvatarUploadButton>
       </CoverImageLoader>
     </AvatarUploadContainer>
