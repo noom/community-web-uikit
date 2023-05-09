@@ -419,15 +419,15 @@
   "userMetadata.edit.title": "Editar metadata de usuario",
 
   "uploadImage": "Subir imagen",
-  "nameRequired": "Nombre obligatorio",
-  "nameTooLong": "El nombre es demasiado largo",
-  "descriptionTooLong": "La descripción es demasiado larga",
-  "categoryRequired": "Categoría obligatoria",
+  "nameRequired": "Nombre requerido",
+  "nameTooLong": "El nombre es muy largo",
+  "descriptionTooLong": "La descripción es muy larga",
+  "categoryRequired": "Categoría requerida",
   "createCommunityNamePlaceholder": "Nombra tu comunidad",
   "enterDescriptionPlaceholder": "Introducir descripción",
   "private": "Privada",
   "privateDescription": "Solo los miembros invitados por los moderadores pueden unirse, ver y buscar las publicaciones en esta comunidad.",
   "public": "Publicar",
   "publicDescription": "Cualquiera puede unirse, ver y buscar las publicaciones en esta comunidad.",
-  "whatsGoingOnPlaceholder": "¿Qué está pasando?"
+  "whatsGoingOnPlaceholder": "Qué está pasando..."
 }
