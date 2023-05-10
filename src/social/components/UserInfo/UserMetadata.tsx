@@ -58,7 +58,7 @@ type MetadataEditModalProps = {
 
 const MetadataEditModal = ({ user, onClose, isOpen, metadata, onSave }: MetadataEditModalProps) => {
   const { formatMessage } = useIntl();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = (data: User['metadata']) => {
     onSave(user.userId, data), onClose();

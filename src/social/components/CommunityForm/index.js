@@ -262,7 +262,7 @@ const CommunityForm = ({
                 maxLength: { value: 5000, message: formatMessage({ id: 'descriptionTooLong' }) },
               })}
               data-qa-anchor={`${dataQaAnchor}-community-description-textarea`}
-              placeholder={descPlaceholder}
+              placeholder={formatMessage({ id: 'enterDescriptionPlaceholder' })}
             />
             <ErrorMessage errors={errors} name="description" />
           </Field>

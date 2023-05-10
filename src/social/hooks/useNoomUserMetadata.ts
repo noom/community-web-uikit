@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 
 import { useAsyncData } from '~/social/providers/DataFetchingProvider';
+import { PARTNER_METADATA } from '../constants';
 
 export function useNoomUserMetadata(userId: string) {
   const [metadata, setMetadata] = useState({});
@@ -20,6 +21,7 @@ export function useNoomUserMetadata(userId: string) {
       newMetadata: Record<string, any>,
       callback: (data: Record<string, unknown>) => void,
     ) => {
+      newMetadata[PARTNER_METADATA] = parseInt(newMetadata[PARTNER_METADATA]) ?? undefined;
       const response = await updateUserMetadata?.(userId, { ...metadata, ...newMetadata });
       callback?.(response?.data ?? {});
     },
