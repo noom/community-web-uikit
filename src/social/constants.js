@@ -1,3 +1,11 @@
+export const MAXIMUM_MENTIONEES = 30;
+
+export const LANGUAGE_METADATA = 'localeLanguage';
+export const BUSINESS_TYPE_METADATA = 'businessType';
+export const PARTNER_METADATA = 'partnerId';
+
+export const ANONYMOUS_METADATA = 'isAnonymous';
+
 export const PageTypes = {
   Explore: 'explore',
   Category: 'category',
@@ -17,14 +25,6 @@ export const MemberRoles = Object.freeze({
   COMMUNITY_MODERATOR: 'community-moderator',
   CHANNEL_MODERATOR: 'channel-moderator',
 });
-
-export const MAXIMUM_MENTIONEES = 30;
-
-export const LANGUAGE_METADATA = 'localeLanguage';
-export const BUSINESS_TYPE_METADATA = 'businessType';
-export const PARTNER_METADATA = 'partnerId';
-
-export const ANONYMOUS_METADATA = 'isAnonymous';
 
 export const VideoFileStatus = Object.freeze({
   Uploaded: 'uploaded',
