@@ -37,7 +37,6 @@ const UIPostHeader = ({
   isBanned,
 }) => {
   const { formatMessage } = useIntl();
-  const formattedAuthorType = userType ? formatMessage({ id: `userType.${userType}` }) : '';
 
   const renderPostNames = () => {
     return (
@@ -50,7 +49,6 @@ const UIPostHeader = ({
             isHighlighted={!!userType}
           >
             {postAuthorName}
-            {formattedAuthorType && ` - ${formattedAuthorType}`}
           </Name>
         </TruncateMarkup>
 

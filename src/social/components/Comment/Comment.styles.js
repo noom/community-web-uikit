@@ -78,7 +78,6 @@ const StyledComment = ({
   ].filter(Boolean);
 
   const isEmpty = !markup || markup?.trim().length === 0;
-  const formattedAuthorType = authorType ? formatMessage({ id: `userType.${authorType}` }) : '';
 
   return (
     <>
@@ -106,7 +105,6 @@ const StyledComment = ({
           <CommentHeader>
             <AuthorName isHighlighted={!!authorType} onClick={onClickUser}>
               {authorName}
-              {formattedAuthorType && ` - ${formattedAuthorType}`}
             </AuthorName>
             <Truncate.Atom>
               {isBanned && <BanIcon css="margin-left: 0.265rem; margin-top: 1px;" />}
