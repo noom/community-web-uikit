@@ -8,10 +8,11 @@ import { useConfig } from '~/social/providers/ConfigProvider';
 import { confirm } from '~/core/components/Confirm';
 import customizableComponent from '~/core/hocs/customization';
 import useComment from '~/social/hooks/useComment';
+import useUser from '~/core/hooks/useUser';
 import CommentComposeBar from '~/social/components/CommentComposeBar';
 import CommentList from '~/social/components/CommentList';
 import { notification } from '~/core/components/Notification';
-import { isModerator } from '~/helpers/permissions';
+import { canPerformStingActions, canPerformUserLookups, isModerator } from '~/helpers/permissions';
 import StyledComment from './Comment.styles';
 import useSocialMention from '~/social/hooks/useSocialMention';
 import usePost from '~/social/hooks/usePost';
@@ -78,7 +79,7 @@ const Comment = ({
   const { formatMessage } = useIntl();
   const [isExpanded, setExpanded] = useState(false);
   const { onClickUser } = useNavigation();
-  const { showOldStyleComments: isOldStyle } = useConfig();
+  const { showOldStyleComments: isOldStyle, manateeUrl, dashboardUrl } = useConfig();
 
   const {
     isCommentReady,
@@ -181,11 +182,24 @@ const Comment = ({
     });
   };
 
+  const onLookupUser = () => {
+    window.open(`${manateeUrl}/user/${commentAuthor.userId}`, '_blank');
+  };
+
+  const onOpenUserDashboard = () => {
+    window.open(`${dashboardUrl}/inbox/${currentUserId}/coachee/${commentAuthor.userId}`, '_blank');
+  };
+
+  const { user: currentUser } = useUser(currentUserId, [currentUserId]);
+  const currentUserType = getUserType(currentUser);
+
   const canDelete = (!readonly && isCommentOwner) || isModerator(userRoles);
   const canEdit = !readonly && isCommentOwner;
   const canLike = !readonly;
   const canReply = !readonly && !isReplyComment && isCommentingEnabled;
   const canReport = !readonly && !isCommentOwner;
+  const canLookup = canPerformUserLookups({ actingUserType: currentUserType, targetUserType: userType });
+  const canSting = canPerformStingActions({ actingUserType: currentUserType, targetUserType: userType });
 
   if (!isCommentReady) {
     return null;
@@ -204,9 +218,11 @@ const Comment = ({
   const renderedComment = (
     <StyledComment
       commentId={comment.commentId}
+      commentPath={comment.path}
       authorName={
         commentAuthor.displayName || commentAuthor.userId || formatMessage({ id: 'anonymous' })
       }
+      authorId={commentAuthor.userId}
       authorType={isHighlighted ? userType : undefined}
       authorAvatar={commentAuthorAvatar.fileUrl}
       canDelete={canDelete}
@@ -214,6 +230,8 @@ const Comment = ({
       canLike={canLike}
       canReply={canReply}
       canReport={canReport}
+      canLookup={canLookup}
+      canSting={canSting}
       isBanned={commentAuthor.isGlobalBan}
       createdAt={comment.createdAt}
       editedAt={comment.editedAt}
@@ -226,6 +244,8 @@ const Comment = ({
       cancelEditing={cancelEditing}
       handleEdit={handleEdit}
       handleDelete={deleteComment}
+      handleLookup={onLookupUser}
+      handleOpenDash={onOpenUserDashboard}
       isEditing={isEditing}
       queryMentionees={queryMentionees}
       isReported={isFlaggedByMe}
@@ -235,6 +255,7 @@ const Comment = ({
       onChange={onChange}
       handleCopyPath={handleCopyPath ? onCopyPathClick : undefined}
       isOldStyle={isOldStyle}
+      displayAccessCode={currentUserType === "coach"}
     />
   );
 

@@ -108,3 +108,11 @@ export function canReportPost({ userId, user, communityUser, post, community }) 
 
   return !isMyPost;
 }
+
+export function canPerformUserLookups({actingUserType, targetUserType}) {
+  return actingUserType === "coach" && targetUserType === "user";
+}
+
+export function canPerformStingActions({actingUserType, targetUserType}) {
+  return actingUserType === "coach" && targetUserType === "user";
+}

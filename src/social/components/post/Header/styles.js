@@ -28,6 +28,14 @@ export const Name = styled.div`
   `}
 `;
 
+export const AccessCode = styled.div`
+  ${({ theme }) => theme.typography.body}
+
+  word-break: break-all;
+
+  color: #c3c4c3;
+`;
+
 export const ArrowSeparator = styled(ArrowRight).attrs({
   height: '8px',
   width: '8px',

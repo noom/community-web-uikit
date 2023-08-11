@@ -86,6 +86,16 @@ export const AuthorName = styled.div`
   `}
 `;
 
+export const NameBlock = styled.div`
+  display: flex;
+`;
+
+export const AccessCode = styled.div`
+  ${({ theme }) => theme.typography.caption}
+
+  color: #c3c4c3;
+`;
+
 export const CommentDate = styled(Time)`
   display: inline;
 

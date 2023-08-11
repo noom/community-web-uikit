@@ -2,7 +2,7 @@
 import React from 'react';
 import Truncate from 'react-truncate-markup';
 import PropTypes from 'prop-types';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { POSITION_LEFT } from '~/helpers/getCssPosition';
 import Button, { PrimaryButton } from '~/core/components/Button';
@@ -27,10 +27,16 @@ import {
   CommentEditTextarea,
   ButtonContainer,
   EditedMark,
+  AccessCode,
+  NameBlock,
 } from './styles';
+import { useDisclosure } from '@noom/wax-component-library';
+import { StingModal } from '../Sting/StingModal';
 
 const StyledComment = ({
   commentId,
+  commentPath,
+  authorId,
   authorName,
   authorAvatar,
   authorType,
@@ -39,6 +45,8 @@ const StyledComment = ({
   canLike = true,
   canReply = false,
   canReport = true,
+  canLookup = false,
+  canSting = false,
   createdAt,
   editedAt,
   text,
@@ -50,6 +58,8 @@ const StyledComment = ({
   startEditing,
   cancelEditing,
   handleDelete,
+  handleLookup,
+  handleOpenDash,
   isEditing,
   onChange,
   queryMentionees,
@@ -60,9 +70,10 @@ const StyledComment = ({
   metadata,
   handleCopyPath,
   isOldStyle,
-  isCommentingEnabled,
+  displayAccessCode = false,
 }) => {
-  const { formatMessage } = useIntl();
+
+  const { isOpen: isStingModalOpen, onOpen: onOpenStingModal, onClose: onCloseStingModal } = useDisclosure();
 
   const options = [
     canEdit && { name: isReplyComment ? 'reply.edit' : 'comment.edit', action: startEditing },
@@ -75,6 +86,9 @@ const StyledComment = ({
       name: 'post.copyPath',
       action: handleCopyPath,
     },
+    canLookup && { name: 'post.manatee', action: handleLookup },
+    canLookup && { name: 'post.dashboard', action: handleOpenDash },
+    canSting && { name: 'post.sting', action: onOpenStingModal },
   ].filter(Boolean);
 
   const isEmpty = !markup || markup?.trim().length === 0;
@@ -103,9 +117,12 @@ const StyledComment = ({
           lines={2}
         >
           <CommentHeader>
-            <AuthorName isHighlighted={!!authorType} onClick={onClickUser}>
-              {authorName}
-            </AuthorName>
+            <NameBlock>
+              <AuthorName isHighlighted={!!authorType} onClick={onClickUser}>
+                {authorName} 
+              </AuthorName>
+              {displayAccessCode && <AccessCode>{` (${authorId})`}</AccessCode>}
+            </NameBlock>
             <Truncate.Atom>
               {isBanned && <BanIcon css="margin-left: 0.265rem; margin-top: 1px;" />}
               <CommentDate date={createdAt} />
@@ -168,12 +185,21 @@ const StyledComment = ({
           </InteractionBar>
         )}
       </Content>
+
+      <StingModal
+        userAccessCode={authorId}
+        pathToContent={commentPath}
+        isOpen={isStingModalOpen}
+        onClose={onCloseStingModal}
+      />
     </>
   );
 };
 
 StyledComment.propTypes = {
   commentId: PropTypes.string,
+  commentPath: PropTypes.string,
+  authorId: PropTypes.string,
   authorName: PropTypes.string,
   authorAvatar: PropTypes.string,
   canDelete: PropTypes.bool,
@@ -181,6 +207,8 @@ StyledComment.propTypes = {
   canLike: PropTypes.bool,
   canReply: PropTypes.bool,
   canReport: PropTypes.bool,
+  canLookup: PropTypes.bool,
+  canSting: PropTypes.bool,
   createdAt: PropTypes.instanceOf(Date),
   editedAt: PropTypes.instanceOf(Date),
   text: PropTypes.string,
@@ -190,6 +218,8 @@ StyledComment.propTypes = {
   startEditing: PropTypes.func.isRequired,
   cancelEditing: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
+  handleLookup: PropTypes.func.isRequired,
+  handleOpenDash: PropTypes.func.isRequired,
   mentionees: PropTypes.array,
   metadata: PropTypes.object,
   isEditing: PropTypes.bool,
@@ -201,6 +231,7 @@ StyledComment.propTypes = {
   onChange: PropTypes.func.isRequired,
   handleCopyPath: PropTypes.func,
   authorType: PropTypes.string,
+  displayAccessCode: PropTypes.bool,
 };
 
 export default StyledComment;

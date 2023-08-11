@@ -2,12 +2,14 @@ import { PostDataType, PostTargetType } from '@amityco/js-sdk';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useConfig } from '~/social/providers/ConfigProvider';
 import Button, { PrimaryButton } from '~/core/components/Button';
 import { confirm, info } from '~/core/components/Confirm';
 import Modal from '~/core/components/Modal';
 import { notification } from '~/core/components/Notification';
 import { useAsyncCallback } from '~/core/hooks/useAsyncCallback';
-import { canDeletePost, canEditPost, canReportPost, canClosePool } from '~/helpers/permissions';
+import useUser from '~/core/hooks/useUser';
+import { canDeletePost, canEditPost, canReportPost, canClosePool, canPerformUserLookups, canPerformStingActions } from '~/helpers/permissions';
 import { isPostUnderReview } from '~/helpers/utils';
 import EngagementBar from '~/social/components/EngagementBar';
 import ChildrenContent from '~/social/components/post/ChildrenContent';
@@ -27,6 +29,8 @@ import {
   PostHeadContainer,
   ReviewButtonsContainer,
 } from './styles';
+import { StingModal } from '../../Sting/StingModal';
+import { useDisclosure } from '@noom/wax-component-library';
 
 // Number of lines to show in a text post before truncating.
 const MAX_TEXT_LINES_DEFAULT = 8;
@@ -82,6 +86,7 @@ const DefaultPostRenderer = ({
   const openEditingPostModal = () => setIsEditing(true);
   const closeEditingPostModal = () => setIsEditing(false);
 
+  const { manateeUrl, dashboardUrl } = useConfig();
   const { data, dataType, postId, targetId, targetType, metadata } = post;
   const { handleCommentingToggle } = usePost(postId);
   const { community } = useCommunity(targetId, () => targetType !== PostTargetType.CommunityFeed);
@@ -93,8 +98,10 @@ const DefaultPostRenderer = ({
   const showComments = shouldShowComments(metadata, community.metadata);
   const isCommentingEnabled = shouldCommentingBeEnabled(metadata, community.metadata);
 
-  const userType = getUserType(user);
-  const isHighlighted = shouldHighlightUserType(userType);
+  const { user: currentUser } = useUser(currentUserId, [currentUserId]);
+  const currentUserType = getUserType(currentUser);
+  const postUserType = getUserType(user);
+  const isHighlighted = shouldHighlightUserType(postUserType);
 
   const [onReportClick] = useAsyncCallback(async () => {
     await handleReportPost();
@@ -124,6 +131,8 @@ const DefaultPostRenderer = ({
     }
   }, [handleDeclinePost]);
 
+  const { isOpen: isStingModalOpen, onOpen: onOpenStingModal, onClose: onCloseStingModal } = useDisclosure();
+
   const isUnderReview = isPostUnderReview(post, community);
 
   const confirmDeletePost = () =>
@@ -140,6 +149,14 @@ const DefaultPostRenderer = ({
 
   const onCopyPathClick = () => {
     handleCopyPostPath(post);
+  };
+
+  const onLookupUser = () => {
+    window.open(`${manateeUrl}/user/${post.postedUserId}`, '_blank');
+  };
+
+  const onOpenUserDashboard = () => {
+    window.open(`${dashboardUrl}/inbox/${currentUserId}/coachee/${post.postedUserId}`, '_blank');
   };
 
   const allOptions = [
@@ -203,6 +220,27 @@ const DefaultPostRenderer = ({
       name: 'post.copyPath',
       action: onCopyPathClick,
     },
+    canPerformUserLookups({
+      actingUserType: currentUserType,
+      targetUserType: postUserType,
+    }) &&  {
+      name: 'post.manatee',
+      action: onLookupUser,
+    },
+    canPerformUserLookups({
+      actingUserType: currentUserType,
+      targetUserType: postUserType,
+    }) &&  {
+      name: 'post.dashboard',
+      action: onOpenUserDashboard,
+    },
+    canPerformStingActions({
+      actingUserType: currentUserType,
+      targetUserType: postUserType,
+    }) &&  {
+      name: 'post.sting',
+      action: onOpenStingModal,
+    },
   ].filter(Boolean);
 
   const childrenContent = childrenPosts?.map((childPost) => ({
@@ -225,9 +263,9 @@ const DefaultPostRenderer = ({
       data-qa-anchor="post"
       isHighlighted={isHighlighted}
     >
-      {isHighlighted && userType && (
+      {isHighlighted && postUserType && (
         <PostHighlight>
-          <FormattedMessage id={`userType.${userType}`} />
+          <FormattedMessage id={`userType.${postUserType}`} />
         </PostHighlight>
       )}
       <PostHeadContainer>
@@ -235,7 +273,8 @@ const DefaultPostRenderer = ({
           hidePostTarget={hidePostTarget}
           postId={postId}
           loading={loading}
-          userType={isHighlighted ? userType : undefined}
+          userType={isHighlighted ? postUserType : undefined}
+          displayAccessCode={currentUserType === "coach"}
         />
         {!loading && <OptionMenu options={allOptions} data-qa-anchor="post-options-button" />}
       </PostHeadContainer>
@@ -295,6 +334,13 @@ const DefaultPostRenderer = ({
           )}
         </>
       )}
+
+      <StingModal
+        userAccessCode={post.postedUserId}
+        pathToContent={post.path}
+        isOpen={isStingModalOpen}
+        onClose={onCloseStingModal}
+      />
     </PostContainer>
   );
 };
