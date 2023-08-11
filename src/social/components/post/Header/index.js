@@ -9,7 +9,7 @@ import { useNavigation } from '~/social/providers/NavigationProvider';
 import UIPostHeader from './UIPostHeader';
 import useCommunityOneMember from '~/social/hooks/useCommunityOneMember';
 
-const PostHeader = ({ postId, hidePostTarget, userType, loading }) => {
+const PostHeader = ({ postId, hidePostTarget, userType, loading, displayAccessCode }) => {
   const { onClickCommunity, onClickUser } = useNavigation();
   const { post, file, user } = usePost(postId);
 
@@ -33,6 +33,7 @@ const PostHeader = ({ postId, hidePostTarget, userType, loading }) => {
       userType={userType}
       avatarFileUrl={file.fileUrl}
       postAuthorName={user.displayName || <FormattedMessage id="anonymous" />}
+      postAuthorId={displayAccessCode ? user.userId : null}
       postTargetName={postTargetName}
       timeAgo={createdAt}
       isModerator={isCommunityModerator || isModerator(user.roles) || isAdmin(user.roles)}
@@ -50,11 +51,13 @@ PostHeader.propTypes = {
   postId: PropTypes.string,
   hidePostTarget: PropTypes.bool,
   loading: PropTypes.bool,
+  displayAccessCode: PropTypes.bool,
 };
 
 PostHeader.defaultProps = {
   hidePostTarget: false,
   loading: false,
+  displayAccessCode: false,
 };
 
 export { UIPostHeader };

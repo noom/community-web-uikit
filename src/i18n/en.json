@@ -429,5 +429,18 @@
   "privateDescription": "Only members invited by the moderators can join, view, and search the posts in this page.",
   "public": "Public",
   "publicDescription": "Anyone can join, view and search the posts in this page.",
-  "whatsGoingOnPlaceholder": "What's going on..."
+  "whatsGoingOnPlaceholder": "What's going on...",
+
+  "post.dashboard": "Go to user's Dashboard",
+  "post.manatee": "Lookup user in Manatee",
+  "post.sting": "STING",
+  "sting.userNotInStingDash": "This user is NOT currently on the STING Dash",
+  "sting.userInStingDash": "This user IS currently on the STING Dash",
+  "sting.notesPlaceholder": "Why is this post STING-related? (Required)",
+  "sting.notesAreRequired": "Notes are required.",
+  "sting.coachNotes": "Coach Notes",
+  "sting.messagePlaceholder": "Enter a message to be sent to the user from the STING Guide after being transferred. (Optional)",
+  "sting.messageToSend": "Message to send to user",
+  "sting.addNewNote": "Add New Note",
+  "sting.transferUser": "Transfer User to STING Dash"
 }

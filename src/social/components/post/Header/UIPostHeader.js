@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import cx from 'classnames';
 import TruncateMarkup from 'react-truncate-markup';
 import Skeleton from '~/core/components/Skeleton';
@@ -10,6 +10,7 @@ import Avatar from '~/core/components/Avatar';
 import BanIcon from '~/icons/Ban';
 import { backgroundImage as UserImage } from '~/icons/User';
 import {
+  AccessCode,
   Name,
   PostInfo,
   ShieldIcon,
@@ -25,6 +26,7 @@ const UIPostHeader = ({
   userType,
   avatarFileUrl,
   postAuthorName,
+  postAuthorId,
   postTargetName,
   timeAgo,
   isModerator,
@@ -36,8 +38,6 @@ const UIPostHeader = ({
   loading,
   isBanned,
 }) => {
-  const { formatMessage } = useIntl();
-
   const renderPostNames = () => {
     return (
       <PostNamesContainer data-qa-anchor="post-header-post-names">
@@ -51,6 +51,12 @@ const UIPostHeader = ({
             {postAuthorName}
           </Name>
         </TruncateMarkup>
+
+        {postAuthorId && 
+          <AccessCode data-qa-anchor="post-header-post-accesscode">
+            {`(${postAuthorId})`}
+          </AccessCode>
+        }
 
         {isBanned && <BanIcon height={14} width={14} />}
       </PostNamesContainer>
@@ -119,6 +125,7 @@ UIPostHeader.propTypes = {
   userType: PropTypes.string,
   avatarFileUrl: PropTypes.string,
   postAuthorName: PropTypes.node,
+  postAuthorId: PropTypes.string,
   postTargetName: PropTypes.string,
   timeAgo: PropTypes.instanceOf(Date),
   isModerator: PropTypes.bool,
@@ -134,6 +141,7 @@ UIPostHeader.propTypes = {
 UIPostHeader.defaultProps = {
   avatarFileUrl: '',
   postAuthorName: '',
+  postAuthorId: null,
   postTargetName: '',
   timeAgo: null,
   isModerator: false,
