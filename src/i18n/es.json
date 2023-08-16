@@ -439,8 +439,6 @@
   "sting.notesPlaceholder": "Why is this post STING-related? (Required)",
   "sting.notesAreRequired": "Notes are required.",
   "sting.coachNotes": "Coach Notes",
-  "sting.messagePlaceholder": "Enter a message to be sent to the user from the STING Guide after being transferred. (Optional)",
-  "sting.messageToSend": "Message to send to user",
   "sting.addNewNote": "Add New Note",
   "sting.transferUser": "Transfer User to STING Dash"
 }
