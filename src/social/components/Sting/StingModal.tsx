@@ -52,10 +52,10 @@ export const StingModal = ({ userAccessCode, pathToContent, isOpen, onClose }: S
     reset();
   }, [isOpen]);
 
-  const onSubmit = async (data: { messageToSend: string | undefined; coachNotes: string }) => {
+  const onSubmit = async (data: { coachNotes: string }) => {
     let canAttachNote = true;
     if (!userInStingDash) {
-      canAttachNote = await transferUserToStingCallback(userAccessCode, data.messageToSend);
+      canAttachNote = await transferUserToStingCallback(userAccessCode);
     }
     if (canAttachNote) {
       const realPath = pathToContent.replace(
@@ -107,17 +107,6 @@ export const StingModal = ({ userAccessCode, pathToContent, isOpen, onClose }: S
               />
               <ErrorMessage errors={errors} name="coachNotes" />
             </Box>
-            {!userInStingDash && (
-              <Box>
-                <FormLabel>
-                  <FormattedMessage id="sting.messageToSend" />
-                </FormLabel>
-                <Textarea
-                  placeholder={formatMessage({ id: 'sting.messagePlaceholder' })}
-                  {...register('messageToSend')}
-                />
-              </Box>
-            )}
 
             <ButtonGroup w="100%" justifyContent="center">
               <Button colorScheme="primary" type="submit">
