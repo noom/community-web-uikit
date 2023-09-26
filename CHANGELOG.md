@@ -1,5 +1,7 @@
 # Changelog
 
+### [2.35.16](https://github.com/noom/community-web-uikit/compare/2.35.15...2.35.16) (2023-09-26)
+
 ### [2.35.15](https://github.com/noom/community-web-uikit/compare/2.35.14...2.35.15) (2023-08-16)
 
 ### [2.35.14](https://github.com/noom/community-web-uikit/compare/2.35.13...2.35.14) (2023-08-11)
