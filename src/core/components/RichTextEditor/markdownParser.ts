@@ -162,7 +162,7 @@ const serializeTransformElement: TransformMap = {
   [ELEMENT_LINK]: (el: LinkElement, _metadata, nodeDepth) =>
     ({
       type: ELEMENT_LINK,
-      url: el.link || el.url,
+      url: el.url,
       link: el.link || el.url,
       children: el.children,
     } as LinkElement),
