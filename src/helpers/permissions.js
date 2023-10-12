@@ -2,6 +2,7 @@ import { PostDataType } from '@amityco/js-sdk';
 // TODO: refactor to align with SDK roles once available.
 import { MemberRoles } from '~/social/constants';
 import { isCommunityMember, isCommunityPost, isPostUnderReview } from '~/helpers/utils';
+import { getUserType } from './userTypes';
 
 const ADMIN = 'global-admin';
 const { COMMUNITY_MODERATOR, CHANNEL_MODERATOR } = MemberRoles;
@@ -35,6 +36,10 @@ function isPostModerator({ user, communityUser, post }) {
 
 export function canEditCommunity({ user, communityUser }) {
   return isAdmin(user.roles) || isModerator(user.roles) || isModerator(communityUser.roles);
+}
+
+export function canCloseCommunity(user) {
+  return getUserType(user) === "coach";
 }
 
 export function canReviewCommunityPosts(data) {
