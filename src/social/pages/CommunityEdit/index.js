@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ImageSize, FileRepository } from '@amityco/js-sdk';
 
+import useUser from '~/core/hooks/useUser';
+import withSDK from '~/core/hocs/withSDK';
 import CommunityMembers from '~/social/components/CommunityMembers';
 import CommunityPermissions from '~/social/components/CommunityPermissions';
 import CommunityForm from '~/social/components/CommunityForm';
@@ -15,8 +17,9 @@ import CommunityEditHeader from '~/social/components/community/EditPageHeader';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import { CloseCommunityAction, AddMemberAction } from './ExtraAction';
 import { PageTabs, tabs } from './constants';
+import { canCloseCommunity } from '~/helpers/permissions';
 
-const CommunityEditPage = ({ communityId, tab }) => {
+const CommunityEditPage = ({ communityId, tab, currentUserId }) => {
   const { onChangePage } = useNavigation();
   const [activeTab, setActiveTab] = useState(tab);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
@@ -29,6 +32,8 @@ const CommunityEditPage = ({ communityId, tab }) => {
   const { onClickCommunity } = useNavigation();
   const { community, updateCommunity } = useCommunity(communityId);
   const { members, addMembers } = useCommunityMembers(communityId);
+
+  const { user } = useUser(currentUserId, [currentUserId]);
 
   const handleReturnToCommunity = () => onClickCommunity(communityId);
 
@@ -46,10 +51,11 @@ const CommunityEditPage = ({ communityId, tab }) => {
     switch (activeTab) {
       case PageTabs.EDIT_PROFILE:
         return (
+          canCloseCommunity(user) ?
           <CloseCommunityAction
             communityId={communityId}
             onCommunityClosed={() => onChangePage(PageTypes.NewsFeed)}
-          />
+          /> : <></>
         );
       case PageTabs.MEMBERS:
         return (
@@ -115,10 +121,11 @@ const CommunityEditPage = ({ communityId, tab }) => {
 CommunityEditPage.propTypes = {
   communityId: PropTypes.string.isRequired,
   tab: PropTypes.oneOf(Object.values(PageTabs)),
+  currentUserId: PropTypes.string.isRequired,
 };
 
 CommunityEditPage.defaultProps = {
   tab: PageTabs.EDIT_PROFILE,
 };
 
-export default CommunityEditPage;
+export default withSDK(CommunityEditPage);
