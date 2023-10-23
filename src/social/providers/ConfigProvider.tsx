@@ -9,9 +9,14 @@ export type SocialConfiguration = {
   manateeUrl?: string;
   dashboardUrl?: string;
   isUserCurrentlyInStingDashCallback: (userAccessCode: string) => Promise<boolean>;
-  addCoachNoteCallback: (userAccessCode: string, note: string) => Promise<boolean>;
+  addCoachNoteCallback: (
+    userAccessCode: string,
+    userLocale: string,
+    note: string,
+  ) => Promise<boolean>;
   transferUserToStingCallback: (
     userAccessCode: string,
+    userLocale: string,
     optionalMessage?: string,
   ) => Promise<boolean>;
 };
@@ -24,8 +29,9 @@ const defaultConfig = {
   manateeUrl: null,
   dashboardUrl: null,
   isUserCurrentlyInStingDashCallback: async (_uac: string) => false,
-  addCoachNoteCallback: async (_uac: string, _note: string) => false,
-  transferUserToStingCallback: async (_uac: string, _message?: string) => false,
+  addCoachNoteCallback: async (_uac: string, _userLocale: string, _note: string) => false,
+  transferUserToStingCallback: async (_uac: string, _userLocale: string, _message?: string) =>
+    false,
 };
 
 const ConfigContext = createContext(defaultConfig);

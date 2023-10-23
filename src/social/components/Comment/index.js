@@ -93,6 +93,12 @@ const Comment = ({
     isFlaggedByMe,
   } = useComment({ commentId });
 
+
+  const {
+    comment: parentComment,
+    handleReplyToComment: handleReplyToParentComment,
+  } = useComment({ commentId: comment.parentId });
+
   const { post } = usePost(comment?.referenceId);
 
   const {
@@ -144,6 +150,7 @@ const Comment = ({
   }, [comment?.data?.text, text]);
 
   const onClickReply = () => {
+    console.log(comment);
     setIsReplying((preValue) => !preValue);
   };
 
@@ -196,7 +203,7 @@ const Comment = ({
   const canDelete = (!readonly && isCommentOwner) || isModerator(userRoles);
   const canEdit = !readonly && isCommentOwner;
   const canLike = !readonly;
-  const canReply = !readonly && !isReplyComment && isCommentingEnabled;
+  const canReply = !readonly && isCommentingEnabled;
   const canReport = !readonly && !isCommentOwner;
   const canLookup = canPerformUserLookups({ actingUserType: currentUserType, targetUserType: userType });
   const canSting = canPerformStingActions({ actingUserType: currentUserType, targetUserType: userType });
@@ -260,7 +267,22 @@ const Comment = ({
   );
 
   return isReplyComment ? (
-    <ReplyContainer data-qa-anchor="reply">{renderedComment}</ReplyContainer>
+    <>
+      {isReplying && (
+        <CommentComposeBar
+          postId={parentComment?.referenceId}
+          postType={parentComment?.referenceType}
+          userToReply={commentAuthor.displayName}
+          onSubmit={(replyText, mentionees, metadata) => {
+            handleReplyToParentComment(replyText, mentionees, metadata, !isCommentingEnabled);
+            setIsReplying(false);
+            setExpanded(true);
+          }}
+          onCancel={onClickReply}
+        />
+      )}
+      <ReplyContainer data-qa-anchor="reply">{renderedComment}</ReplyContainer>
+    </>
   ) : (
     <CommentBlock>
       <CommentContainer data-comment-id={comment.commentId} data-qa-anchor="comment">

@@ -52,6 +52,10 @@ export const ActionButtonContainer = styled.div`
   }
 `;
 
+export const BigBee = styled.div`
+  font-size: 28px;
+`;
+
 export const ProfileName = styled.div`
   ${({ theme }) => theme.typography.headline}
 `;
