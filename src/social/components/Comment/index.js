@@ -150,7 +150,6 @@ const Comment = ({
   }, [comment?.data?.text, text]);
 
   const onClickReply = () => {
-    console.log(comment);
     setIsReplying((preValue) => !preValue);
   };
 
