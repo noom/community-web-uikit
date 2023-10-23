@@ -265,6 +265,18 @@ const Comment = ({
     />
   );
 
+  const onSubmitReply = (replyText, mentionees, metadata) => {
+    handleReplyToParentComment(replyText, mentionees, metadata, !isCommentingEnabled);
+    setIsReplying(false);
+    setExpanded(true);
+  };
+
+  const onSubmitComment = (replyText, mentionees, metadata) => {
+    handleReplyToComment(replyText, mentionees, metadata, !isCommentingEnabled);
+    setIsReplying(false);
+    setExpanded(true);
+  };
+
   return isReplyComment ? (
     <>
       {isReplying && (
@@ -272,11 +284,7 @@ const Comment = ({
           postId={parentComment?.referenceId}
           postType={parentComment?.referenceType}
           userToReply={commentAuthor.displayName}
-          onSubmit={(replyText, mentionees, metadata) => {
-            handleReplyToParentComment(replyText, mentionees, metadata, !isCommentingEnabled);
-            setIsReplying(false);
-            setExpanded(true);
-          }}
+          onSubmit={onSubmitReply}
           onCancel={onClickReply}
         />
       )}
@@ -293,11 +301,7 @@ const Comment = ({
           postId={comment?.referenceId}
           postType={comment?.referenceType}
           userToReply={commentAuthor.displayName}
-          onSubmit={(replyText, mentionees, metadata) => {
-            handleReplyToComment(replyText, mentionees, metadata, !isCommentingEnabled);
-            setIsReplying(false);
-            setExpanded(true);
-          }}
+          onSubmit={onSubmitComment}
           onCancel={onClickReply}
         />
       )}
