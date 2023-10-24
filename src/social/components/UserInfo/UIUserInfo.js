@@ -87,11 +87,13 @@ const UIUserInfo = ({
   const [userInStingDash, setUserInStingDash] = useState(false);
   const { isUserCurrentlyInStingDashCallback, manateeUrl, dashboardUrl } = useConfig();
   useEffect(() => {
-    (async () => {
-      const inStingDash = await isUserCurrentlyInStingDashCallback(userId);
-      setUserInStingDash(inStingDash);
-    })();
-  }, [userId]);
+    if (currentUserType === "coach") {
+      (async () => {
+        const inStingDash = await isUserCurrentlyInStingDashCallback(userId);
+        setUserInStingDash(inStingDash);
+      })();
+    }
+  }, [userId, currentUserType]);
 
   const onLookupUser = () => {
     window.open(`${manateeUrl}/user/${userId}`, '_blank');
