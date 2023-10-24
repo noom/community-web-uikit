@@ -1,37 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Truncate from 'react-truncate-markup';
 import PropTypes from 'prop-types';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { FollowRequestStatus } from '@amityco/js-sdk';
 
-import { toHumanString } from '~/helpers/toHumanString';
 import ConditionalRender from '~/core/components/ConditionalRender';
-import Button, { PrimaryButton } from '~/core/components/Button';
+import Button from '~/core/components/Button';
 import customizableComponent from '~/core/hocs/customization';
 import { backgroundImage as UserImage } from '~/icons/User';
+import { canPerformUserLookups } from '~/helpers/permissions';
+import { getUserType } from '~/helpers/userTypes';
 
-import { FollowersTabs, PENDING_TAB } from '~/social/pages/UserFeed/Followers/constants';
+import { useConfig } from '~/social/providers/ConfigProvider';
+import { PENDING_TAB } from '~/social/pages/UserFeed/Followers/constants';
 import BanIcon from '~/icons/Ban';
 
 import { UserMetadata } from './UserMetadata';
 
 import {
   Avatar,
+  BigBee,
   Container,
   ProfileName,
   Header,
   Description,
-  PlusIcon,
   PencilIcon,
-  PendingIcon,
   OptionMenu,
-  CountContainer,
-  ClickableCount,
   PendingNotification,
   NotificationTitle,
   NotificationBody,
   TitleEllipse,
-  PendingIconContainer,
   ActionButtonContainer,
   ProfileNameWrapper,
 } from './styles';
@@ -53,18 +51,14 @@ const UIUserInfo = ({
   description,
   isMyProfile,
   onEditUser,
-  onFollowRequest,
   onFollowDecline,
-  isFollowPending,
-  isFollowNone,
   isFollowAccepted,
   setActiveTab,
   setFollowActiveTab,
-  followerCount,
-  followingCount,
   isPrivateNetwork,
   showUserProfileMetadata,
 }) => {
+  const { user: currentUser } = useUser(currentUserId);
   const { user } = useUser(userId);
   const { isFlaggedByMe, handleReport } = useReport(user);
   const { formatMessage } = useIntl();
@@ -86,6 +80,26 @@ const UIUserInfo = ({
   const content = user.displayName
     ? formatMessage({ id: 'user.unfollow.confirm.body' }, { displayName: user.displayName })
     : formatMessage({ id: 'user.unfollow.confirm.body.thisUser' });
+  
+  const currentUserType = getUserType(currentUser);
+  const profileUserType = getUserType(user);
+
+  const [userInStingDash, setUserInStingDash] = useState(false);
+  const { isUserCurrentlyInStingDashCallback, manateeUrl, dashboardUrl } = useConfig();
+  useEffect(() => {
+    (async () => {
+      const inStingDash = await isUserCurrentlyInStingDashCallback(userId);
+      setUserInStingDash(inStingDash);
+    })();
+  }, [userId]);
+
+  const onLookupUser = () => {
+    window.open(`${manateeUrl}/user/${userId}`, '_blank');
+  };
+
+  const onOpenUserDashboard = () => {
+    window.open(`${dashboardUrl}/inbox/${currentUserId}/coachee/${userId}`, '_blank');
+  };
 
   const allOptions = [
     isFollowAccepted &&
@@ -107,6 +121,20 @@ const UIUserInfo = ({
       name: isFlaggedByMe ? 'report.unreportUser' : 'report.reportUser',
       action: onReportClick,
     },
+    canPerformUserLookups({
+      actingUserType: currentUserType,
+      targetUserType: profileUserType,
+    }) &&  {
+      name: 'post.manatee',
+      action: onLookupUser,
+    },
+    canPerformUserLookups({
+      actingUserType: currentUserType,
+      targetUserType: profileUserType,
+    }) &&  {
+      name: 'post.dashboard',
+      action: onOpenUserDashboard,
+    },
   ].filter(Boolean);
 
   const [pendingUsers] = useFollowersList(currentUserId, FollowRequestStatus.Pending);
@@ -122,6 +150,7 @@ const UIUserInfo = ({
             avatar={fileUrl}
             backgroundImage={UserImage}
           />
+          {userInStingDash && <BigBee>🐝</BigBee>}
           <ActionButtonContainer>
             <ConditionalRender condition={isMyProfile}>
               <Button
@@ -131,22 +160,6 @@ const UIUserInfo = ({
               >
                 <PencilIcon /> <FormattedMessage id="user.editProfile" />
               </Button>
-              {/* Hiding all "follow" features as they are confusing to users (most don't use the personal feed). */}
-              {/* <>
-                {isPrivateNetwork && isFollowPending && (
-                  <Button disabled={!connected} onClick={() => onFollowDecline()}>
-                    <PendingIconContainer>
-                      <PendingIcon />
-                    </PendingIconContainer>
-                    <FormattedMessage id="user.cancel_follow" />
-                  </Button>
-                )}
-                {isFollowNone && (
-                  <PrimaryButton disabled={!connected} onClick={() => onFollowRequest()}>
-                    <PlusIcon /> <FormattedMessage id="user.follow" />
-                  </PrimaryButton>
-                )}
-              </> */}
             </ConditionalRender>
           </ActionButtonContainer>
           <OptionMenu options={allOptions} pullRight={false} />
@@ -159,27 +172,6 @@ const UIUserInfo = ({
             <BanIcon width={14} height={14} css="margin-left: 0.265rem; margin-top: 1px;" />
           )}
         </ProfileNameWrapper>
-        {/* Hiding all "follow" features as most users find them confusing (individual feeds aren't used often) */}
-        {/* <CountContainer>
-          <ClickableCount
-            onClick={() => {
-              setActiveTab(UserFeedTabs.FOLLOWERS);
-              setTimeout(() => setFollowActiveTab(FollowersTabs.FOLLOWINGS), 250);
-            }}
-          >
-            {toHumanString(followingCount)}
-          </ClickableCount>
-          <FormattedMessage id="counter.followings" />
-          <ClickableCount
-            onClick={() => {
-              setActiveTab(UserFeedTabs.FOLLOWERS);
-              setTimeout(() => setFollowActiveTab(FollowersTabs.FOLLOWERS), 250);
-            }}
-          >
-            {toHumanString(followerCount)}
-          </ClickableCount>
-          <FormattedMessage id="counter.followers" />
-        </CountContainer> */}
         <Description data-qa-anchor="user-info-description">{description}</Description>
 
         {isMyProfile && pendingUsers.length > 0 && isPrivateNetwork && (

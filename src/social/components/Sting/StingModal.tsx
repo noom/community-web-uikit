@@ -13,8 +13,10 @@ import {
 } from '@noom/wax-component-library';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Modal from '~/core/components/Modal';
+import useUser from '~/core/hooks/useUser';
 import { useConfig } from '~/social/providers/ConfigProvider';
 import { ErrorMessage } from '../CommunityForm/styles';
+import { LANGUAGE_METADATA } from '~/social/constants';
 
 type StingModalProps = {
   userAccessCode: string;
@@ -52,10 +54,13 @@ export const StingModal = ({ userAccessCode, pathToContent, isOpen, onClose }: S
     reset();
   }, [isOpen]);
 
+  const { user }: { user: any } = useUser(userAccessCode);
+  const userLocale = user?.metadata?.[LANGUAGE_METADATA] || 'en';
+
   const onSubmit = async (data: { coachNotes: string }) => {
     let canAttachNote = true;
     if (!userInStingDash) {
-      canAttachNote = await transferUserToStingCallback(userAccessCode);
+      canAttachNote = await transferUserToStingCallback(userAccessCode, userLocale);
     }
     if (canAttachNote) {
       const realPath = pathToContent.replace(
@@ -64,6 +69,7 @@ export const StingModal = ({ userAccessCode, pathToContent, isOpen, onClose }: S
       );
       addCoachNoteCallback(
         userAccessCode,
+        userLocale,
         `${data.coachNotes}\n\nPath to Circles content:\n${realPath}`,
       );
     }

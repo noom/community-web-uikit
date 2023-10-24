@@ -93,6 +93,12 @@ const Comment = ({
     isFlaggedByMe,
   } = useComment({ commentId });
 
+
+  const {
+    comment: parentComment,
+    handleReplyToComment: handleReplyToParentComment,
+  } = useComment({ commentId: comment.parentId });
+
   const { post } = usePost(comment?.referenceId);
 
   const {
@@ -196,7 +202,7 @@ const Comment = ({
   const canDelete = (!readonly && isCommentOwner) || isModerator(userRoles);
   const canEdit = !readonly && isCommentOwner;
   const canLike = !readonly;
-  const canReply = !readonly && !isReplyComment && isCommentingEnabled;
+  const canReply = !readonly && isCommentingEnabled;
   const canReport = !readonly && !isCommentOwner;
   const canLookup = canPerformUserLookups({ actingUserType: currentUserType, targetUserType: userType });
   const canSting = canPerformStingActions({ actingUserType: currentUserType, targetUserType: userType });
@@ -259,8 +265,31 @@ const Comment = ({
     />
   );
 
+  const onSubmitReply = (replyText, mentionees, metadata) => {
+    handleReplyToParentComment(replyText, mentionees, metadata, !isCommentingEnabled);
+    setIsReplying(false);
+    setExpanded(true);
+  };
+
+  const onSubmitComment = (replyText, mentionees, metadata) => {
+    handleReplyToComment(replyText, mentionees, metadata, !isCommentingEnabled);
+    setIsReplying(false);
+    setExpanded(true);
+  };
+
   return isReplyComment ? (
-    <ReplyContainer data-qa-anchor="reply">{renderedComment}</ReplyContainer>
+    <>
+      {isReplying && (
+        <CommentComposeBar
+          postId={parentComment?.referenceId}
+          postType={parentComment?.referenceType}
+          userToReply={commentAuthor.displayName}
+          onSubmit={onSubmitReply}
+          onCancel={onClickReply}
+        />
+      )}
+      <ReplyContainer data-qa-anchor="reply">{renderedComment}</ReplyContainer>
+    </>
   ) : (
     <CommentBlock>
       <CommentContainer data-comment-id={comment.commentId} data-qa-anchor="comment">
@@ -272,11 +301,7 @@ const Comment = ({
           postId={comment?.referenceId}
           postType={comment?.referenceType}
           userToReply={commentAuthor.displayName}
-          onSubmit={(replyText, mentionees, metadata) => {
-            handleReplyToComment(replyText, mentionees, metadata, !isCommentingEnabled);
-            setIsReplying(false);
-            setExpanded(true);
-          }}
+          onSubmit={onSubmitComment}
           onCancel={onClickReply}
         />
       )}
