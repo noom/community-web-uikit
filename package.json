@@ -72,7 +72,6 @@
     "react-router-dom": ">=6.3.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "recoil": "^0.7.5",
     "release-it": "^15.4.1",
     "styled-components": "^5.3.5",
     "svg-url-loader": "^7.1.1",
@@ -84,7 +83,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "@amityco/js-sdk": "^5.37.1",
+    "@amityco/js-sdk": "^5.37.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -120,7 +119,7 @@
     "react-tiny-popover": "^7.1.0",
     "react-truncate-markup": "^5.1.2",
     "react-use": "^17.4.0",
-    "recoil": "0.0.10",
+    "recoil": "^0.7.5",
     "remark-gfm": "3.0.1",
     "remark-parse": "10.0.1",
     "remark-slate": "1.8.6",
