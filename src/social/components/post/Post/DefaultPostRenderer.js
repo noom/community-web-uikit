@@ -9,7 +9,7 @@ import Modal from '~/core/components/Modal';
 import { notification } from '~/core/components/Notification';
 import { useAsyncCallback } from '~/core/hooks/useAsyncCallback';
 import useUser from '~/core/hooks/useUser';
-import { canDeletePost, canEditPost, canReportPost, canClosePool, canPerformUserLookups, canPerformStingActions } from '~/helpers/permissions';
+import { isCoach, canDeletePost, canEditPost, canReportPost, canClosePool, canPerformUserLookups, canPerformStingActions } from '~/helpers/permissions';
 import { isPostUnderReview } from '~/helpers/utils';
 import EngagementBar from '~/social/components/EngagementBar';
 import ChildrenContent from '~/social/components/post/ChildrenContent';
@@ -151,6 +151,14 @@ const DefaultPostRenderer = ({
     handleCopyPostPath(post);
   };
 
+  const onOpenInNewTab = () => {
+    const pathToContent = post.path.replace(
+      /.+\/social\//,
+      `${window.location.protocol}//${window.location.hostname}/`,
+    );
+    window.open(pathToContent, '_blank');
+  };
+
   const onLookupUser = () => {
     window.open(`${manateeUrl}/user/${post.postedUserId}`, '_blank');
   };
@@ -219,6 +227,10 @@ const DefaultPostRenderer = ({
     !!handleCopyPostPath && {
       name: 'post.copyPath',
       action: onCopyPathClick,
+    },
+    isCoach(currentUser) && {
+      name: 'post.openInNewTab',
+      action: onOpenInNewTab,
     },
     canPerformUserLookups({
       actingUserType: currentUserType,
