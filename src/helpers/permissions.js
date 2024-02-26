@@ -23,6 +23,10 @@ export const isAdmin = (userRoles) => {
   return userRoles.includes(ADMIN);
 };
 
+export const isCoach = (user) => {
+  return getUserType(user) === "coach";
+};
+
 function isPostModerator({ user, communityUser, post }) {
   const hasModeratorPermissions =
     isAdmin(user.roles) || isModerator(user.roles) || isModerator(communityUser.roles);

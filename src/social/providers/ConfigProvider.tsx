@@ -19,6 +19,11 @@ export type SocialConfiguration = {
     userLocale: string,
     optionalMessage?: string,
   ) => Promise<boolean>;
+  fetchNextPostInCommunity: (
+    communityId: string,
+    postId: string,
+    direction: string,
+  ) => Promise<string | undefined>;
 };
 
 const defaultConfig = {
@@ -32,6 +37,7 @@ const defaultConfig = {
   addCoachNoteCallback: async (_uac: string, _userLocale: string, _note: string) => false,
   transferUserToStingCallback: async (_uac: string, _userLocale: string, _message?: string) =>
     false,
+  fetchNextPostInCommunity: async (_cid: string, _pid: string, _dir: string) => '',
 };
 
 const ConfigContext = createContext(defaultConfig);
