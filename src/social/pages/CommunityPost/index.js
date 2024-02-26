@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,15 +23,27 @@ const CommunityPost = ({
 }) => {
   const { fetchNextPostInCommunity } = useConfig();
   const { user: currentUser } = useUser(currentUserId, [currentUserId]);
+  const [olderButtonDisabled, setOlderButtonDisabled] = useState(false);
+  const [newerButtonDisabled, setNewerButtonDisabled] = useState(false);
   const navigate = useNavigate();
 
   const onOlderPost = async (communityId, postId) => {
     const nextPostPath = await fetchNextPostInCommunity(communityId, postId, "AFTER");
-    navigate(nextPostPath);
+    if (nextPostPath) {
+      navigate(nextPostPath);
+      setNewerButtonDisabled(false);
+    } else {
+      setOlderButtonDisabled(true);
+    }
   };
   const onNewerPost = async () => {
     const nextPostPath = await fetchNextPostInCommunity(communityId, postId, "BEFORE");
-    navigate(nextPostPath);
+    if (nextPostPath) {
+      navigate(nextPostPath);
+      setOlderButtonDisabled(false);
+    } else {
+      setNewerButtonDisabled(true);
+    }
   };
 
   return (
@@ -42,11 +54,13 @@ const CommunityPost = ({
       isCoach(currentUser) &&
         <NavButtonGroup isFullWidth>
           <PrimaryButton
+            disabled={olderButtonDisabled}
             onClick={() => onOlderPost(communityId, postId)}
           >
             &lt; Older
           </PrimaryButton>
           <PrimaryButton
+            disabled={newerButtonDisabled}
             onClick={() => onNewerPost(communityId, postId)}
           >
             Newer &gt;
