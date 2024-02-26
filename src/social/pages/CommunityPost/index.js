@@ -28,7 +28,7 @@ const CommunityPost = ({
   const navigate = useNavigate();
 
   const onOlderPost = async (communityId, postId) => {
-    const nextPostPath = await fetchNextPostInCommunity(communityId, postId, "AFTER");
+    const nextPostPath = await fetchNextPostInCommunity(communityId, postId, "BEFORE");
     if (nextPostPath) {
       navigate(nextPostPath);
       setNewerButtonDisabled(false);
@@ -37,7 +37,7 @@ const CommunityPost = ({
     }
   };
   const onNewerPost = async () => {
-    const nextPostPath = await fetchNextPostInCommunity(communityId, postId, "BEFORE");
+    const nextPostPath = await fetchNextPostInCommunity(communityId, postId, "AFTER");
     if (nextPostPath) {
       navigate(nextPostPath);
       setOlderButtonDisabled(false);
