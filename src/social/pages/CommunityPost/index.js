@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-import { PrimaryButton, ButtonGroup } from '~/core/components/Button';
+import { PrimaryButton } from '~/core/components/Button';
 import useUser from '~/core/hooks/useUser';
 import { isCoach } from '~/helpers/permissions';
 import withSDK from '~/core/hocs/withSDK';
@@ -10,7 +10,7 @@ import CommunityInfo from '~/social/components/CommunityInfo';
 import Post from '~/social/components/post/Post';
 import { useConfig } from '~/social/providers/ConfigProvider';
 
-import { Wrapper } from './styles';
+import { Wrapper, NavButtonGroup } from './styles';
 
 const CommunityPost = ({
   currentUserId,
@@ -40,7 +40,7 @@ const CommunityPost = ({
 
       {
       isCoach(currentUser) &&
-        <ButtonGroup isFullWidth>
+        <NavButtonGroup isFullWidth>
           <PrimaryButton
             onClick={() => onOlderPost(communityId, postId)}
           >
@@ -51,7 +51,7 @@ const CommunityPost = ({
           >
             Newer &gt;
           </PrimaryButton>
-        </ButtonGroup>
+        </NavButtonGroup>
       }
 
       <Post
