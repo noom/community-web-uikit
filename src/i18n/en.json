@@ -4,7 +4,6 @@
   "general.action.decline": "Decline",
   "general.action.discard": "Discard",
   "general.error.tryAgainLater": "Something went wrong. Please try again later.",
-
   "hello": "Hello World",
   "plural.like": "{amount, plural, one {like} other {likes}}",
   "comment": "Comment",
@@ -45,7 +44,6 @@
   "post.wasLive": "was live",
   "post.copyPath": "Copy path",
   "post.openInNewTab": "Open in new tab",
-
   "post.success.approved": "Post approved",
   "post.success.declined": "Post declined",
   "post.success.submittedToReview": "Your post has been submitted to review by moderator",
@@ -57,7 +55,6 @@
   "collapsible.viewAllFiles": "View all files",
   "collapsible.viewMoreComments": "View more comments",
   "collapsible.viewMoreReplies": "View more replies",
-
   "community.createSuccess": "Your community was successfully created",
   "community.updateSuccess": "Your community was successfully updated",
   "community.editProfile": "Edit profile",
@@ -85,16 +82,13 @@
   "community.settings": "Settings",
   "community.leaveCommunity": "Leave Community",
   "community.members.list": "Community Members",
-
   "CommunityMembers.members": "Members",
   "CommunityMembers.moderators": "Moderators",
-
   "EmptyFeed.TargetType.globalFeed": "This feed is empty",
   "EmptyFeed.TargetType.communityFeed": "This community's feed is empty",
   "EmptyFeed.TargetType.userFeed": "This user's feed is empty",
   "EmptyFeed.TargetType.myFeed": "Your feed is empty",
   "EmptyFeed.exploreCommunity": "Explore Community",
-
   "UserFeed.tabs.timeline": "Timeline",
   "community.exploreCommunities": "Explore Community",
   "community.permissions.postReview": "Post review",
@@ -108,16 +102,13 @@
   "community.permissions.anonymity": "Anonymity",
   "community.permissions.anonymous": "Make community anonymous",
   "community.permissions.anonymous.prompt": "Anonymous communities prevent users from viewing the list of members.",
-
   "community.pendingPostsBanner.title": "Pending posts",
   "community.pendingPostsBanner.pendingForReview": "Your posts are pending for review",
   "community.pendingPostsBanner.needApproval": "{formattedAmount} {amount, plural, one {post needs} other {posts need}} approval",
-
   "communityCreatedModal.title": "Customize your community",
   "communityCreatedModal.message": "You’ve successfully created a community! Now let's manage permissions that work best for you",
   "communityCreatedModal.goToSettings": "Community settings",
   "communityCreatedModal.skip": "Skip for now",
-
   "post": "Post",
   "upload.attachmentLimit": "You reached the maximum attachment of {maxFiles}",
   "upload.fileSizeLimit": "One of the selected file is larger than 1GB. Please select a new file.",
@@ -125,46 +116,35 @@
   "user.message": "Message",
   "follow.placeholder.noFollowings": "No followings found",
   "follow.placeholder.noFollowers": "No followers found",
-
   "ProfileSettings.editProfile": "Edit profile",
   "ProfileSettings.returnTo": "Return to ",
-
   "SideSectionMyCommunity.myCommunity": "My Community",
-
   "file.reUpload": "Click to re-upload the file",
-
   "UserProfileForm.displayname": "Display name",
   "UserProfileForm.about": "About",
   "UserProfileForm.title": "General",
   "UserProfileForm.namePlaceholder": "Enter user display name",
   "UserProfileForm.requiredDisplayName": "Display name is required",
   "UserProfileForm.requiredDescription": "Enter something about yourself",
-
   "UserSelector.placeholder": "Select user...",
-
   "report.reportUser": "Report user",
   "report.unreportUser": "Unreport user",
   "report.reportComment": "Report comment",
   "report.unreportComment": "Unreport comment",
   "report.reportSent": "Report sent",
   "report.unreportSent": "Unreport sent",
-
   "comment.deleted": "This comment has been deleted",
   "comment.delete": "Delete comment",
   "comment.edit": "Edit comment",
   "comment.deleteConfirmContent": "This comment will be permanently deleted. Continue?",
   "comment.deleteConfirmCancelText": "Cancel",
   "comment.deleteConfirmOkText": "Delete",
-
   "dropdown.first": "First",
   "dropdown.second": "Second",
-
   "layout.logout": "Log Out",
   "layout.username": "Jackies",
-
   "chat.details.chatDetailes": "Chat Detail",
   "chat.details.communityName": "Community Name",
-
   "message.flag": "flag",
   "message.unflag": "Unflag",
   "message.edit": "Edit",
@@ -172,14 +152,10 @@
   "message.deleted": "deleted",
   "message.unsupportedFormat": "Unsupported message format",
   "message.saveOptionsError": "There was an error processing your request",
-
   "MessageComposeBar.placeholder": "Type your message...",
-
   "RecentChat.chats": "Chats",
-
   "AddMemberModal.addMembers": "Add members",
   "AddMemberModal.membersValidationError": "Please select at least one member",
-
   "add": "Add",
   "save": "Save",
   "close": "Close",
@@ -191,49 +167,35 @@
   "anonymous": "Anonymous",
   "comment.edited": "Edited",
   "comment.readmore": "...Read more",
-
   "communities.nocommunityfound": "No community found",
-
   "profile.setting": "Profile Settings",
-
   "sidesectioncommunity.newfeed": "Feed",
   "sidesectioncommunity.explore": "Explore",
   "sidesectioncommunity.community": "Community",
-
   "communityFeed.join": "Join community to interact with all posts",
   "communityFeed.members": "Members",
   "communityFeed.moderators": "Moderators",
-
   "files.all": "View all files",
-
   "sidebar.community": "Community",
-
   "CategoryCommunitiesList.emptyTitle": "It's empty here...",
   "CategoryCommunitiesList.emptyDescription": "No community found in this category",
-
   "CommentComposeBar.addComment": "Comment",
   "CommentComposeBar.replayTo": "Reply to ",
   "CommentComposeBar.saySomething": "Say something nice",
-
   "CommentComposeBar.unableToPost": "Unable to post",
   "CommentComposeBar.overCharacter": "You have reached maximum 50,000 characters in a post.",
   "CommentComposeBar.done": "Done",
-
   "CommentComposeBar.unableToMention": "Unable to mention",
   "CommentComposeBar.overMentionees": "You have reached maximum 30 mentioned users in a post.",
   "CommentComposeBar.okText": "OK",
-
   "CommunityCreationModal.title": "Leave without finishing?",
   "CommunityCreationModal.content": "Your progress won’t be saved. Are you sure to leave this page now?",
   "CommunityCreationModal.cancelText": "Continue editing",
   "CommunityCreationModal.okText": "Leave",
-
   "PostAsCommunity.title": "Post as community",
   "PostAsCommunity.caption": "Enable this will publish the post on behalf of community account",
-
   "AddMemberAction.title": "Add members",
   "AddMemberAction.description": "Add your friends to this community to participate in group conversations",
-
   "CloseCommunityAction.closeConfirm.title": "Close community?",
   "CloseCommunityAction.closeConfirm.description": "All members will be removed from the community. All posts, messages, reactions and media shared in community will be deleted. This cannot be undone.",
   "CloseCommunityAction.title": "Close community",
@@ -314,7 +276,6 @@
   "buttonText.unfollow": "Unfollow",
   "privateFeed.title": "This account is private",
   "privateFeed.body": "Follow this user to see all posts",
-
   "navigationBlocker.title": "Unsaved changes",
   "navigationBlocker.content": "Your changes won`t be saved. Are you sure you want to leave this page now?",
   "user.unfollow.confirm.title.thisUser": "Unfollow this user",
@@ -340,20 +301,16 @@
   "poll.vote.submit": "Submit vote",
   "poll.error.deletedOrClosed": "This poll has been closed or deleted.",
   "poll.close": "Close poll",
-
   "postCreator.unableToPost": "Unable to post",
   "postCreator.overCharacter": "You have reached maximum 50,000 characters in a post.",
   "postCreator.done": "Done",
-
   "postCreator.unableToMention": "Unable to mention",
   "postCreator.overMentionees": "You have reached maximum 30 mentioned users in a post.",
   "postCreator.okText": "OK",
   "postCreator.postTarget": "Posting to {postTarget}",
-
   "pollComposer.unableToMention": "Unable to mention",
   "pollComposer.overMentionees": "You have reached maximum 30 mentioned users in a post.",
   "pollComposer.okText": "OK",
-
   "select.chatType.item": "{answerType} type",
   "chatComposer.label.channelId": "Channel ID",
   "chatComposer.label.displayName": "Display Name",
@@ -362,18 +319,15 @@
   "chat_modal.title": "Create chat",
   "chat_composer.placeholder.displayName": "Enter display name here",
   "chat_composer.placeholder.channelId": "Enter channel ID here",
-
   "userType.noomer": "Noomer",
   "userType.user": "User",
   "userType.coach": "Noom Coach",
   "userType.writer": "Noom Writer",
   "userType.team": "Noom Team",
-
   "notificationTray.title": "Notifications",
   "notificationTray.markAllRead": "Mark all as read",
   "notificationTray.viewAll": "View all notifications",
   "notificationTray.empty": "You have no notifications",
-
   "onboarding.welcome.title": "Welcome to Noom Community",
   "onboarding.welcome.subTitle": "<b>Get tips specific to your life</b> from expert Noom Coaches in 30+ communities!",
   "onboarding.welcome.bullets.1": "<b>Learn</b> new strategies and get advice from Noomers & Coaches like you",
@@ -391,7 +345,6 @@
   "onboarding.error.message": "There was an error with your onboarding. Please try again!",
   "onboarding.error.cancel": "Skip",
   "onboarding.error.reset": "Try again",
-
   "settings.notifications.comment.label": "Comment",
   "settings.notifications.comment.helper": "When someone comments on your post or comment",
   "settings.notifications.mention.label": "Mention",
@@ -402,7 +355,6 @@
   "settings.notifications.post.helper": "When there is a new post in a community you joined",
   "settings.emailNotifications.title": "Email notifications",
   "settings.pushNotifications.title": "Push notifications",
-
   "userMetadata.title": "User metadata",
   "userMetadata.platform": "Platform",
   "userMetadata.appVersion": "App version",
@@ -418,7 +370,6 @@
   "userMetadata.businessType": "Business Type",
   "userMetadata.partnerId": "Partner ID",
   "userMetadata.edit.title": "Edit user metadata",
-
   "uploadImage": "Upload Image",
   "nameRequired": "Name is required",
   "nameTooLong": "Name is too long",
@@ -431,7 +382,6 @@
   "public": "Public",
   "publicDescription": "Anyone can join, view and search the posts in this page.",
   "whatsGoingOnPlaceholder": "What's going on...",
-
   "post.dashboard": "Go to user's Dashboard",
   "post.manatee": "Lookup user in Manatee",
   "post.sting": "STING",
