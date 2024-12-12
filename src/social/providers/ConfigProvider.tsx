@@ -6,6 +6,7 @@ export type SocialConfiguration = {
   showCreatePublicCommunityOption?: boolean;
   showUserProfileMetadata?: boolean;
   showOldStyleComments?: boolean;
+  showCreateCommunity?: boolean;
   manateeUrl?: string;
   dashboardUrl?: string;
   isUserCurrentlyInStingDashCallback: (userAccessCode: string) => Promise<boolean>;
