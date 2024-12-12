@@ -31,6 +31,7 @@ const defaultConfig = {
   showCreatePublicCommunityOption: false,
   showUserProfileMetadata: false,
   showOldStyleComments: false,
+  showCreateCommunity: false,
   manateeUrl: null,
   dashboardUrl: null,
   isUserCurrentlyInStingDashCallback: async (_uac: string) => false,

@@ -26,7 +26,7 @@ const SideSectionMyCommunity = ({
   currentUserId,
 }) => {
   const { connected } = useSDK();
-  const { socialCommunityCreationButtonVisible } = useConfig();
+  const { socialCommunityCreationButtonVisible , showCreateCommunity} = useConfig();
   const { onCommunityCreated } = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser(currentUserId, [currentUserId]);
@@ -39,10 +39,6 @@ const SideSectionMyCommunity = ({
     communityId && onCommunityCreated(communityId);
   };
 
-  const canCreateCommunity =
-    socialCommunityCreationButtonVisible &&
-    (userType !== 'user' || user?.metadata?.[BUSINESS_TYPE_METADATA] !== 'B2B');
-
   return (
     <Box bg="white" h="100%" pb={2} pt={1}>
       <ListHeading>
@@ -54,7 +50,7 @@ const SideSectionMyCommunity = ({
         <CommunityCount ml="auto" count={communityListProps?.communities?.length} />
       </ListHeading>
       <Box h="calc(100% - 50px)" minH={0} overflow="auto">
-        {canCreateCommunity && (
+        {showCreateCommunity && (
           <SideMenuActionItem
             icon={<Plus height={20} />}
             element="button"
