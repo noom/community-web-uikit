@@ -89,7 +89,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@hookform/error-message": "^2.0.0",
-    "@udecode/plate": "15.0.6",
+    "@udecode/plate": "16.0.0",
     "classnames": "^2.3.1",
     "filesize": "^9.0.11",
     "hls.js": "^1.2.1",
