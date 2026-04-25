@@ -130,7 +130,7 @@
     "slate-react": "0.86.0",
     "styled-components": "^5.3.5",
     "unified": "10.1.2",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --cache --fix",
